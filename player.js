@@ -238,6 +238,15 @@ function loadPlayerQuestion(index) {
 confirmBtn.onclick = () => {
   const q = playerQuestions[playerIndex];
 
+  // ⭐ 二巡目は時間が満たされるまで決定できない
+  if (round === 2) {
+    const elapsed = (Date.now() - startTime) / 1000;
+    if (elapsed < q.time2) {
+      alert("まだ時間が経過していません");
+      return;
+    }
+  }
+
   if (!selectedOption) {
     alert("選択肢を選んでください");
     return;
