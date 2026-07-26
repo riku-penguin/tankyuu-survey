@@ -55,4 +55,134 @@
     max-width: 650px;
     margin: 40px auto;
     padding: 25px;
-    background: #
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    display: none;
+  }
+
+  /* ⭐ 質問番号 */
+  #questionNumber {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #666;
+  }
+
+  /* ⭐ タイマー */
+  #timerBox {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  #timerText {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
+  /* ⭐ タイムバー（初期色だけ定義） */
+  #timerBar {
+    height: 10px;
+    background-color: #8bc34a; /* 一巡目の初期色：緑 */
+    transition: width 0.25s linear, background-color 0.25s linear;
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  /* ⭐ パステルカラー（ABCD）＋買わない（グレー） */
+  .optionButton {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+
+  .optionButton:nth-child(1) { background-color: #ffd8d8; } /* 赤 */
+  .optionButton:nth-child(2) { background-color: #d8e9ff; } /* 青 */
+  .optionButton:nth-child(3) { background-color: #fff4c2; } /* 黄 */
+  .optionButton:nth-child(4) { background-color: #d9ffd8; } /* 緑 */
+  .optionButton:nth-child(5) { background-color: #e0e0e0; } /* グレー（買わない） */
+
+  .optionButton:hover {
+    transform: translateY(-2px);
+  }
+
+  /* ⭐ 汎用ボタン */
+  .primaryButton {
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #4b6cff;
+    color: #fff;
+    margin-top: 20px;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ⭐ 最初の画面 -->
+<div id="startScreen" style="display:block;">
+  <h2>アンケート開始前の注意事項</h2>
+
+  <p>
+    ・このアンケートでは、あなたの選択と反応時間を記録します。<br>
+    ・回答内容は研究目的以外には使用されません。<br>
+    ・できるだけ落ち着いた環境で回答してください。<br>
+    ・途中でページを閉じるとデータが保存されません。
+  </p>
+
+  性別：
+  <select id="playerGender">
+    <option value="">選択</option>
+    <option value="男性">男性</option>
+    <option value="女性">女性</option>
+    <option value="その他">その他</option>
+  </select>
+
+  年齢：
+  <input type="number" id="playerAge" style="width:80px;">
+
+  <button id="startBtn">開始する</button>
+</div>
+
+<!-- ⭐ 質問画面 -->
+<div id="playerContainer" class="screenBox">
+  <div id="questionNumber"></div>
+
+  <div id="timerBox">
+    <div id="timerText">残り時間: -- 秒</div>
+    <div id="timerBar"></div>
+  </div>
+
+  <div id="playerSituation"></div>
+  <div id="playerQuestion"></div>
+  <div id="playerOptions"></div>
+</div>
+
+<!-- ⭐ 二巡目前案内 -->
+<div id="infoScreen" class="screenBox">
+  <p>
+    <strong>ここからは、もう一度同じ質問に答えていただくセクションです。</strong><br>
+    一巡目とは別に、二巡目の反応時間を記録します。<br>
+    このセクションには制限時間はありません。
+  </p>
+  <button id="startSecondRoundBtn" class="primaryButton">OK</button>
+</div>
+
+<!-- ⭐ 最終画面 -->
+<div id="finalScreen" class="screenBox">
+  <h2>ご協力ありがとうございました！</h2>
+  <p>共有リンクをコピーできます。</p>
+  <button id="copyShareLinkBtn" class="primaryButton">共有リンクをコピーする</button>
+</div>
+
+<script src="player.js"></script>
+</body>
+</html>
