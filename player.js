@@ -11,8 +11,9 @@ let playerIndex = 0;
 let startTime = 0;
 let round = 1;
 
-// ⭐ タイマーをグローバル化（これが安定化の鍵）
+// ⭐ タイマーをグローバル化（暴走防止）
 let timer = null;
+let preTimer = null;
 
 const genderEl = document.getElementById("playerGender");
 const ageEl = document.getElementById("playerAge");
@@ -30,22 +31,22 @@ const timerText = document.getElementById("timerText");
 const timerBar = document.getElementById("timerBar");
 const questionNumber = document.getElementById("questionNumber");
 
-// ⭐ 状況理解パート
+// ⭐ 状況理解パート（新規追加）
 const preSituationScreen = document.createElement("div");
 preSituationScreen.className = "screenBox";
 preSituationScreen.style.display = "none";
 preSituationScreen.innerHTML = `
+  <div id="preCountdown" style="font-size:14px; color:#666; margin-bottom:5px;"></div>
   <div id="preQuestionNumber"></div>
   <div id="preSituationText" style="margin-top:10px; margin-bottom:20px;"></div>
   <button id="preOkBtn" class="primaryButton">OK</button>
 `;
 document.body.appendChild(preSituationScreen);
 
+const preCountdown = document.getElementById("preCountdown");
 const preQuestionNumber = document.getElementById("preQuestionNumber");
 const preSituationText = document.getElementById("preSituationText");
 const preOkBtn = document.getElementById("preOkBtn");
-
-let preTimer = null;
 
 // ⭐ 開始ボタン
 document.getElementById("startBtn").addEventListener("click", async () => {
@@ -81,7 +82,7 @@ function parseTime(str) {
   return { t1: parseInt(nums[0]), t2: parseInt(nums[1]) };
 }
 
-// ⭐ 状況理解パート
+// ⭐ 状況理解パート表示（カウントダウン付き）
 function showPreSituation(index) {
   const q = playerQuestions[index];
 
@@ -93,24 +94,36 @@ function showPreSituation(index) {
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
   preSituationText.textContent = q.situation;
 
+  // ⭐ 画面切り替え（確実に）
+  hideAllScreens();
   preSituationScreen.style.display = "block";
-  playerContainerEl.style.display = "none";
-  infoScreenEl.style.display = "none";
+
+  // ⭐ カウントダウン（5秒）
+  let remain = 5;
+  preCountdown.textContent = `あと ${remain} 秒で質問画面に移行します`;
 
   if (preTimer) clearTimeout(preTimer);
-  preTimer = setTimeout(() => {
-    startQuestion(index);
-  }, 5000);
+  preTimer = setInterval(() => {
+    remain--;
+    preCountdown.textContent = `あと ${remain} 秒で質問画面に移行します`;
 
+    if (remain <= 0) {
+      clearInterval(preTimer);
+      startQuestion(index);
+    }
+  }, 1000);
+
+  // ⭐ OKボタンで即進行
   preOkBtn.onclick = () => {
-    clearTimeout(preTimer);
+    clearInterval(preTimer);
     startQuestion(index);
   };
 }
 
 // ⭐ 質問開始
 function startQuestion(index) {
-  preSituationScreen.style.display = "none";
+  hideAllScreens();
+
   playerContainerEl.style.display = "block";
 
   loadPlayerQuestion(index);
@@ -129,11 +142,10 @@ function loadPlayerQuestion(index) {
 
   let limit = round === 1 ? q.time1 : q.time2;
 
-  // ⭐ 既存タイマーを必ず停止（これが超重要）
+  // ⭐ タイマー停止（暴走防止）
   if (timer) clearInterval(timer);
   timer = null;
 
-  // ⭐ タイムバー初期色
   timerBar.style.backgroundColor = round === 1 ? "#8bc34a" : "#bdbdbd";
   timerBar.style.width = round === 1 ? "100%" : "0%";
 
@@ -147,38 +159,27 @@ function loadPlayerQuestion(index) {
 
     if (round === 1) {
       const remaining = limit - elapsed;
-      const displaySec = Math.max(0, Math.ceil(remaining));
-
-      timerText.textContent = `残り時間: ${displaySec} 秒`;
-
-      const ratio = Math.max(0, remaining / limit);
-      timerBar.style.width = `${ratio * 100}%`;
-
-      if (ratio > 0.7) timerBar.style.backgroundColor = "#8bc34a";
-      else if (ratio > 0.4) timerBar.style.backgroundColor = "#fdd835";
-      else if (ratio > 0.2) timerBar.style.backgroundColor = "#fb8c00";
-      else timerBar.style.backgroundColor = "#e53935";
 
       if (remaining <= 0) {
         clearInterval(timer);
         timer = null;
         handleTimeout(q);
+        return;
       }
+
+      timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
+      timerBar.style.width = `${(remaining / limit) * 100}%`;
+
     } else {
-      const displaySec = Math.min(limit, Math.floor(elapsed));
-      timerText.textContent = `経過時間: ${displaySec} 秒`;
-
-      const ratio = Math.min(1, elapsed / limit);
-      timerBar.style.width = `${ratio * 100}%`;
-
-      const blueLevel = Math.min(255, Math.floor(180 + ratio * 75));
-      timerBar.style.backgroundColor = `rgb(${blueLevel}, ${blueLevel}, 255)`;
-
       if (elapsed >= limit) {
         clearInterval(timer);
         timer = null;
         handleTimeout(q);
+        return;
       }
+
+      timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
+      timerBar.style.width = `${(elapsed / limit) * 100}%`;
     }
   }, 50);
 
@@ -222,6 +223,9 @@ function loadPlayerQuestion(index) {
 
 // ⭐ 時間切れ
 function handleTimeout(q) {
+  if (timer) clearInterval(timer);
+  timer = null;
+
   const endTime = Date.now();
   const answerTime = (endTime - startTime) / 1000;
 
@@ -244,19 +248,18 @@ function handleTimeout(q) {
   nextPlayerQuestion();
 }
 
-// ⭐ 次の質問へ
+// ⭐ 次の質問へ（画面が必ず切り替わる）
 function nextPlayerQuestion() {
+  hideAllScreens();
+
   playerIndex++;
 
   if (round === 1 && playerIndex >= playerQuestions.length) {
-    playerContainerEl.style.display = "none";
     infoScreenEl.style.display = "block";
     return;
   }
 
   if (round === 2 && playerIndex >= playerQuestions.length) {
-    playerContainerEl.style.display = "none";
-    infoScreenEl.style.display = "none";
     finalScreenEl.style.display = "block";
     return;
   }
@@ -264,13 +267,20 @@ function nextPlayerQuestion() {
   showPreSituation(playerIndex);
 }
 
+// ⭐ 画面を全部消す（競合防止）
+function hideAllScreens() {
+  playerContainerEl.style.display = "none";
+  preSituationScreen.style.display = "none";
+  infoScreenEl.style.display = "none";
+  finalScreenEl.style.display = "none";
+}
+
 // ⭐ 二巡目開始
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
   round = 2;
   playerIndex = 0;
 
-  infoScreenEl.style.display = "none";
-
+  hideAllScreens();
   showPreSituation(playerIndex);
 });
 
