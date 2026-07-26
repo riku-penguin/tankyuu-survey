@@ -11,6 +11,9 @@ let playerIndex = 0;
 let startTime = 0;
 let round = 1;
 
+// ⭐ タイマーをグローバル化（これが安定化の鍵）
+let timer = null;
+
 const genderEl = document.getElementById("playerGender");
 const ageEl = document.getElementById("playerAge");
 
@@ -27,7 +30,7 @@ const timerText = document.getElementById("timerText");
 const timerBar = document.getElementById("timerBar");
 const questionNumber = document.getElementById("questionNumber");
 
-// ⭐ 状況理解パート（新規追加）
+// ⭐ 状況理解パート
 const preSituationScreen = document.createElement("div");
 preSituationScreen.className = "screenBox";
 preSituationScreen.style.display = "none";
@@ -44,7 +47,7 @@ const preOkBtn = document.getElementById("preOkBtn");
 
 let preTimer = null;
 
-// ⭐ 最初の開始ボタン
+// ⭐ 開始ボタン
 document.getElementById("startBtn").addEventListener("click", async () => {
   if (!genderEl.value || !ageEl.value) {
     alert("性別と年齢を入力してください");
@@ -78,14 +81,13 @@ function parseTime(str) {
   return { t1: parseInt(nums[0]), t2: parseInt(nums[1]) };
 }
 
-// ⭐ 状況理解パート表示
+// ⭐ 状況理解パート
 function showPreSituation(index) {
   const q = playerQuestions[index];
 
   const { t1, t2 } = parseTime(q.time);
 
-  // ⭐ 一巡目の時間だけ +2秒
-  q.time1 = t1 + 2;
+  q.time1 = t1 + 2; // 一巡目 +2秒
   q.time2 = t2;
 
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
@@ -114,7 +116,7 @@ function startQuestion(index) {
   loadPlayerQuestion(index);
 }
 
-// ⭐ 質問表示（滑らかタイムバー版）
+// ⭐ 質問表示（完全安定版）
 function loadPlayerQuestion(index) {
   const q = playerQuestions[index];
 
@@ -126,64 +128,61 @@ function loadPlayerQuestion(index) {
   startTime = Date.now();
 
   let limit = round === 1 ? q.time1 : q.time2;
-  let timer = null;
 
-  if (round === 1) {
-    timerBar.style.backgroundColor = "#8bc34a";
-  } else {
-    timerBar.style.backgroundColor = "#bdbdbd";
-  }
+  // ⭐ 既存タイマーを必ず停止（これが超重要）
+  if (timer) clearInterval(timer);
+  timer = null;
 
-  if (limit != null) {
-    let elapsed = 0;
+  // ⭐ タイムバー初期色
+  timerBar.style.backgroundColor = round === 1 ? "#8bc34a" : "#bdbdbd";
+  timerBar.style.width = round === 1 ? "100%" : "0%";
 
-    timerText.textContent = round === 1
-      ? `残り時間: ${limit} 秒`
-      : `経過時間: 0 秒`;
+  timerText.textContent =
+    round === 1 ? `残り時間: ${limit} 秒` : `経過時間: 0 秒`;
 
-    timerBar.style.width = round === 1 ? "100%" : "0%";
+  // ⭐ 滑らかタイムバー（50ms更新）
+  timer = setInterval(() => {
+    const now = Date.now();
+    const elapsed = (now - startTime) / 1000;
 
-    timer = setInterval(() => {
-      const now = Date.now();
-      const elapsedMs = now - startTime;
-      elapsed = elapsedMs / 1000;
+    if (round === 1) {
+      const remaining = limit - elapsed;
+      const displaySec = Math.max(0, Math.ceil(remaining));
 
-      if (round === 1) {
-        const remaining = limit - elapsed;
-        const displaySec = Math.max(0, Math.ceil(remaining));
+      timerText.textContent = `残り時間: ${displaySec} 秒`;
 
-        timerText.textContent = `残り時間: ${displaySec} 秒`;
+      const ratio = Math.max(0, remaining / limit);
+      timerBar.style.width = `${ratio * 100}%`;
 
-        const ratio = Math.max(0, remaining / limit);
-        timerBar.style.width = `${ratio * 100}%`;
+      if (ratio > 0.7) timerBar.style.backgroundColor = "#8bc34a";
+      else if (ratio > 0.4) timerBar.style.backgroundColor = "#fdd835";
+      else if (ratio > 0.2) timerBar.style.backgroundColor = "#fb8c00";
+      else timerBar.style.backgroundColor = "#e53935";
 
-        if (ratio > 0.7) timerBar.style.backgroundColor = "#8bc34a";
-        else if (ratio > 0.4) timerBar.style.backgroundColor = "#fdd835";
-        else if (ratio > 0.2) timerBar.style.backgroundColor = "#fb8c00";
-        else timerBar.style.backgroundColor = "#e53935";
-
-        if (remaining <= 0) {
-          clearInterval(timer);
-          handleTimeout(q);
-        }
-      } else {
-        const displaySec = Math.min(limit, Math.floor(elapsed));
-        timerText.textContent = `経過時間: ${displaySec} 秒`;
-
-        const ratio = Math.min(1, elapsed / limit);
-        timerBar.style.width = `${ratio * 100}%`;
-
-        const blueLevel = Math.min(255, Math.floor(180 + ratio * 75));
-        timerBar.style.backgroundColor = `rgb(${blueLevel}, ${blueLevel}, 255)`;
-
-        if (elapsed >= limit) {
-          clearInterval(timer);
-          handleTimeout(q);
-        }
+      if (remaining <= 0) {
+        clearInterval(timer);
+        timer = null;
+        handleTimeout(q);
       }
-    }, 50); // ⭐ 滑らかに動く
-  }
+    } else {
+      const displaySec = Math.min(limit, Math.floor(elapsed));
+      timerText.textContent = `経過時間: ${displaySec} 秒`;
 
+      const ratio = Math.min(1, elapsed / limit);
+      timerBar.style.width = `${ratio * 100}%`;
+
+      const blueLevel = Math.min(255, Math.floor(180 + ratio * 75));
+      timerBar.style.backgroundColor = `rgb(${blueLevel}, ${blueLevel}, 255)`;
+
+      if (elapsed >= limit) {
+        clearInterval(timer);
+        timer = null;
+        handleTimeout(q);
+      }
+    }
+  }, 50);
+
+  // ⭐ 選択肢
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
@@ -191,11 +190,12 @@ function loadPlayerQuestion(index) {
 
     btn.onclick = () => {
       if (timer) clearInterval(timer);
+      timer = null;
 
       const endTime = Date.now();
       const answerTime = (endTime - startTime) / 1000;
 
-      const timeout = limit != null ? answerTime > limit : false;
+      const timeout = answerTime > limit;
 
       sendToSheet({
         questionId: q.id,
@@ -203,8 +203,8 @@ function loadPlayerQuestion(index) {
         optionLabel: opt.label,
         price: opt.price ?? null,
         category: q.category ?? "",
-        time1: q.time1 ?? null,
-        time2: q.time2 ?? null,
+        time1: q.time1,
+        time2: q.time2,
         gender: genderEl.value,
         age: ageEl.value,
         round,
@@ -220,7 +220,7 @@ function loadPlayerQuestion(index) {
   });
 }
 
-// ⭐ 時間切れ処理
+// ⭐ 時間切れ
 function handleTimeout(q) {
   const endTime = Date.now();
   const answerTime = (endTime - startTime) / 1000;
@@ -231,8 +231,8 @@ function handleTimeout(q) {
     optionLabel: "時間切れ",
     price: null,
     category: q.category ?? "",
-    time1: q.time1 ?? null,
-    time2: q.time2 ?? null,
+    time1: q.time1,
+    time2: q.time2,
     gender: genderEl.value,
     age: ageEl.value,
     round,
