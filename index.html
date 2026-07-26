@@ -1,113 +1,45 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>Player 完全版</title>
-<style>
-  body { font-family: sans-serif; padding: 20px; background: #fafafa; }
-  #playerContainer { max-width: 650px; margin: auto; display:none; }
-
-  #playerSituation { font-size: 18px; margin-bottom: 10px; }
-  #playerQuestion { font-size: 22px; margin-bottom: 20px; }
-
-  .optionButton {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    margin: 10px 0;
-    font-size: 18px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    background: #f2f2ff;
-    transition: 0.2s;
-  }
-  .optionButton:hover {
-    background: #e0e0ff;
-  }
-
-  .primaryButton {
-    padding: 12px 20px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    background: #4b6cff;
-    color: #fff;
-    margin-top: 20px;
-  }
-  .primaryButton:hover {
-    background: #3b58d8;
-  }
-
-  .screenBox {
-    max-width: 650px;
-    margin: 40px auto;
-    padding: 25px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.05);
-    display:none;
-  }
-</style>
+<meta charset="UTF-8" />
+<title>アンケートプレイヤー</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<!-- ⭐ 最初の注意事項画面 -->
-<div id="startScreen" class="screenBox" style="display:block;">
-  <h2>アンケート開始前の注意事項</h2>
-  <p>
-    このアンケートは意思決定の研究のために行われています。<br>
-    一巡目と二巡目の反応時間を記録します。<br>
-    二巡目は制限時間なしです。<br>
-    同じ質問を二回回答しますが、これは仕様です。<br><br>
-    性別と年齢を入力して「開始する」を押してください。
-  </p>
+<div id="startScreen">
+  <h2>アンケート開始</h2>
+  <label>性別：</label>
+  <input id="playerGender" type="text" />
 
-  性別：
-  <select id="playerGender">
-    <option value="">選択</option>
-    <option value="男性">男性</option>
-    <option value="女性">女性</option>
-    <option value="その他">その他</option>
-  </select>
+  <label>年齢：</label>
+  <input id="playerAge" type="number" />
 
-  年齢：
-  <input type="number" id="playerAge" style="width:60px;">
-
-  <button id="startBtn" class="primaryButton">開始する</button>
+  <button id="startBtn">開始する</button>
 </div>
 
-<!-- ⭐ 質問画面 -->
-<div id="playerContainer">
+<div id="playerContainer" style="display:none;">
+  <div id="questionNumber"></div>
+
+  <div id="timerBox">
+    <div id="timerText">残り時間: -- 秒</div>
+    <div id="timerBar"></div>
+  </div>
+
   <div id="playerSituation"></div>
   <div id="playerQuestion"></div>
   <div id="playerOptions"></div>
 </div>
 
-<!-- ⭐ 二巡目前案内 -->
-<div id="infoScreen" class="screenBox">
-  <p>
-    <strong>ここからは、もう一度同じ質問に答えていただくセクションです。</strong><br>
-    一巡目とは別に、二巡目の反応時間を記録します。<br>
-    なお、このセクションには制限時間はありません。
-  </p>
-  <button id="startSecondRoundBtn" class="primaryButton">OK</button>
+<div id="infoScreen" style="display:none;">
+  <h2>1巡目が終了しました</h2>
+  <button id="startSecondRoundBtn">2巡目を開始する</button>
 </div>
 
-<!-- ⭐ 最終画面 -->
-<div id="finalScreen" class="screenBox">
-  <h2>ご協力ありがとうございました！</h2>
-  <p>
-    この研究では多くのデータが必要です。<br>
-    よろしければ回答結果を共有していただけると助かります。
-  </p>
-  <p>
-    下のボタンを押すと、共有用リンクがコピーされます。<br>
-    LINEやSNSに貼り付けて共有できます。
-  </p>
-  <button id="copyShareLinkBtn" class="primaryButton">共有リンクをコピーする</button>
+<div id="finalScreen" style="display:none;">
+  <h2>アンケート終了！</h2>
+  <button id="copyShareLinkBtn">共有リンクをコピー</button>
 </div>
 
 <script src="player.js"></script>
