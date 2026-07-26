@@ -60,7 +60,6 @@ document.getElementById("startBtn").addEventListener("click", async () => {
 
   startScreenEl.style.display = "none";
 
-  // ⭐ 最初は状況理解パートへ
   showPreSituation(playerIndex);
 });
 
@@ -84,7 +83,9 @@ function showPreSituation(index) {
   const q = playerQuestions[index];
 
   const { t1, t2 } = parseTime(q.time);
-  q.time1 = t1;
+
+  // ⭐ 一巡目の時間だけ +2秒
+  q.time1 = t1 + 2;
   q.time2 = t2;
 
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
@@ -94,13 +95,11 @@ function showPreSituation(index) {
   playerContainerEl.style.display = "none";
   infoScreenEl.style.display = "none";
 
-  // ⭐ 5秒で自動進行
   if (preTimer) clearTimeout(preTimer);
   preTimer = setTimeout(() => {
     startQuestion(index);
   }, 5000);
 
-  // ⭐ OKボタンで進行
   preOkBtn.onclick = () => {
     clearTimeout(preTimer);
     startQuestion(index);
@@ -115,7 +114,7 @@ function startQuestion(index) {
   loadPlayerQuestion(index);
 }
 
-// ⭐ 質問表示（完全版）
+// ⭐ 質問表示（滑らかタイムバー版）
 function loadPlayerQuestion(index) {
   const q = playerQuestions[index];
 
@@ -129,33 +128,35 @@ function loadPlayerQuestion(index) {
   let limit = round === 1 ? q.time1 : q.time2;
   let timer = null;
 
-  // ⭐ タイムバー初期色
   if (round === 1) {
-    timerBar.style.backgroundColor = "#8bc34a"; // 緑
+    timerBar.style.backgroundColor = "#8bc34a";
   } else {
-    timerBar.style.backgroundColor = "#bdbdbd"; // グレー
+    timerBar.style.backgroundColor = "#bdbdbd";
   }
 
   if (limit != null) {
-    let remaining = limit;
     let elapsed = 0;
 
     timerText.textContent = round === 1
-      ? `残り時間: ${remaining} 秒`
+      ? `残り時間: ${limit} 秒`
       : `経過時間: 0 秒`;
 
     timerBar.style.width = round === 1 ? "100%" : "0%";
 
     timer = setInterval(() => {
       const now = Date.now();
-      elapsed = Math.floor((now - startTime) / 1000);
+      const elapsedMs = now - startTime;
+      elapsed = elapsedMs / 1000;
 
       if (round === 1) {
-        remaining = limit - elapsed;
-        timerText.textContent = `残り時間: ${remaining} 秒`;
-        timerBar.style.width = `${(remaining / limit) * 100}%`;
+        const remaining = limit - elapsed;
+        const displaySec = Math.max(0, Math.ceil(remaining));
 
-        const ratio = remaining / limit;
+        timerText.textContent = `残り時間: ${displaySec} 秒`;
+
+        const ratio = Math.max(0, remaining / limit);
+        timerBar.style.width = `${ratio * 100}%`;
+
         if (ratio > 0.7) timerBar.style.backgroundColor = "#8bc34a";
         else if (ratio > 0.4) timerBar.style.backgroundColor = "#fdd835";
         else if (ratio > 0.2) timerBar.style.backgroundColor = "#fb8c00";
@@ -166,10 +167,12 @@ function loadPlayerQuestion(index) {
           handleTimeout(q);
         }
       } else {
-        timerText.textContent = `経過時間: ${elapsed} 秒`;
-        timerBar.style.width = `${(elapsed / limit) * 100}%`;
+        const displaySec = Math.min(limit, Math.floor(elapsed));
+        timerText.textContent = `経過時間: ${displaySec} 秒`;
 
-        const ratio = elapsed / limit;
+        const ratio = Math.min(1, elapsed / limit);
+        timerBar.style.width = `${ratio * 100}%`;
+
         const blueLevel = Math.min(255, Math.floor(180 + ratio * 75));
         timerBar.style.backgroundColor = `rgb(${blueLevel}, ${blueLevel}, 255)`;
 
@@ -178,10 +181,9 @@ function loadPlayerQuestion(index) {
           handleTimeout(q);
         }
       }
-    }, 1000);
+    }, 50); // ⭐ 滑らかに動く
   }
 
-  // ⭐ 選択肢ボタン
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
@@ -259,7 +261,6 @@ function nextPlayerQuestion() {
     return;
   }
 
-  // ⭐ 次の質問の状況理解パートへ
   showPreSituation(playerIndex);
 }
 
