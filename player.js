@@ -63,59 +63,63 @@ function loadPlayerQuestion(index) {
   let limit = round === 1 ? q.time1 : q.time2;
   let timer = null;
 
+  // ⭐ タイムバー初期色
+  if (round === 1) {
+    timerBar.style.backgroundColor = "#8bc34a"; // 緑
+  } else {
+    timerBar.style.backgroundColor = "#bdbdbd"; // グレー
+  }
+
   if (limit != null) {
     let remaining = limit;
+    let elapsed = 0;
 
     timerText.textContent = `残り時間: ${remaining} 秒`;
     timerBar.style.width = "100%";
 
     timer = setInterval(() => {
-      remaining--;
-      timerText.textContent = `残り時間: ${remaining} 秒`;
-      timerBar.style.width = `${(remaining / limit) * 100}%`;
+      const now = Date.now();
+      elapsed = Math.floor((now - startTime) / 1000);
 
-      if (remaining <= 0) {
-        clearInterval(timer);
+      if (round === 1) {
+        // ⭐ 一巡目：減るタイマー
+        remaining = limit - elapsed;
+        timerText.textContent = `残り時間: ${remaining} 秒`;
+        timerBar.style.width = `${(remaining / limit) * 100}%`;
 
-        const endTime = Date.now();
-        const answerTime = (endTime - startTime) / 1000;
+        // ⭐ 色変化（緑→黄→オレンジ→赤）
+        const ratio = remaining / limit;
+        if (ratio > 0.7) timerBar.style.backgroundColor = "#8bc34a"; // 緑
+        else if (ratio > 0.4) timerBar.style.backgroundColor = "#fdd835"; // 黄
+        else if (ratio > 0.2) timerBar.style.backgroundColor = "#fb8c00"; // オレンジ
+        else timerBar.style.backgroundColor = "#e53935"; // 赤
 
-        sendToSheet({
-          questionId: q.id,
-          selected: null,
-          optionLabel: "時間切れ",
-          price: null,
-          category: q.category ?? "",
-          time1: q.time1 ?? null,
-          time2: q.time2 ?? null,
-          gender: genderEl.value,
-          age: ageEl.value,
-          round,
-          answerTime1: round === 1 ? answerTime : null,
-          answerTime2: round === 2 ? answerTime : null,
-          timeout: true
-        });
+        if (remaining <= 0) {
+          clearInterval(timer);
+          handleTimeout(q);
+        }
+      } else {
+        // ⭐ 二巡目：増えるタイマー
+        timerText.textContent = `経過時間: ${elapsed} 秒`;
+        timerBar.style.width = `${(elapsed / limit) * 100}%`;
 
-        nextPlayerQuestion();
+        // ⭐ 色変化（グレー→青）
+        const ratio = elapsed / limit;
+        const blueLevel = Math.min(255, Math.floor(180 + ratio * 75));
+        timerBar.style.backgroundColor = `rgb(${blueLevel}, ${blueLevel}, 255)`;
+
+        if (elapsed >= limit) {
+          clearInterval(timer);
+          handleTimeout(q);
+        }
       }
     }, 1000);
   }
 
-  // パステルカラーセット
-  const pastelClasses = [
-    "#d8e9ff",
-    "#ffd8e8",
-    "#d8ffd8",
-    "#fff4c2",
-    "#e8d8ff"
-  ];
-
-  // 選択肢ボタン
+  // ⭐ 選択肢ボタン（色は index.html の CSS に任せる）
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
-    btn.style.backgroundColor =
-      pastelClasses[Math.floor(Math.random() * pastelClasses.length)];
     btn.textContent = opt.label;
 
     btn.onclick = () => {
@@ -147,6 +151,30 @@ function loadPlayerQuestion(index) {
 
     optionsEl.appendChild(btn);
   });
+}
+
+// ⭐ 時間切れ処理
+function handleTimeout(q) {
+  const endTime = Date.now();
+  const answerTime = (endTime - startTime) / 1000;
+
+  sendToSheet({
+    questionId: q.id,
+    selected: null,
+    optionLabel: "時間切れ",
+    price: null,
+    category: q.category ?? "",
+    time1: q.time1 ?? null,
+    time2: q.time2 ?? null,
+    gender: genderEl.value,
+    age: ageEl.value,
+    round,
+    answerTime1: round === 1 ? answerTime : null,
+    answerTime2: round === 2 ? answerTime : null,
+    timeout: true
+  });
+
+  nextPlayerQuestion();
 }
 
 // ⭐ スプレッドシート送信
