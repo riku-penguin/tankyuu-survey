@@ -14,7 +14,7 @@ let round = 1;
 let timer = null;
 let preTimer = null;
 
-let selectedOption = null; // ⭐ 選択された選択肢を保存
+let selectedOption = null;
 
 const genderEl = document.getElementById("playerGender");
 const ageEl = document.getElementById("playerAge");
@@ -196,13 +196,7 @@ function loadPlayerQuestion(index) {
       else timerBar.style.background = "#e53935";
 
     } else {
-      if (elapsed >= limit) {
-        clearInterval(timer);
-        timer = null;
-        handleTimeout(q);
-        return;
-      }
-
+      // ⭐ 二巡目は時間切れなし
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
       timerBar.style.width = `${(elapsed / limit) * 100}%`;
 
@@ -215,7 +209,9 @@ function loadPlayerQuestion(index) {
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
-    btn.textContent = opt.label;
+
+    // ⭐ 値段表示
+    btn.textContent = `${opt.label}（¥${opt.price}）`;
 
     btn.setAttribute("data-key", opt.key);
 
@@ -238,11 +234,11 @@ function loadPlayerQuestion(index) {
 confirmBtn.onclick = () => {
   const q = playerQuestions[playerIndex];
 
-  // ⭐ 二巡目は時間が満たされるまで決定できない
+  // ⭐ 二巡目は time2 を過ぎたら回答できる
   if (round === 2) {
     const elapsed = (Date.now() - startTime) / 1000;
     if (elapsed < q.time2) {
-      alert("まだ時間が経過していません");
+      alert(`あと ${Math.ceil(q.time2 - elapsed)} 秒後に回答できます`);
       return;
     }
   }
@@ -276,7 +272,7 @@ confirmBtn.onclick = () => {
   nextPlayerQuestion();
 };
 
-// ⭐ 時間切れ
+// ⭐ 一巡目の時間切れ
 function handleTimeout(q) {
   if (timer) clearInterval(timer);
 
@@ -302,8 +298,8 @@ function handleTimeout(q) {
     gender: genderEl.value,
     age: ageEl.value,
     round,
-    answerTime1: round === 1 ? answerTime : null,
-    answerTime2: round === 2 ? answerTime : null,
+    answerTime1: answerTime,
+    answerTime2: null,
     timeout: true
   });
 
