@@ -1,3 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tankyu Survey</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fafafa;
+    }
+
+    .screenBox {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .primaryButton {
+      padding: 10px 20px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    /* パステル選択肢 */
+    .optionButton {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.2s;
+      border: 1px solid #ccc;
+    }
+
+    .optionButton[data-key="A"] { background: #ffd7d7; border-color: #ffbaba; }
+    .optionButton[data-key="B"] { background: #d7e4ff; border-color: #baccff; }
+    .optionButton[data-key="C"] { background: #fff4c7; border-color: #ffe9a3; }
+    .optionButton[data-key="D"] { background: #d7ffd7; border-color: #baffba; }
+    .optionButton[data-key="N"] { background: #e0e0e0; border-color: #cfcfcf; }
+
+    /* 選択された選択肢の強調 */
+    .selectedOption {
+      outline: 3px solid #444;
+    }
+
+    #playerContainer {
+      position: relative;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- スタート画面 -->
+  <div id="startScreen" class="screenBox">
+    <h2>アンケート開始</h2>
+
+    <label>性別：</label>
+    <select id="playerGender">
+      <option value="">選択してください</option>
+      <option value="男性">男性</option>
+      <option value="女性">女性</option>
+      <option value="その他">その他</option>
+    </select>
+
+    <br /><br />
+
+    <label>年齢：</label>
+    <input id="playerAge" type="number" min="1" max="120" />
+
+    <br /><br />
+
+    <button id="startBtn" class="primaryButton">開始</button>
+  </div>
+
+  <!-- 質問画面 -->
+  <div id="playerContainer" class="screenBox" style="display:none;">
+    <div id="questionNumber"></div>
+
+    <div id="playerSituation" style="margin-top:10px;"></div>
+
+    <div id="playerQuestion" style="margin-top:10px; font-weight:bold;"></div>
+
+    <!-- タイマー -->
+    <div id="timerText" style="margin-top:15px;"></div>
+    <div id="timerBarContainer" style="width:100%; height:8px; background:#eee; margin-top:5px;">
+      <div id="timerBar" style="height:8px; width:100%; background:#8bc34a;"></div>
+    </div>
+
+    <!-- 選択肢 -->
+    <div id="playerOptions" style="margin-top:20px;"></div>
+
+    <!-- ⭐ 決定ボタン -->
+    <button id="confirmBtn" class="primaryButton" style="display:none;">決定</button>
+  </div>
+
+  <!-- 一巡目終了画面 -->
+  <div id="infoScreen" class="screenBox" style="display:none;">
+    <h2>1巡目終了</h2>
+    <p>次は2巡目に進みます。</p>
+    <button id="startSecondRoundBtn" class="primaryButton">2巡目へ</button>
+  </div>
+
+  <!-- 最終画面 -->
+  <div id="finalScreen" class="screenBox" style="display:none;">
+    <h2>アンケート終了</h2>
+    <p>回答ありがとうございました！</p>
+    <button id="copyShareLinkBtn" class="primaryButton">共有リンクをコピー</button>
+  </div>
+
+  <script src="player.js"></script>
+
+</body>
+</html>
+
 // ★ スプレッドシート連携URL
 const SHEET_URL =
   "https://script.google.com/macros/s/AKfycbzuKDw033gPRKQqDgWnTzqB_xQfZ0zx5q8rcjbB0QIl4pllqv-gzuDRUmK8_Cjfadr8Tg/exec";
@@ -11,9 +139,10 @@ let playerIndex = 0;
 let startTime = 0;
 let round = 1;
 
-// ⭐ タイマーをグローバル化
 let timer = null;
 let preTimer = null;
+
+let selectedOption = null; // ⭐ 選択された選択肢を保存
 
 const genderEl = document.getElementById("playerGender");
 const ageEl = document.getElementById("playerAge");
@@ -30,6 +159,8 @@ const optionsEl = document.getElementById("playerOptions");
 const timerText = document.getElementById("timerText");
 const timerBar = document.getElementById("timerBar");
 const questionNumber = document.getElementById("questionNumber");
+
+const confirmBtn = document.getElementById("confirmBtn");
 
 // ⭐ 状況理解パート（カウントダウン付き）
 const preSituationScreen = document.createElement("div");
@@ -54,7 +185,7 @@ const preQuestionNumber = document.getElementById("preQuestionNumber");
 const preSituationText = document.getElementById("preSituationText");
 const preOkBtn = document.getElementById("preOkBtn");
 
-// ⭐ 全画面を確実に消す（透明レイヤー対策）
+// ⭐ 全画面を確実に消す
 function hideAllScreens() {
   startScreenEl.style.display = "none";
   preSituationScreen.style.display = "none";
@@ -136,12 +267,15 @@ function showPreSituation(index) {
   };
 }
 
-// ⭐ 質問開始（透明レイヤー完全消去）
+// ⭐ 質問開始
 function startQuestion(index) {
   hideAllScreens();
 
   playerContainerEl.style.display = "block";
   playerContainerEl.style.zIndex = "10";
+
+  selectedOption = null;
+  confirmBtn.style.display = "none";
 
   loadPlayerQuestion(index);
 }
@@ -183,6 +317,12 @@ function loadPlayerQuestion(index) {
       timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
       timerBar.style.width = `${(remaining / limit) * 100}%`;
 
+      const ratio = remaining / limit;
+      if (ratio > 0.7) timerBar.style.background = "#8bc34a";
+      else if (ratio > 0.4) timerBar.style.background = "#fdd835";
+      else if (ratio > 0.2) timerBar.style.background = "#fb8c00";
+      else timerBar.style.background = "#e53935";
+
     } else {
       if (elapsed >= limit) {
         clearInterval(timer);
@@ -193,6 +333,10 @@ function loadPlayerQuestion(index) {
 
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
       timerBar.style.width = `${(elapsed / limit) * 100}%`;
+
+      const ratio = elapsed / limit;
+      const gray = 200 - ratio * 120;
+      timerBar.style.background = `rgb(${gray}, ${gray}, 255)`;
     }
   }, 50);
 
@@ -201,49 +345,76 @@ function loadPlayerQuestion(index) {
     btn.className = "optionButton";
     btn.textContent = opt.label;
 
+    btn.setAttribute("data-key", opt.key);
+
     btn.onclick = () => {
-      if (timer) clearInterval(timer);
-      timer = null;
+      selectedOption = opt;
 
-      const endTime = Date.now();
-      const answerTime = (endTime - startTime) / 1000;
-
-      sendToSheet({
-        questionId: q.id,
-        selected: opt.key,
-        optionLabel: opt.label,
-        price: opt.price ?? null,
-        category: q.category ?? "",
-        time1: q.time1,
-        time2: q.time2,
-        gender: genderEl.value,
-        age: ageEl.value,
-        round,
-        answerTime1: round === 1 ? answerTime : null,
-        answerTime2: round === 2 ? answerTime : null,
-        timeout: answerTime > limit
+      document.querySelectorAll(".optionButton").forEach(b => {
+        b.classList.remove("selectedOption");
       });
+      btn.classList.add("selectedOption");
 
-      nextPlayerQuestion();
+      confirmBtn.style.display = "block";
     };
 
     optionsEl.appendChild(btn);
   });
 }
 
-// ⭐ 時間切れ
-function handleTimeout(q) {
+// ⭐ 決定ボタン
+confirmBtn.onclick = () => {
+  const q = playerQuestions[playerIndex];
+
+  if (!selectedOption) {
+    alert("選択肢を選んでください");
+    return;
+  }
+
   if (timer) clearInterval(timer);
-  timer = null;
 
   const endTime = Date.now();
   const answerTime = (endTime - startTime) / 1000;
 
   sendToSheet({
     questionId: q.id,
-    selected: null,
-    optionLabel: "時間切れ",
-    price: null,
+    selected: selectedOption.key,
+    optionLabel: selectedOption.label,
+    price: selectedOption.price ?? null,
+    category: q.category ?? "",
+    time1: q.time1,
+    time2: q.time2,
+    gender: genderEl.value,
+    age: ageEl.value,
+    round,
+    answerTime1: round === 1 ? answerTime : null,
+    answerTime2: round === 2 ? answerTime : null,
+    timeout: false
+  });
+
+  nextPlayerQuestion();
+};
+
+// ⭐ 時間切れ
+function handleTimeout(q) {
+  if (timer) clearInterval(timer);
+
+  const endTime = Date.now();
+  const answerTime = (endTime - startTime) / 1000;
+
+  let selectedKey = null;
+  let selectedLabel = "時間切れ";
+
+  if (selectedOption) {
+    selectedKey = selectedOption.key;
+    selectedLabel = selectedOption.label;
+  }
+
+  sendToSheet({
+    questionId: q.id,
+    selected: selectedKey,
+    optionLabel: selectedLabel,
+    price: selectedOption ? selectedOption.price : null,
     category: q.category ?? "",
     time1: q.time1,
     time2: q.time2,
@@ -295,3 +466,19 @@ document.getElementById("copyShareLinkBtn").addEventListener("click", async () =
     alert("コピーに失敗しました。\n" + SHARE_URL);
   }
 });
+
+// ⭐ Google スプレッドシート送信用関数
+async function sendToSheet(data) {
+  try {
+    await fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (e) {
+    console.error("送信エラー:", e);
+  }
+}
