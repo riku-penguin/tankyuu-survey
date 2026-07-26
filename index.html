@@ -30,30 +30,34 @@
       margin-top: 20px;
     }
 
+    /* パステル選択肢 */
     .optionButton {
       display: block;
       width: 100%;
       padding: 12px;
       margin-top: 10px;
-      background: #e0e0e0;
-      border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
       text-align: left;
+      transition: 0.2s;
+      border: 1px solid #ccc;
+    }
+
+    .optionButton[data-key="A"] { background: #ffd7d7; border-color: #ffbaba; }
+    .optionButton[data-key="B"] { background: #d7e4ff; border-color: #baccff; }
+    .optionButton[data-key="C"] { background: #fff4c7; border-color: #ffe9a3; }
+    .optionButton[data-key="D"] { background: #d7ffd7; border-color: #baffba; }
+    .optionButton[data-key="N"] { background: #e0e0e0; border-color: #cfcfcf; }
+
+    /* 選択された選択肢の強調 */
+    .selectedOption {
+      outline: 3px solid #444;
     }
 
     #playerContainer {
       position: relative;
       z-index: 10;
-    }
-
-    #preSituationScreen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 0;
     }
   </style>
 </head>
@@ -82,7 +86,7 @@
     <button id="startBtn" class="primaryButton">開始</button>
   </div>
 
-  <!-- 質問画面（これがなかったのが原因） -->
+  <!-- 質問画面 -->
   <div id="playerContainer" class="screenBox" style="display:none;">
     <div id="questionNumber"></div>
 
@@ -98,6 +102,9 @@
 
     <!-- 選択肢 -->
     <div id="playerOptions" style="margin-top:20px;"></div>
+
+    <!-- ⭐ 決定ボタン -->
+    <button id="confirmBtn" class="primaryButton" style="display:none;">決定</button>
   </div>
 
   <!-- 一巡目終了画面 -->
@@ -114,7 +121,6 @@
     <button id="copyShareLinkBtn" class="primaryButton">共有リンクをコピー</button>
   </div>
 
-  <!-- player.js 読み込み -->
   <script src="player.js"></script>
 
 </body>
