@@ -17,6 +17,7 @@ let preTimer = null;
 let selectedOption = null;
 
 // ▼▼▼ プレ画面の要素を正しく取得（これが超重要） ▼▼▼
+const preSituationScreen = document.getElementById("preSituationScreen"); // ← これが抜けてた！
 const preSituationText = document.getElementById("preSituationText");
 const preCountdown = document.getElementById("preCountdown");
 const preQuestionNumber = document.getElementById("preQuestionNumber");
@@ -100,10 +101,8 @@ function showPreSituation(index) {
   hideAllScreens();
   preSituationScreen.style.display = "flex";
 
-  // ▼▼▼ ここで状況説明を書き込む（これが表示されるようになった） ▼▼▼
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
   preSituationText.textContent = q.situation;
-  // ▲▲▲
 
   let remain = 5;
   preCountdown.textContent = `あと ${remain} 秒で質問画面に移行します`;
@@ -237,4 +236,226 @@ confirmBtn.onclick = () => {
   if (timer) clearInterval(timer);
 
   const endTime = Date.now();
-  const
+  const answerTime = (endTime - startTime) / 1000;
+
+  q.selected = selectedOption.key;
+  q.round = round;
+
+  const summary = calculateSummary();
+  const type = determineType(summary);
+
+  sendToSheet({
+    questionId: q.id,
+    selected: selectedOption.key,
+    optionLabel: selectedOption.label,
+    price: selectedOption.price ?? null,
+    category: q.category ?? "",
+    time1: q.time1,
+    time2: q.time2,
+    gender: genderEl.value,
+    age: ageEl.value,
+    round,
+    answerTime1: round === 1 ? answerTime : null,
+    answerTime2: round === 2 ? answerTime : null,
+    timeout: false,
+    buyRate: summary.buyRate,
+    noBuyRate: summary.noBuyRate,
+    priceSensitivity: summary.priceSensitivity,
+    impulsiveRate: summary.impulsiveRate,
+    carefulRate: summary.carefulRate,
+    type
+  });
+
+  nextPlayerQuestion();
+};
+
+// 一巡目の時間切れ
+function handleTimeout(q) {
+  if (timer) clearInterval(timer);
+
+  const endTime = Date.now();
+  const answerTime = (endTime - startTime) / 1000;
+
+  let selectedKey = null;
+  let selectedLabel = "時間切れ";
+
+  if (selectedOption) {
+    selectedKey = selectedOption.key;
+    selectedLabel = selectedOption.label;
+  }
+
+  q.selected = selectedKey;
+  q.round = round;
+
+  const summary = calculateSummary();
+  const type = determineType(summary);
+
+  sendToSheet({
+    questionId: q.id,
+    selected: selectedKey,
+    optionLabel: selectedLabel,
+    price: selectedOption ? selectedOption.price : null,
+    category: q.category ?? "",
+    time1: q.time1,
+    time2: q.time2,
+    gender: genderEl.value,
+    age: ageEl.value,
+    round,
+    answerTime1: answerTime,
+    answerTime2: null,
+    timeout: true,
+    buyRate: summary.buyRate,
+    noBuyRate: summary.noBuyRate,
+    priceSensitivity: summary.priceSensitivity,
+    impulsiveRate: summary.impulsiveRate,
+    carefulRate: summary.carefulRate,
+    type
+  });
+
+  nextPlayerQuestion();
+}
+
+// 次の質問へ
+function nextPlayerQuestion() {
+  hideAllScreens();
+
+  playerIndex++;
+
+  if (round === 1 && playerIndex >= playerQuestions.length) {
+    infoScreenEl.style.display = "block";
+    return;
+  }
+
+  if (round === 2 && playerIndex >= playerQuestions.length) {
+    const summary = calculateSummary();
+    fillResultTable(summary);
+
+    const type = determineType(summary);
+    document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
+
+    finalScreenEl.style.display = "block";
+    return;
+  }
+
+  showPreSituation(playerIndex);
+}
+
+// 二巡目開始 → 説明画面へ
+document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
+  hideAllScreens();
+  secondRoundInfo.style.display = "block";
+});
+
+// 二巡目説明 → スタート
+secondRoundOkBtn.addEventListener("click", () => {
+  round = 2;
+  playerIndex = 0;
+
+  hideAllScreens();
+  showPreSituation(playerIndex);
+});
+
+// 共有リンクコピー（大きいボタン）
+document.getElementById("shareBigBtn").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(SHARE_URL);
+    alert("共有用リンクをコピーしました！");
+  } catch (e) {
+    alert("コピーに失敗しました。\n" + SHARE_URL);
+  }
+});
+
+// 傾向まとめ
+function calculateSummary() {
+  let buyCount = 0;
+  let noBuyCount = 0;
+  let total = playerQuestions.length;
+
+  let prices = [];
+  let impulsive = 0;
+  let careful = 0;
+
+  playerQuestions.forEach(q => {
+    if (q.selected === "buy") buyCount++;
+    if (q.selected === "no") noBuyCount++;
+
+    if (q.price) prices.push(q.price);
+
+    if (q.round === 1 && q.selected === "buy") impulsive++;
+    if (q.round === 2 && q.selected === "buy") careful++;
+  });
+
+  const buyRate = Math.round((buyCount / total) * 100);
+  const noBuyRate = Math.round((noBuyCount / total) * 100);
+
+  const avgPrice = prices.length > 0 ? prices.reduce((a,b)=>a+b)/prices.length : 0;
+  const priceSensitivity = Math.max(0, Math.min(100, Math.round(100 - (avgPrice / 1000) * 100)));
+
+  const impulsiveRate = Math.round((impulsive / total) * 100);
+  const carefulRate = Math.round((careful / total) * 100);
+
+  return {
+    buyRate,
+    noBuyRate,
+    priceSensitivity,
+    impulsiveRate,
+    carefulRate
+  };
+}
+
+// タイプ判定
+function determineType(summary) {
+  const { buyRate, noBuyRate, priceSensitivity, impulsiveRate, carefulRate } = summary;
+
+  if (impulsiveRate >= 60 && buyRate >= 50)
+    return "せっかちタイプ（すぐ決めちゃう）";
+
+  if (carefulRate >= 60 && priceSensitivity >= 50)
+    return "心配性タイプ（慎重に考える）";
+
+  if (noBuyRate >= 60 && priceSensitivity >= 60)
+    return "節約家タイプ（買わないことが多い）";
+
+  if (priceSensitivity >= 70 && buyRate >= 40)
+    return "お得ハンタータイプ（コスパ重視）";
+
+  return "気分屋タイプ（状況次第で変わる）";
+}
+
+// 結果表を埋める
+function fillResultTable(summary) {
+  const table = document.getElementById("resultTable");
+
+  const rows = [
+    ["買う傾向", summary.buyRate],
+    ["節約傾向", summary.noBuyRate],
+    ["値段への敏感度", summary.priceSensitivity],
+    ["衝動買い度（一巡目）", summary.impulsiveRate],
+    ["慎重度（二巡目）", summary.carefulRate]
+  ];
+
+  rows.forEach(([label, value]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="padding: 10px; border-bottom: 1px solid #ddd;">${label}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align:center;">${value}</td>
+    `;
+    table.appendChild(tr);
+  });
+}
+
+// スプレッドシート送信
+async function sendToSheet(data) {
+  try {
+    await fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (e) {
+    console.error("送信エラー:", e);
+  }
+}
