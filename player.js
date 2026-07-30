@@ -16,12 +16,12 @@ let preTimer = null;
 
 let selectedOption = null;
 
-// ▼▼▼ プレ画面の要素を正しく取得（これが超重要） ▼▼▼
-const preSituationScreen = document.getElementById("preSituationScreen"); // ← これが抜けてた！
+// ▼▼▼ プレ画面の要素（全部必要） ▼▼▼
+const preSituationScreen = document.getElementById("preSituationScreen");
 const preSituationText = document.getElementById("preSituationText");
 const preCountdown = document.getElementById("preCountdown");
 const preQuestionNumber = document.getElementById("preQuestionNumber");
-// ▲▲▲ これがないと状況説明が真っ白になる ▲▲▲
+// ▲▲▲ これがないと動かない ▲▲▲
 
 const genderEl = document.getElementById("playerGender");
 const ageEl = document.getElementById("playerAge");
@@ -158,7 +158,7 @@ function loadPlayerQuestion(index) {
   if (timer) clearInterval(timer);
   timer = null;
 
-  timerBar.style.width = round === 1 ? "100%" : "0%";
+  timerBar.style.width = round === 1 ? "100%" : "100%";
   timerText.textContent =
     round === 1 ? `残り時間: ${limit} 秒` : `経過時間: 0 秒`;
 
@@ -188,11 +188,9 @@ function loadPlayerQuestion(index) {
     } else {
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
 
-      timerBar.style.width = `${(elapsed / limit) * 100}%`;
-
-      const ratio = elapsed / limit;
-      const gray = 200 - ratio * 120;
-      timerBar.style.background = `rgb(${gray}, ${gray}, 255)`;
+      // ★ 二巡目は時間制限なし → バーは固定
+      timerBar.style.width = "100%";
+      timerBar.style.background = "#cfd8dc";
     }
   }, 50);
 
