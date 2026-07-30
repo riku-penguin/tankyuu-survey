@@ -1,139 +1,237 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tankyu Survey</title>
-
+  <meta charset="UTF-8">
+  <title>探究アンケート</title>
   <style>
     body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #fafafa;
+      background: #f5f7ff;
+      font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
+      color: #333;
     }
 
     .screenBox {
-      padding: 20px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      padding: 30px;
+      width: 90%;
       max-width: 600px;
-      margin: 0 auto;
+      margin: 40px auto;
     }
 
     .primaryButton {
-      padding: 10px 20px;
-      background: #4caf50;
-      color: white;
+      background: #8bcf9b;
+      border-radius: 14px;
+      padding: 14px 20px;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    /* パステル選択肢 */
-    .optionButton {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      text-align: left;
+      color: white;
+      font-weight: bold;
       transition: 0.2s;
-      border: 1px solid #ccc;
+      cursor: pointer;
     }
 
-    .optionButton[data-key="A"] { background: #ffd7d7; border-color: #ffbaba; }
-    .optionButton[data-key="B"] { background: #d7e4ff; border-color: #baccff; }
-    .optionButton[data-key="C"] { background: #fff4c7; border-color: #ffe9a3; }
-    .optionButton[data-key="D"] { background: #d7ffd7; border-color: #baffba; }
-    .optionButton[data-key="N"] { background: #e0e0e0; border-color: #cfcfcf; }
+    .primaryButton:hover {
+      background: #7ac88f;
+    }
 
-    /* 選択された選択肢の強調 */
+    .optionButton {
+      background: #eef7ff;
+      border-radius: 12px;
+      border: 1px solid #d0e4ff;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: 0.2s;
+      font-size: 18px;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .optionButton:hover {
+      background: #e0f0ff;
+    }
+
     .selectedOption {
-      outline: 3px solid #444;
+      background: #cfe8ff !important;
+      border-color: #7bb4ff !important;
     }
 
-    #playerContainer {
-      position: relative;
-      z-index: 10;
+    #timerBar {
+      height: 12px;
+      border-radius: 6px;
+      transition: width 0.1s linear;
+      background: #8bc34a;
+      margin-top: 8px;
+    }
+
+    #questionNumber {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .optionImagePlaceholder {
+      width: 100%;
+      height: 120px;
+      background: #f0f4ff;
+      border: 1px dashed #bcd0ff;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #7a8bbd;
+      font-size: 16px;
+    }
+
+    #resultType {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      color: #4a6fdc;
+    }
+
+    #resultTable {
+      margin: 30px auto;
+      width: 90%;
+      max-width: 500px;
+      border-collapse: collapse;
+      font-size: 18px;
+    }
+
+    #resultTable th {
+      border-bottom: 2px solid #ccc;
+      padding: 12px;
+    }
+
+    #resultTable td {
+      border-bottom: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    #shareBigBtn {
+      margin: 40px auto;
+      display: block;
+      width: 260px;
+      font-size: 22px;
+      background: #6aa8ff;
+    }
+
+    #shareBigBtn:hover {
+      background: #5b9af0;
     }
   </style>
 </head>
-
 <body>
-<div id="secondRoundInfo" class="screenBox" style="display:none; text-align:center; padding:40px;">
-  <h2 style="margin-bottom:20px;">二巡目の説明</h2>
-  <p style="font-size:18px; line-height:1.6;">
-    二巡目では、状況を読んだあと<br>
-    <b>一定時間（time2）経過してから回答できます。</b><br><br>
-    時間切れはありません。<br>
-    自分のペースで選んでください。
-  </p>
-  <button id="secondRoundOkBtn" class="primaryButton" style="margin-top:40px; width:240px; font-size:20px;">
-    はじめる
-  </button>
-</div>
 
-  <!-- スタート画面 -->
+  <!-- 開始画面 -->
   <div id="startScreen" class="screenBox">
-    <h2>アンケート開始</h2>
-
-    <label>性別：</label>
-    <select id="playerGender">
-      <option value="">選択してください</option>
-      <option value="男性">男性</option>
-      <option value="女性">女性</option>
-      <option value="その他">その他</option>
-    </select>
-
-    <br /><br />
-
-    <label>年齢：</label>
-    <input id="playerAge" type="number" min="1" max="120" />
-
-    <br /><br />
-
-    <button id="startBtn" class="primaryButton">開始</button>
+    <h2>探究アンケート</h2>
+    <p>性別と年齢を入力して、アンケートを始めてください。</p>
+    <div style="margin-top:20px;">
+      <label>性別：
+        <select id="playerGender">
+          <option value="">選択してください</option>
+          <option value="male">男性</option>
+          <option value="female">女性</option>
+          <option value="other">その他</option>
+        </select>
+      </label>
+    </div>
+    <div style="margin-top:10px;">
+      <label>年齢：
+        <input type="number" id="playerAge" min="10" max="100">
+      </label>
+    </div>
+    <button id="startBtn" class="primaryButton" style="margin-top:20px;">はじめる</button>
   </div>
 
   <!-- 質問画面 -->
   <div id="playerContainer" class="screenBox" style="display:none;">
     <div id="questionNumber"></div>
+    <div id="playerSituation" style="font-size:18px; margin-bottom:10px;"></div>
+    <div id="playerQuestion" style="font-size:20px; margin-bottom:20px;"></div>
 
-    <div id="playerSituation" style="margin-top:10px;"></div>
+    <div id="timerText" style="font-size:16px;"></div>
+    <div id="timerBar"></div>
 
-    <div id="playerQuestion" style="margin-top:10px; font-weight:bold;"></div>
-
-    <!-- タイマー -->
-    <div id="timerText" style="margin-top:15px;"></div>
-    <div id="timerBarContainer" style="width:100%; height:8px; background:#eee; margin-top:5px;">
-      <div id="timerBar" style="height:8px; width:100%; background:#8bc34a;"></div>
-    </div>
-
-    <!-- 選択肢 -->
     <div id="playerOptions" style="margin-top:20px;"></div>
 
-    <!-- ⭐ 決定ボタン -->
-    <button id="confirmBtn" class="primaryButton" style="display:none;">決定</button>
+    <button id="confirmBtn" class="primaryButton" style="margin-top:20px; display:none;">
+      この選択肢で決定
+    </button>
   </div>
 
-  <!-- 一巡目終了画面 -->
+  <!-- 一巡目終了後の説明画面 -->
   <div id="infoScreen" class="screenBox" style="display:none;">
-    <h2>1巡目終了</h2>
-    <p>次は2巡目に進みます。</p>
-    <button id="startSecondRoundBtn" class="primaryButton">2巡目へ</button>
+    <h2>一巡目が終了しました</h2>
+    <p style="margin-top:10px;">
+      次は二巡目に進みます。<br>
+      二巡目では、少しゆっくり考えてから選べるようになります。<br>
+      時間切れはないので、じっくり考えてください！
+    </p>
+    <button id="startSecondRoundBtn" class="primaryButton" style="margin-top:20px;">
+      二巡目をはじめる
+    </button>
   </div>
 
-  <!-- 最終画面 -->
+  <!-- 二巡目説明画面 -->
+  <div id="secondRoundInfo" class="screenBox" style="display:none;">
+    <h2>二巡目について</h2>
+    <p style="margin-top:10px;">
+      二巡目では、少しゆっくり考えてから選べるようになります。<br>
+      時間切れはないので、じっくり考えてください！
+    </p>
+    <button id="secondRoundOkBtn" class="primaryButton" style="margin-top:20px;">
+      二巡目をはじめる
+    </button>
+  </div>
+
+  <!-- 終了画面 -->
   <div id="finalScreen" class="screenBox" style="display:none;">
-    <h2>アンケート終了</h2>
-    <p>回答ありがとうございました！</p>
-    <button id="copyShareLinkBtn" class="primaryButton">共有リンクをコピー</button>
+    <div id="thanksMessage" 
+         style="text-align:center; margin-top:10px; font-size:18px; line-height:1.6;">
+      最後まで回答していただきありがとうございました！<br>
+      今後の探究活動の参考にさせていただきます。<br>
+      もしよろしければ、<br>
+      <b>このアンケートをほかの人にも伝えていただけると嬉しいです。</b>
+    </div>
+
+    <div id="typeImagePlaceholder"
+         style="width: 100%; max-width: 300px; height: 180px; 
+                background: #f0f4ff; border: 1px dashed #bcd0ff;
+                border-radius: 16px; margin: 20px auto;
+                display: flex; align-items: center; justify-content: center;
+                color: #7a8bbd; font-size: 16px;">
+      （ここにタイプの画像が入ります）
+    </div>
+
+    <div id="resultType"></div>
+
+    <p style="text-align:center; margin-top:10px;">
+      あなたはこんなタイプかもしれません。
+    </p>
+
+    <p style="text-align:center; margin-top:10px;">
+      あなたの傾向を、かんたんにまとめてみました。
+    </p>
+
+    <table id="resultTable">
+      <tr>
+        <th>項目</th>
+        <th>あなたの数値</th>
+      </tr>
+    </table>
+
+    <button id="shareBigBtn" class="primaryButton">
+      結果を共有する
+    </button>
   </div>
 
   <script src="player.js"></script>
-
 </body>
 </html>
