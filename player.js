@@ -1,8 +1,8 @@
-// ★ スプレッドシート連携URL
+// ★ スプレッドシート連携URL（新しいURL）
 const SHEET_URL =
-  "https://script.google.com/macros/s/AKfycbzuKDw033gPRKQqDgWnTzqB_xQfZ0zx5q8rcjbB0QIl4pllqv-gzuDRUmK8_Cjfadr8Tg/exec";
+  "https://script.google.com/macros/s/AKfycbwSR1KwEpJQLQItAJvvB0Y1wY2orXNpK2-9d1RPQ7nF-kNDK3XVgYvBjz49d-vRUy2nuQ/exec";
 
-// ★ 共有用リンク
+// ★ 共有用リンク（必要なら変更）
 const SHARE_URL =
   "https://docs.google.com/spreadsheets/d/19lLmoS2wiBFxPY-nFQi7NQMLsSJQGNoWNeIbjqEITX4/edit?gid=0";
 
@@ -38,7 +38,7 @@ const confirmBtn = document.getElementById("confirmBtn");
 const secondRoundInfo = document.getElementById("secondRoundInfo");
 const secondRoundOkBtn = document.getElementById("secondRoundOkBtn");
 
-// 状況理解パート（プレ画面）
+// プレ画面（状況表示）
 const preSituationScreen = document.createElement("div");
 preSituationScreen.className = "screenBox";
 preSituationScreen.style.display = "none";
