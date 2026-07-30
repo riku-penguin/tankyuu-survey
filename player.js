@@ -34,7 +34,7 @@ const questionNumber = document.getElementById("questionNumber");
 
 const confirmBtn = document.getElementById("confirmBtn");
 
-// ⭐ 状況理解パート（カウントダウン付き）
+// ⭐ 状況理解パート（中央上に大きく、OKボタンは中央下）
 const preSituationScreen = document.createElement("div");
 preSituationScreen.className = "screenBox";
 preSituationScreen.style.display = "none";
@@ -42,13 +42,23 @@ preSituationScreen.style.position = "absolute";
 preSituationScreen.style.top = "0";
 preSituationScreen.style.left = "0";
 preSituationScreen.style.width = "100%";
-preSituationScreen.style.zIndex = "0";
+preSituationScreen.style.height = "100%";
+preSituationScreen.style.zIndex = "10";
 
 preSituationScreen.innerHTML = `
-  <div id="preCountdown" style="font-size:14px; color:#666; margin-bottom:5px;"></div>
-  <div id="preQuestionNumber"></div>
-  <div id="preSituationText" style="margin-top:10px; margin-bottom:20px;"></div>
-  <button id="preOkBtn" class="primaryButton">OK</button>
+  <div id="preCountdown" style="font-size:16px; color:#666; margin-top:20px; text-align:center;"></div>
+  <div id="preQuestionNumber" style="text-align:center; margin-top:10px;"></div>
+
+  <div id="preSituationText"
+       style="font-size:28px; font-weight:bold; text-align:center; margin-top:120px; padding:0 20px;">
+  </div>
+
+  <button id="preOkBtn"
+          class="primaryButton"
+          style="position:absolute; bottom:60px; left:50%; transform:translateX(-50%);
+                 width:240px; font-size:20px;">
+    OK
+  </button>
 `;
 document.body.appendChild(preSituationScreen);
 
@@ -64,9 +74,6 @@ function hideAllScreens() {
   playerContainerEl.style.display = "none";
   infoScreenEl.style.display = "none";
   finalScreenEl.style.display = "none";
-
-  preSituationScreen.style.zIndex = "0";
-  playerContainerEl.style.zIndex = "10";
 }
 
 // ⭐ 開始ボタン
@@ -114,7 +121,6 @@ function showPreSituation(index) {
 
   hideAllScreens();
   preSituationScreen.style.display = "block";
-  preSituationScreen.style.zIndex = "10";
 
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
   preSituationText.textContent = q.situation;
@@ -144,7 +150,6 @@ function startQuestion(index) {
   hideAllScreens();
 
   playerContainerEl.style.display = "block";
-  playerContainerEl.style.zIndex = "10";
 
   selectedOption = null;
   confirmBtn.style.display = "none";
@@ -177,6 +182,7 @@ function loadPlayerQuestion(index) {
     const elapsed = (now - startTime) / 1000;
 
     if (round === 1) {
+      // ⭐ 一巡目：減るタイマー
       const remaining = limit - elapsed;
 
       if (remaining <= 0) {
@@ -196,13 +202,19 @@ function loadPlayerQuestion(index) {
       else timerBar.style.background = "#e53935";
 
     } else {
-      // ⭐ 二巡目は時間切れなし
+      // ⭐ 二巡目：time2 まで伸びる → それ以降は止まる
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
-      timerBar.style.width = `${(elapsed / limit) * 100}%`;
 
-      const ratio = elapsed / limit;
-      const gray = 200 - ratio * 120;
-      timerBar.style.background = `rgb(${gray}, ${gray}, 255)`;
+      if (elapsed >= limit) {
+        timerBar.style.width = "100%";
+        timerBar.style.background = "rgb(80, 80, 255)";
+      } else {
+        timerBar.style.width = `${(elapsed / limit) * 100}%`;
+
+        const ratio = elapsed / limit;
+        const gray = 200 - ratio * 120;
+        timerBar.style.background = `rgb(${gray}, ${gray}, 255)`;
+      }
     }
   }, 50);
 
