@@ -12,7 +12,6 @@
       padding: 0;
     }
 
-    /* 全画面中央寄せの基本ボックス */
     .screenBox {
       background: #ffffff;
       border-radius: 18px;
@@ -24,9 +23,9 @@
       box-sizing: border-box;
     }
 
-    /* プレ画面を縦横中央に配置 */
+    /* プレ画面だけ縦横中央に */
     #preSituationScreen {
-      display: flex !important;
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -36,13 +35,7 @@
       text-align: center;
     }
 
-    #preSituationText {
-      font-size: 22px;
-      margin: 20px 0;
-    }
-
-    /* OKボタンを画面下に固定 */
-    #preOkBtn {
+    #preSituationScreen #preOkBtn {
       position: fixed;
       bottom: 40px;
       left: 50%;
@@ -52,7 +45,12 @@
       z-index: 20;
     }
 
-    /* ボタン共通 */
+    /* 質問画面の決定ボタンは通常位置 */
+    #confirmBtn {
+      position: static;
+      margin-top: 20px;
+    }
+
     .primaryButton {
       background: #8bcf9b;
       border-radius: 14px;
@@ -68,10 +66,9 @@
       background: #7ac88f;
     }
 
-    /* 質問画面の高さ調整 */
     #playerContainer {
       min-height: 100vh;
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: flex-start;
     }
@@ -113,7 +110,6 @@
       margin-top: 8px;
     }
 
-    /* 画像スペース（仮） */
     .optionImagePlaceholder {
       width: 100%;
       height: 120px;
@@ -128,7 +124,6 @@
       font-size: 16px;
     }
 
-    /* 結果画面 */
     #resultType {
       margin-top: 30px;
       text-align: center;
@@ -196,51 +191,51 @@
     <button id="startBtn" class="primaryButton" style="margin-top:20px;">はじめる</button>
   </div>
 
-  <!-- 質問画面 -->
-  <div id="playerContainer" class="screenBox" style="display:none;">
-    <div id="questionNumber"></div>
-    <div id="playerSituation" style="font-size:18px; margin-bottom:10px;"></div>
-    <div id="playerQuestion" style="font-size:20px; margin-bottom:20px;"></div>
+  <!-- プレ画面 -->
+  <div id="preSituationScreen" class="screenBox">
+    <div id="preCountdown"></div>
+    <div id="preQuestionNumber"></div>
+    <div id="preSituationText"></div>
+    <button id="preOkBtn" class="primaryButton">OK</button>
+  </div>
 
-    <div id="timerText" style="font-size:16px;"></div>
+  <!-- 質問画面 -->
+  <div id="playerContainer" class="screenBox">
+    <div id="questionNumber"></div>
+    <div id="playerSituation"></div>
+    <div id="playerQuestion"></div>
+
+    <div id="timerText"></div>
     <div id="timerBar"></div>
 
-    <div id="playerOptions" style="margin-top:20px;"></div>
+    <div id="playerOptions"></div>
 
-    <button id="confirmBtn" class="primaryButton" style="margin-top:20px; display:none;">
-      この選択肢で決定
-    </button>
+    <button id="confirmBtn" class="primaryButton">この選択肢で決定</button>
   </div>
 
-  <!-- 一巡目終了後の説明画面 -->
+  <!-- 一巡目終了後 -->
   <div id="infoScreen" class="screenBox" style="display:none;">
     <h2>一巡目が終了しました</h2>
-    <p style="margin-top:10px;">
-      次は二巡目に進みます。<br>
+    <p>
       二巡目では、少しゆっくり考えてから選べるようになります。<br>
       時間切れはないので、じっくり考えてください！
     </p>
-    <button id="startSecondRoundBtn" class="primaryButton" style="margin-top:20px;">
-      二巡目をはじめる
-    </button>
+    <button id="startSecondRoundBtn" class="primaryButton">二巡目をはじめる</button>
   </div>
 
-  <!-- 二巡目説明画面 -->
+  <!-- 二巡目説明 -->
   <div id="secondRoundInfo" class="screenBox" style="display:none;">
     <h2>二巡目について</h2>
-    <p style="margin-top:10px;">
+    <p>
       二巡目では、少しゆっくり考えてから選べるようになります。<br>
       時間切れはないので、じっくり考えてください！
     </p>
-    <button id="secondRoundOkBtn" class="primaryButton" style="margin-top:20px;">
-      二巡目をはじめる
-    </button>
+    <button id="secondRoundOkBtn" class="primaryButton">二巡目をはじめる</button>
   </div>
 
   <!-- 終了画面 -->
   <div id="finalScreen" class="screenBox" style="display:none;">
-    <div id="thanksMessage" 
-         style="text-align:center; margin-top:10px; font-size:18px; line-height:1.6;">
+    <div style="text-align:center; font-size:18px; line-height:1.6;">
       最後まで回答していただきありがとうございました！<br>
       今後の探究活動の参考にさせていただきます。<br>
       もしよろしければ、<br>
@@ -258,24 +253,14 @@
 
     <div id="resultType"></div>
 
-    <p style="text-align:center; margin-top:10px;">
-      あなたはこんなタイプかもしれません。
-    </p>
-
-    <p style="text-align:center; margin-top:10px;">
-      あなたの傾向を、かんたんにまとめてみました。
-    </p>
+    <p style="text-align:center;">あなたはこんなタイプかもしれません。</p>
+    <p style="text-align:center;">あなたの傾向を、かんたんにまとめてみました。</p>
 
     <table id="resultTable">
-      <tr>
-        <th>項目</th>
-        <th>あなたの数値</th>
-      </tr>
+      <tr><th>項目</th><th>あなたの数値</th></tr>
     </table>
 
-    <button id="shareBigBtn" class="primaryButton">
-      結果を共有する
-    </button>
+    <button id="shareBigBtn" class="primaryButton">結果を共有する</button>
   </div>
 
   <script src="player.js"></script>
