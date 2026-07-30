@@ -40,27 +40,20 @@ const secondRoundOkBtn = document.getElementById("secondRoundOkBtn");
 
 // プレ画面（状況表示）
 const preSituationScreen = document.createElement("div");
+preSituationScreen.id = "preSituationScreen";
 preSituationScreen.className = "screenBox";
 preSituationScreen.style.display = "none";
-preSituationScreen.style.position = "absolute";
-preSituationScreen.style.top = "0";
-preSituationScreen.style.left = "0";
-preSituationScreen.style.width = "100%";
-preSituationScreen.style.height = "100%";
-preSituationScreen.style.zIndex = "10";
 
 preSituationScreen.innerHTML = `
   <div id="preCountdown" style="font-size:16px; color:#666; margin-top:20px; text-align:center;"></div>
   <div id="preQuestionNumber" style="text-align:center; margin-top:10px;"></div>
 
   <div id="preSituationText"
-       style="font-size:22px; font-weight:bold; text-align:center; margin-top:80px; padding:0 20px;">
+       style="font-size:22px; font-weight:bold; text-align:center; margin-top:40px; padding:0 20px;">
   </div>
 
   <button id="preOkBtn"
-          class="primaryButton"
-          style="position:absolute; bottom:60px; left:50%; transform:translateX(-50%);
-                 width:240px; font-size:20px;">
+          class="primaryButton">
     OK
   </button>
 `;
@@ -125,7 +118,7 @@ function showPreSituation(index) {
   q.time2 = t2;
 
   hideAllScreens();
-  preSituationScreen.style.display = "block";
+  preSituationScreen.style.display = "flex";
 
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
   preSituationText.textContent = q.situation;
