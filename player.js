@@ -16,6 +16,7 @@ let preTimer = null;
 
 let selectedOption = null;
 
+// ★ 回答者ID
 let userId = null;
 
 // ▼▼▼ プレ画面の要素 ▼▼▼
@@ -87,19 +88,6 @@ document.getElementById("startBtn").addEventListener("click", async () => {
   showPreSituation(playerIndex);
 });
 
-
-  const res = await fetch("questions.json");
-  const data = await res.json();
-
-  playerQuestions = data.questions;
-  playerIndex = 0;
-  round = 1;
-
-  startScreenEl.style.display = "none";
-
-  showPreSituation(playerIndex);
-});
-
 // time の自動変換
 function parseTime(str) {
   if (!str) return { t1: 10, t2: 10 };
@@ -129,7 +117,6 @@ function showPreSituation(index) {
 
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
 
-  // ★ 二巡目は状況文に「◯秒後から回答できます」を追加
   if (round === 2) {
     preSituationText.textContent = `${q.situation}（${q.time2}秒後から回答できます）`;
   } else {
@@ -155,6 +142,7 @@ function showPreSituation(index) {
     startQuestion(index);
   };
 }
+
 // 質問開始
 function startQuestion(index) {
   hideAllScreens();
@@ -197,7 +185,6 @@ function loadPlayerQuestion(index) {
     const now = Date.now();
     const elapsed = (now - startTime) / 1000;
 
-    // ▼▼▼ 一巡目 ▼▼▼
     if (round === 1) {
       const remaining = limit - elapsed;
 
@@ -211,13 +198,6 @@ function loadPlayerQuestion(index) {
       timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
       timerBar.style.width = `${(remaining / limit) * 100}%`;
 
-      const ratio = remaining / limit;
-      if (ratio > 0.7) timerBar.style.background = "#8bc34a";
-      else if (ratio > 0.4) timerBar.style.background = "#fdd835";
-      else if (ratio > 0.2) timerBar.style.background = "#fb8c00";
-      else timerBar.style.background = "#e53935";
-
-    // ▼▼▼ 二巡目（修正版） ▼▼▼
     } else {
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
 
@@ -227,18 +207,9 @@ function loadPlayerQuestion(index) {
       if (width > 100) width = 100;
 
       timerBar.style.width = `${width}%`;
-
-      const ratio = width / 100;
-
-      const r = Math.floor(207 + (144 - 207) * ratio);
-      const g = Math.floor(216 + (202 - 216) * ratio);
-      const b = Math.floor(220 + (249 - 220) * ratio);
-
-      timerBar.style.background = `rgb(${r}, ${g}, ${b})`;
     }
   }, 50);
 
-  // ▼▼▼ 選択肢ボタン ▼▼▼
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
@@ -288,10 +259,9 @@ confirmBtn.onclick = () => {
   const summary = calculateSummary();
   const type = determineType(summary);
 
- sendToSheet({
-    isUserInfo: false,   // ★追加
-    userId,              // ★追加
-
+  sendToSheet({
+    isUserInfo: false,
+    userId,
     questionId: q.id,
     selected: selectedOption.key,
     optionLabel: selectedOption.label,
@@ -311,11 +281,11 @@ confirmBtn.onclick = () => {
     impulsiveRate: summary.impulsiveRate,
     carefulRate: summary.carefulRate,
     type
-});
-
+  });
 
   nextPlayerQuestion();
 };
+
 // 一巡目の時間切れ
 function handleTimeout(q) {
   if (timer) clearInterval(timer);
@@ -337,10 +307,9 @@ function handleTimeout(q) {
   const summary = calculateSummary();
   const type = determineType(summary);
 
- sendToSheet({
-    isUserInfo: false,   // ★追加
-    userId,              // ★追加
-
+  sendToSheet({
+    isUserInfo: false,
+    userId,
     questionId: q.id,
     selected: selectedKey,
     optionLabel: selectedLabel,
@@ -360,10 +329,12 @@ function handleTimeout(q) {
     impulsiveRate: summary.impulsiveRate,
     carefulRate: summary.carefulRate,
     type
-});
+  });
 
+  nextPlayerQuestion();
+}
 
-// ▼▼▼ タイプ説明文（詳しい版） ▼▼▼
+// ▼▼▼ タイプ説明文（ゆるい版） ▼▼▼
 const typeDescriptions = {
   "せっかちタイプ（すぐ決めちゃう）":
     "あなたは『ピンときたらすぐ行動！』のタイプ。直感がとても鋭くて、迷う時間よりもワクワクを大事にする人です。あなたのスピード感は魅力そのもの。たまに勢いで決めちゃうこともあるけれど、それもあなたらしさです。",
@@ -380,7 +351,6 @@ const typeDescriptions = {
   "気分屋タイプ（状況次第で変わる）":
     "あなたは『その時の気分を大事にする』自由なタイプ。新しいものや面白いものにすぐ興味がわく、好奇心いっぱいの人です。固定観念にとらわれず、柔軟に選べるのがあなたの強みです。"
 };
-
 
 // 次の質問へ
 function nextPlayerQuestion() {
@@ -400,7 +370,6 @@ function nextPlayerQuestion() {
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    // ▼ タイプ説明を追加する
     const box = document.getElementById("typeDetailBox");
     box.innerHTML = "";
 
@@ -411,7 +380,6 @@ function nextPlayerQuestion() {
 
     box.appendChild(descBox);
 
-    // アニメーション表示
     setTimeout(() => {
       descBox.classList.add("show");
     }, 300);
@@ -448,7 +416,7 @@ document.getElementById("shareBigBtn").addEventListener("click", async () => {
   }
 });
 
-// 傾向まとめ
+// 傾向まとめ（★値段への敏感度 修正版）
 function calculateSummary() {
   let buyCount = 0;
   let noBuyCount = 0;
@@ -462,7 +430,11 @@ function calculateSummary() {
     if (q.selected === "buy") buyCount++;
     if (q.selected === "no") noBuyCount++;
 
-    if (q.price) prices.push(q.price);
+    // ★ 修正：選んだ「buy」の価格を正しく取得
+    if (q.selected === "buy") {
+      const opt = q.options.find(o => o.key === "buy");
+      if (opt) prices.push(opt.price);
+    }
 
     if (q.round === 1 && q.selected === "buy") impulsive++;
     if (q.round === 2 && q.selected === "buy") careful++;
@@ -521,25 +493,4 @@ function fillResultTable(summary) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td style="padding: 10px; border-bottom: 1px solid #ddd;">${label}</td>
-      <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align:center;">${value}</td>
-    `;
-    table.appendChild(tr);
-  });
-}
-
-// スプレッドシート送信（修正版）
-async function sendToSheet(data) {
-  try {
-    const res = await fetch(SHEET_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-
-    console.log("送信結果:", res.status);
-  } catch (e) {
-    console.error("送信エラー:", e);
-  }
-}
+      <td style="padding: 10px; border-bottom: 
