@@ -1,6 +1,7 @@
 // ★ スプレッドシート連携URL
 const SHEET_URL =
-"https://script.google.com/macros/s/AKfycbxp0gBu0yMhXIYsVuqJKmLlm_FZTwU6B4DULtMDD5lZ2xqCMDj8ypA2wJKxn7F1d-M3GQ/exec"
+"https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec"
+
 // ★ 共有用リンク
 const SHARE_URL =
   "https://docs.google.com/spreadsheets/d/19lLmoS2wiBFxPY-nFQi7NQMLsSJQGNoWNeIbjqEITX4/edit?gid=0";
