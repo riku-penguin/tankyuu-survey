@@ -4,6 +4,31 @@
   <meta charset="UTF-8">
   <title>探究アンケート</title>
   <style>
+
+    /* 結果画面全体をスクロール可能に */
+#finalScreen {
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+/* タイプ説明文のアニメーション */
+.typeDescriptionBox {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+}
+
+.typeDescriptionBox.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 説明文スクロール領域 */
+#typeDetailBox {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
     /* スクロール誘導メッセージ */
 #finalScreen::after {
   content: "↓ スクロールすると詳しいタイプ説明が見られます";
@@ -312,38 +337,45 @@
     <button id="secondRoundOkBtn" class="primaryButton">二巡目をはじめる</button>
   </div>
 
-  <!-- 終了画面 -->
-  <div id="finalScreen" class="screenBox" style="display:none;">
-    <div style="text-align:center; font-size:18px; line-height:1.6;">
-      最後まで回答していただきありがとうございました！<br>
-      今後の探究活動の参考にさせていただきます。<br>
-      もしよろしければ、<br>
-      <b>このアンケートをほかの人にも伝えていただけると嬉しいです。</b>
-    </div>
+<!-- ▼▼▼ 終了画面（最適化済み） ▼▼▼ -->
+<div id="finalScreen" class="screenBox" style="display:none; overflow-y:auto; max-height:90vh;">
 
-    <div id="typeImagePlaceholder"
-         style="width: 100%; max-width: 300px; height: 180px; 
-                background: #f0f4ff; border: 1px dashed #bcd0ff;
-                border-radius: 16px; margin: 20px auto;
-                display: flex; align-items: center; justify-content: center;
-                color: #7a8bbd; font-size: 16px;">
-      （ここにタイプの画像が入ります）
-    </div>
-
-    <div id="resultType"></div>
-
-    <p style="text-align:center;">あなたはこんなタイプかもしれません。</p>
-    <p style="text-align:center;">あなたの傾向を、かんたんにまとめてみました。</p>
-
-    <table id="resultTable">
-      <tr><th>項目</th><th>あなたの数値</th></tr>
-    </table>
-
-    <div id="typeDetailBox"></div>
-
-    <button id="shareBigBtn" class="primaryButton">結果を共有する</button>
+  <div style="text-align:center; font-size:18px; line-height:1.6;">
+    最後まで回答していただきありがとうございました！<br>
+    今後の探究活動の参考にさせていただきます。<br>
+    もしよろしければ、<br>
+    <b>このアンケートをほかの人にも伝えていただけると嬉しいです。</b>
   </div>
 
-  <script src="player.js"></script>
-</body>
-</html>
+  <!-- タイプ画像（任意） -->
+  <div id="typeImagePlaceholder"
+       style="width: 100%; max-width: 300px; height: 180px; 
+              background: #f0f4ff; border: 1px dashed #bcd0ff;
+              border-radius: 16px; margin: 20px auto;
+              display: flex; align-items: center; justify-content: center;
+              color: #7a8bbd; font-size: 16px;">
+    （ここにタイプの画像が入ります）
+  </div>
+
+  <!-- タイプ名 -->
+  <h2 id="resultType" style="text-align:center; font-size:26px; color:#4a6fdc; margin-top:10px;"></h2>
+
+  <!-- 説明文スクロール領域 -->
+  <div id="typeDetailBox"
+       style="max-height:250px; overflow-y:auto; padding:15px; 
+              background:#f0f8ff; border-left:6px solid #4aa3ff;
+              border-radius:10px; margin:20px 0;">
+    <!-- JS がここに説明文を入れる -->
+  </div>
+
+  <h3 style="text-align:center; margin-top:10px;">あなたの傾向まとめ</h3>
+
+  <table id="resultTable" style="margin:20px auto; width:90%; max-width:500px; border-collapse:collapse;">
+    <tr><th>項目</th><th>あなたの数値</th></tr>
+  </table>
+
+  <button id="shareBigBtn" class="primaryButton" style="margin:30px auto; display:block; width:260px; font-size:22px;">
+    結果を共有する
+  </button>
+
+</div>
