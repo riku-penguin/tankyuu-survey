@@ -1,6 +1,6 @@
 // ★ スプレッドシート連携URL
 const SHEET_URL =
-"https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec"
+"https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec";
 
 // ★ 共有用リンク
 const SHARE_URL =
@@ -65,10 +65,8 @@ document.getElementById("startBtn").addEventListener("click", async () => {
     return;
   }
 
-  // ★ 回答者IDを作成
   userId = "user_" + Date.now();
 
-  // ★ 回答者情報を最初に送信
   sendToSheet({
     isUserInfo: true,
     userId,
@@ -334,22 +332,18 @@ function handleTimeout(q) {
   nextPlayerQuestion();
 }
 
-// ▼▼▼ タイプ説明文（ゆるい版） ▼▼▼
+// ▼▼▼ タイプ説明文 ▼▼▼
 const typeDescriptions = {
   "せっかちタイプ（すぐ決めちゃう）":
-    "あなたは『ピンときたらすぐ行動！』のタイプ。直感がとても鋭くて、迷う時間よりもワクワクを大事にする人です。あなたのスピード感は魅力そのもの。たまに勢いで決めちゃうこともあるけれど、それもあなたらしさです。",
-
+    "あなたは『ピンときたらすぐ行動！』のタイプ。直感がとても鋭くて、迷う時間よりもワクワクを大事にする人です。",
   "心配性タイプ（慎重に考える）":
-    "あなたは『じっくり考えてから動く』安心感のあるタイプ。選ぶときも、ちゃんと理由を持って決めたい人です。周りからは落ち着いていて信頼できる存在と思われています。ゆっくりでも、あなたの選択はいつも丁寧です。",
-
+    "あなたは『じっくり考えてから動く』安心感のあるタイプ。選ぶときも、ちゃんと理由を持って決めたい人です。",
   "節約家タイプ（買わないことが多い）":
-    "あなたは『本当に必要なものだけ選ぶ』しっかり者タイプ。ムダを見つけるのが上手で、賢いお金の使い方ができます。長い目で見て行動できるので、将来の計画も立てやすい人です。",
-
+    "あなたは『本当に必要なものだけ選ぶ』しっかり者タイプ。ムダを見つけるのが上手で、賢いお金の使い方ができます。",
   "お得ハンタータイプ（コスパ重視）":
-    "あなたは『値段以上の価値があるか』を見抜く名人。安いから買うのではなく、ちゃんと“良い買い物”をしたいタイプです。周りから「買い物上手だね」と言われることも多いはず。",
-
+    "あなたは『値段以上の価値があるか』を見抜く名人。安いから買うのではなく、ちゃんと“良い買い物”をしたいタイプです。",
   "気分屋タイプ（状況次第で変わる）":
-    "あなたは『その時の気分を大事にする』自由なタイプ。新しいものや面白いものにすぐ興味がわく、好奇心いっぱいの人です。固定観念にとらわれず、柔軟に選べるのがあなたの強みです。"
+    "あなたは『その時の気分を大事にする』自由なタイプ。新しいものや面白いものにすぐ興味がわく、好奇心いっぱいの人です。"
 };
 
 // 次の質問へ
@@ -416,7 +410,7 @@ document.getElementById("shareBigBtn").addEventListener("click", async () => {
   }
 });
 
-// 傾向まとめ（★値段への敏感度 修正版）
+// 傾向まとめ
 function calculateSummary() {
   let buyCount = 0;
   let noBuyCount = 0;
@@ -430,7 +424,6 @@ function calculateSummary() {
     if (q.selected === "buy") buyCount++;
     if (q.selected === "no") noBuyCount++;
 
-    // ★ 修正：選んだ「buy」の価格を正しく取得
     if (q.selected === "buy") {
       const opt = q.options.find(o => o.key === "buy");
       if (opt) prices.push(opt.price);
@@ -493,4 +486,24 @@ function fillResultTable(summary) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td style="padding: 10px; border-bottom: 1px solid #ddd;">${label}</td>
-      <td style="padding: 10px; border-bottom: 
+      <td style="padding: 10px; border-bottom: 1px solid #ddd;">${value}%</td>
+    `;
+    table.appendChild(tr);
+  });
+}
+
+// ▼▼▼ スプレッドシート送信 ▼▼▼
+async function sendToSheet(data) {
+  try {
+    await fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (err) {
+    console.error("送信エラー:", err);
+  }
+}
