@@ -129,7 +129,6 @@ function showPreSituation(index) {
     startQuestion(index);
   };
 }
-
 // 質問開始
 function startQuestion(index) {
   hideAllScreens();
@@ -287,7 +286,6 @@ confirmBtn.onclick = () => {
 
   nextPlayerQuestion();
 };
-
 // 一巡目の時間切れ
 function handleTimeout(q) {
   if (timer) clearInterval(timer);
@@ -334,6 +332,24 @@ function handleTimeout(q) {
   nextPlayerQuestion();
 }
 
+// ▼▼▼ タイプ説明文（詳しい版） ▼▼▼
+const typeDescriptions = {
+  "せっかちタイプ（すぐ決めちゃう）":
+    "あなたは直感で動く力が強く、迷うより行動するタイプです。良いと思ったらすぐに手を伸ばす決断力があり、スピード感があなたの最大の武器です。ただし、時には情報を集める前に決めてしまうこともあるため、慎重さを少しだけ取り入れるとさらにバランスが良くなります。",
+  
+  "心配性タイプ（慎重に考える）":
+    "あなたは情報を集めてから判断する、堅実で計画的なタイプです。リスク管理が得意で、買い物でも『本当に必要か？』『もっと良い選択はないか？』と考える傾向があります。周囲からは落ち着いていて信頼できる人と思われることが多いです。",
+  
+  "節約家タイプ（買わないことが多い）":
+    "あなたは本当に必要なものだけを選ぶタイプで、無駄を嫌う性格です。お金の使い方に明確な基準があり、衝動買いはほとんどしません。長期的な視点で物事を考えるため、貯金や資産管理が得意な傾向があります。",
+  
+  "お得ハンタータイプ（コスパ重視）":
+    "あなたは値段と価値のバランスを重視する、非常に賢い買い物をするタイプです。『安いから買う』ではなく、『値段以上の価値があるか』を見極める力があります。周囲からは“買い物上手”と評価されることが多いです。",
+  
+  "気分屋タイプ（状況次第で変わる）":
+    "あなたはその時の気分や状況で判断が変わる柔軟なタイプです。固定観念にとらわれず、自由な発想で選択できるのが強みです。新しいものや面白いものに惹かれやすく、好奇心が旺盛な傾向があります。"
+};
+
 // 次の質問へ
 function nextPlayerQuestion() {
   hideAllScreens();
@@ -351,6 +367,22 @@ function nextPlayerQuestion() {
 
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
+
+    // ▼ タイプ説明を追加する
+    const box = document.getElementById("typeDetailBox");
+    box.innerHTML = "";
+
+    const desc = typeDescriptions[type];
+    const descBox = document.createElement("div");
+    descBox.className = "typeDescriptionBox";
+    descBox.textContent = desc;
+
+    box.appendChild(descBox);
+
+    // アニメーション表示
+    setTimeout(() => {
+      descBox.classList.add("show");
+    }, 300);
 
     finalScreenEl.style.display = "block";
     return;
