@@ -54,7 +54,6 @@ function hideAllScreens() {
   finalScreenEl.style.display = "none";
   secondRoundInfo.style.display = "none";
 }
-
 // 開始ボタン
 document.getElementById("startBtn").addEventListener("click", async () => {
   if (!genderEl.value || !ageEl.value) {
@@ -135,7 +134,6 @@ function startQuestion(index) {
 
   loadPlayerQuestion(index);
 }
-
 // 質問表示
 function loadPlayerQuestion(index) {
   const q = playerQuestions[index];
@@ -158,7 +156,8 @@ function loadPlayerQuestion(index) {
   if (timer) clearInterval(timer);
   timer = null;
 
-  timerBar.style.width = round === 1 ? "100%" : "100%";
+  // 一巡目は100%から減る、二巡目は0%から伸びる
+  timerBar.style.width = round === 1 ? "100%" : "0%";
   timerText.textContent =
     round === 1 ? `残り時間: ${limit} 秒` : `経過時間: 0 秒`;
 
@@ -166,6 +165,7 @@ function loadPlayerQuestion(index) {
     const now = Date.now();
     const elapsed = (now - startTime) / 1000;
 
+    // ▼▼▼ 一巡目（制限時間あり） ▼▼▼
     if (round === 1) {
       const remaining = limit - elapsed;
 
@@ -185,15 +185,28 @@ function loadPlayerQuestion(index) {
       else if (ratio > 0.2) timerBar.style.background = "#fb8c00";
       else timerBar.style.background = "#e53935";
 
+    // ▼▼▼ 二巡目（時間制限なし・バーが伸びる＋色が変わる） ▼▼▼
     } else {
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
 
-      // ★ 二巡目は時間制限なし → バーは固定
-      timerBar.style.width = "100%";
-      timerBar.style.background = "#cfd8dc";
+      const speed = 2;  // 1秒で2%伸びる（調整可能）
+      let width = elapsed * speed;
+      if (width > 100) width = 100;
+
+      timerBar.style.width = `${width}%`;
+
+      // 灰色 → 水色へグラデーション
+      const ratio = width / 100;
+
+      const r = Math.floor(207 + (144 - 207) * ratio); // 207→144
+      const g = Math.floor(216 + (202 - 216) * ratio); // 216→202
+      const b = Math.floor(220 + (249 - 220) * ratio); // 220→249
+
+      timerBar.style.background = `rgb(${r}, ${g}, ${b})`;
     }
   }, 50);
 
+  // ▼▼▼ 選択肢ボタン生成 ▼▼▼
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
@@ -215,12 +228,13 @@ function loadPlayerQuestion(index) {
     optionsEl.appendChild(btn);
   });
 }
-
 // 決定ボタン
 confirmBtn.onclick = () => {
   const q = playerQuestions[playerIndex];
 
   const elapsed = (Date.now() - startTime) / 1000;
+
+  // 二巡目は「指定秒数経過後でないと回答できない」
   if (round === 2 && elapsed < q.time2) {
     alert(`あと ${Math.ceil(q.time2 - elapsed)} 秒後に回答できます`);
     return;
@@ -319,11 +333,13 @@ function nextPlayerQuestion() {
 
   playerIndex++;
 
+  // 一巡目終了 → 二巡目説明画面へ
   if (round === 1 && playerIndex >= playerQuestions.length) {
     infoScreenEl.style.display = "block";
     return;
   }
 
+  // 二巡目終了 → 結果画面へ
   if (round === 2 && playerIndex >= playerQuestions.length) {
     const summary = calculateSummary();
     fillResultTable(summary);
@@ -335,9 +351,9 @@ function nextPlayerQuestion() {
     return;
   }
 
+  // 次の質問へ
   showPreSituation(playerIndex);
 }
-
 // 二巡目開始 → 説明画面へ
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
   hideAllScreens();
