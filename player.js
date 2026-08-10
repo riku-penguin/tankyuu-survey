@@ -16,6 +16,8 @@ let preTimer = null;
 
 let selectedOption = null;
 
+let userId = null;
+
 // ▼▼▼ プレ画面の要素 ▼▼▼
 const preSituationScreen = document.getElementById("preSituationScreen");
 const preSituationText = document.getElementById("preSituationText");
@@ -61,6 +63,30 @@ document.getElementById("startBtn").addEventListener("click", async () => {
     alert("性別と年齢を入力してください");
     return;
   }
+
+  // ★ 回答者IDを作成
+  userId = "user_" + Date.now();
+
+  // ★ 回答者情報を最初に送信
+  sendToSheet({
+    isUserInfo: true,
+    userId,
+    gender: genderEl.value,
+    age: ageEl.value
+  });
+
+  const res = await fetch("questions.json");
+  const data = await res.json();
+
+  playerQuestions = data.questions;
+  playerIndex = 0;
+  round = 1;
+
+  startScreenEl.style.display = "none";
+
+  showPreSituation(playerIndex);
+});
+
 
   const res = await fetch("questions.json");
   const data = await res.json();
@@ -262,7 +288,10 @@ confirmBtn.onclick = () => {
   const summary = calculateSummary();
   const type = determineType(summary);
 
-  sendToSheet({
+ sendToSheet({
+    isUserInfo: false,   // ★追加
+    userId,              // ★追加
+
     questionId: q.id,
     selected: selectedOption.key,
     optionLabel: selectedOption.label,
@@ -282,7 +311,8 @@ confirmBtn.onclick = () => {
     impulsiveRate: summary.impulsiveRate,
     carefulRate: summary.carefulRate,
     type
-  });
+});
+
 
   nextPlayerQuestion();
 };
@@ -307,7 +337,10 @@ function handleTimeout(q) {
   const summary = calculateSummary();
   const type = determineType(summary);
 
-  sendToSheet({
+ sendToSheet({
+    isUserInfo: false,   // ★追加
+    userId,              // ★追加
+
     questionId: q.id,
     selected: selectedKey,
     optionLabel: selectedLabel,
@@ -327,10 +360,8 @@ function handleTimeout(q) {
     impulsiveRate: summary.impulsiveRate,
     carefulRate: summary.carefulRate,
     type
-  });
+});
 
-  nextPlayerQuestion();
-}
 
 // ▼▼▼ タイプ説明文（詳しい版） ▼▼▼
 const typeDescriptions = {
