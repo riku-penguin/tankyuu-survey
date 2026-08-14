@@ -4,7 +4,7 @@ const SHEET_URL =
 
 // ★ 共有用リンク
 const SHARE_URL =
-  "https://docs.google.com/spreadsheets/d/19lLmoS2wiBFxPY-nFQi7NQMLsSJQGNoWNeIbjqEITX4/edit?gid=0";
+  "https://riku-penguin.github.io/tankyuu-survey/";
 
 let playerQuestions = [];
 let playerIndex = 0;
