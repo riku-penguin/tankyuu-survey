@@ -183,6 +183,15 @@ body {
 .optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
 .optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
 
+/* 選択中の強調（かなり分かりやすくなる） */
+.optionButton.selectedOption {
+  border: 3px solid #333;        /* 太めの枠線で強調 */
+  transform: scale(1.05);        /* 少し大きくする */
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18); /* 影で浮かせる */
+  font-weight: 600;              /* 文字を少し太く */
+}
+
+
 /* hover時は色を変えない（影＋拡大だけ） */
 .optionButton:hover {
   background-color: inherit; /* 色を変えない */
