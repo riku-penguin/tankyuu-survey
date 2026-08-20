@@ -22,12 +22,74 @@
 .optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
 
 /* 背景（心理テスト風の淡いグラデーション） */
+/* 背景：心理テスト風の淡いグラデーション（控えめ） */
 body {
-  background: linear-gradient(135deg, #f8f9ff, #f0f7ff);
+  background: linear-gradient(180deg, #fafaff, #f3f6ff);
   font-family: "Noto Sans JP", sans-serif;
   margin: 0;
   padding: 0;
 }
+
+/* 質問カード（質問・状況・番号など） */
+.questionContainer {
+  background: #ffffff;
+  padding: 22px;
+  margin: 20px;
+  border-radius: 18px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+/* プレ画面・結果画面も統一 */
+.preSituationScreen,
+.resultContainer {
+  background: #ffffff;
+  padding: 22px;
+  margin: 20px;
+  border-radius: 18px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+/* 質問文 */
+#question {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* 状況文 */
+#situation {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+/* 質問番号 */
+#questionNumber {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+/* プレ画面のカウントダウン */
+#preCountdown {
+  font-size: 16px;
+  color: #444;
+  margin-top: 10px;
+}
+
+/* 画像プレースホルダー（心理テスト風に統一） */
+.optionImagePlaceholder {
+  background: #f0f3ff;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid #e0e4ff;
+}
+
 
 /* 質問カード（質問・状況・番号などを囲む箱） */
 .questionContainer,
