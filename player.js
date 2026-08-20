@@ -143,6 +143,8 @@ function startQuestion(index) {
   selectedOption = null;
   confirmBtn.style.display = "none";
 
+  soundStart.play();
+
   loadPlayerQuestion(index);
 }
 
@@ -210,6 +212,8 @@ q.options.forEach((opt) => {
     btn.setAttribute("data-key", opt.key);
 
     btn.onclick = () => {
+      soundClick.play();
+      
       selectedOption = opt;
 
       document.querySelectorAll(".optionButton").forEach(b => {
@@ -233,6 +237,7 @@ noBuyBtn.setAttribute("data-key", "N");
 noBuyBtn.style.marginTop = "20px";
 
 noBuyBtn.onclick = () => {
+  soundClick.play();
   selectedOption = { key: "N", label: "買わない", price: 0 };
 
   document.querySelectorAll(".optionButton").forEach(b => {
@@ -248,6 +253,9 @@ optionsEl.appendChild(noBuyBtn);
   
 // 決定ボタン
 confirmBtn.onclick = () => {
+
+  soundClick.play();
+  
   const q = playerQuestions[playerIndex];
 
   const elapsed = (Date.now() - startTime) / 1000;
@@ -302,6 +310,8 @@ confirmBtn.onclick = () => {
 
 // 一巡目の時間切れ
 function handleTimeout(q) {
+  soundTimeout.play();
+  
   if (timer) clearInterval(timer);
 
   const endTime = Date.now();
@@ -397,7 +407,9 @@ function nextPlayerQuestion() {
     setTimeout(() => {
       descBox.classList.add("show");
     }, 300);
-
+　　
+    soundResult.play();
+    
     finalScreenEl.style.display = "block";
     return;
   }
@@ -475,20 +487,51 @@ function calculateSummary() {
 function determineType(summary) {
   const { buyRate, noBuyRate, priceSensitivity, impulsiveRate, carefulRate } = summary;
 
-  if (impulsiveRate >= 60 && buyRate >= 50)
-    return "せっかちタイプ（すぐ決めちゃう）";
+  // 各タイプのスコア
+  let scores = {
+    "せっかちタイプ（すぐ決めちゃう）": 0,
+    "心配性タイプ（慎重に考える）": 0,
+    "節約家タイプ（買わないことが多い）": 0,
+    "お得ハンタータイプ（コスパ重視）": 0,
+    "気分屋タイプ（状況次第で変わる）": 0
+  };
 
-  if (carefulRate >= 60 && priceSensitivity >= 50)
-    return "心配性タイプ（慎重に考える）";
+  // せっかち：衝動買いが多い
+  scores["せっかちタイプ（すぐ決めちゃう）"] += impulsiveRate / 10;
+  scores["せっかちタイプ（すぐ決めちゃう）"] += buyRate / 20;
 
-  if (noBuyRate >= 60 && priceSensitivity >= 60)
-    return "節約家タイプ（買わないことが多い）";
+  // 心配性：慎重に買う、価格に敏感
+  scores["心配性タイプ（慎重に考える）"] += carefulRate / 10;
+  scores["心配性タイプ（慎重に考える）"] += priceSensitivity / 20;
 
-  if (priceSensitivity >= 70 && buyRate >= 40)
-    return "お得ハンタータイプ（コスパ重視）";
+  // 節約家：買わない率が高い
+  scores["節約家タイプ（買わないことが多い）"] += noBuyRate / 10;
+  scores["節約家タイプ（買わないことが多い）"] += priceSensitivity / 30;
 
-  return "気分屋タイプ（状況次第で変わる）";
+  // お得ハンター：価格に敏感＋買う率もそこそこ
+  scores["お得ハンタータイプ（コスパ重視）"] += priceSensitivity / 15;
+  scores["お得ハンタータイプ（コスパ重視）"] += buyRate / 30;
+
+  // 気分屋：バランス型
+  const balance =
+    Math.abs(impulsiveRate - carefulRate) +
+    Math.abs(buyRate - noBuyRate);
+  scores["気分屋タイプ（状況次第で変わる）"] += (100 - balance) / 20;
+
+  // 最もスコアが高いタイプを選ぶ
+  let bestType = null;
+  let bestScore = -Infinity;
+
+  for (const type in scores) {
+    if (scores[type] > bestScore) {
+      bestScore = scores[type];
+      bestType = type;
+    }
+  }
+
+  return bestType;
 }
+
 
 // 結果表を埋める
 function fillResultTable(summary) {
