@@ -21,13 +21,64 @@
 .optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
 .optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
 
-/* 全体の背景（心理テストっぽい淡いグラデーション） */
+/* 背景（心理テスト風の淡いグラデーション） */
 body {
   background: linear-gradient(135deg, #f8f9ff, #f0f7ff);
   font-family: "Noto Sans JP", sans-serif;
   margin: 0;
   padding: 0;
 }
+
+/* 質問カード（質問・状況・番号などを囲む箱） */
+.questionContainer,
+.preSituationScreen,
+.resultContainer {
+  background: #ffffff;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* 質問文 */
+#question {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* 状況文 */
+#situation {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+/* 質問番号 */
+#questionNumber {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+/* プレ画面のカウントダウン */
+#preCountdown {
+  font-size: 16px;
+  color: #444;
+  margin-top: 10px;
+}
+
+/* 画像プレースホルダー */
+.optionImagePlaceholder {
+  background: #eef3ff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
 
 /* 質問カード */
 .questionContainer {
@@ -70,10 +121,16 @@ body {
 .optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
 .optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
 
-/* ホバー（スマホでも軽く反応する） */
+/* hover時は色を変えない（影＋拡大だけ） */
 .optionButton:hover {
-  border: 2px solid rgba(0,0,0,0.15);
-  transform: scale(1.01);
+  background-color: inherit; /* 色を変えない */
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.optionButton.selectedOption {
+  box-shadow: none; /* hoverの影を消す */
+  transform: scale(1.00); /* hoverと差別化 */
 }
 
 
