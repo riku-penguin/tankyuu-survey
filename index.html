@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>探究アンケート</title>
+
   <style>
     body {
       background: #f5f7ff;
@@ -11,264 +12,234 @@
       margin: 0;
       padding: 0;
     }
-.optionButton[data-key="A"] { background-color: #a8d8ff; }
-.optionButton[data-key="B"] { background-color: #b6f2c2; }
-.optionButton[data-key="C"] { background-color: #fff3a8; }
-.optionButton[data-key="D"] { background-color: #ffb6b6; }
 
-.optionButton.selectedOption[data-key="A"] { background-color: #7fc2ff; }
-.optionButton.selectedOption[data-key="B"] { background-color: #8be8a4; }
-.optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
-.optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
+    .optionButton[data-key="A"] { background-color: #a8d8ff; }
+    .optionButton[data-key="B"] { background-color: #b6f2c2; }
+    .optionButton[data-key="C"] { background-color: #fff3a8; }
+    .optionButton[data-key="D"] { background-color: #ffb6b6; }
 
-.introBox {
-  background: #ffffffcc;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  text-align: left;
-  line-height: 1.6;
-  font-size: 14px;
-  border: 1px solid #ddd;
-}
+    .optionButton.selectedOption[data-key="A"] { background-color: #7fc2ff; }
+    .optionButton.selectedOption[data-key="B"] { background-color: #8be8a4; }
+    .optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
+    .optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
 
-.introBox h2 {
-  margin-top: 0;
-  font-size: 20px;
-  font-weight: bold;
-}
+    .introBox {
+      background: #ffffffcc;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: left;
+      line-height: 1.6;
+      font-size: 14px;
+      border: 1px solid #ddd;
+    }
 
-    
-/* 背景（心理テスト風の淡いグラデーション） */
-/* 背景：心理テスト風の淡いグラデーション（控えめ） */
-body {
-  background: linear-gradient(180deg, #fafaff, #f3f6ff);
-  font-family: "Noto Sans JP", sans-serif;
-  margin: 0;
-  padding: 0;
-}
+    .introBox h2 {
+      margin-top: 0;
+      font-size: 20px;
+      font-weight: bold;
+    }
 
-/* 質問カード（質問・状況・番号など） */
-.questionContainer {
-  background: #ffffff;
-  padding: 22px;
-  margin: 20px;
-  border-radius: 18px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-}
+    /* 背景 */
+    body {
+      background: linear-gradient(180deg, #fafaff, #f3f6ff);
+      font-family: "Noto Sans JP", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-/* プレ画面・結果画面も統一 */
-.preSituationScreen,
-.resultContainer {
-  background: #ffffff;
-  padding: 22px;
-  margin: 20px;
-  border-radius: 18px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-}
+    /* 質問カード */
+    .questionContainer {
+      background: #ffffff;
+      padding: 22px;
+      margin: 20px;
+      border-radius: 18px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
 
-/* 質問文 */
-#question {
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 16px;
-}
+    .preSituationScreen,
+    .resultContainer {
+      background: #ffffff;
+      padding: 22px;
+      margin: 20px;
+      border-radius: 18px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
 
-/* 状況文 */
-#situation {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 12px;
-}
+    #question {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 16px;
+    }
 
-/* 質問番号 */
-#questionNumber {
-  font-size: 14px;
-  color: #777;
-  margin-bottom: 10px;
-}
+    #situation {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 12px;
+    }
 
-/* プレ画面のカウントダウン */
-#preCountdown {
-  font-size: 16px;
-  color: #444;
-  margin-top: 10px;
-}
+    #questionNumber {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 10px;
+    }
 
-/* 画像プレースホルダー（心理テスト風に統一） */
-.optionImagePlaceholder {
-  background: #f0f3ff;
-  border-radius: 14px;
-  padding: 20px;
-  text-align: center;
-  color: #666;
-  margin-bottom: 20px;
-  font-size: 14px;
-  border: 1px solid #e0e4ff;
-}
+    #preCountdown {
+      font-size: 16px;
+      color: #444;
+      margin-top: 10px;
+    }
 
+    .optionImagePlaceholder {
+      background: #f0f3ff;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+      border: 1px solid #e0e4ff;
+    }
 
-/* 質問カード（質問・状況・番号などを囲む箱） */
-.questionContainer,
-.preSituationScreen,
-.resultContainer {
-  background: #ffffff;
-  padding: 20px;
-  margin: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+    .questionContainer,
+    .preSituationScreen,
+    .resultContainer {
+      background: #ffffff;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
 
-/* 質問文 */
-#question {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
+    #question {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
 
-/* 状況文 */
-#situation {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 12px;
-}
+    #situation {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 12px;
+    }
 
-/* 質問番号 */
-#questionNumber {
-  font-size: 14px;
-  color: #777;
-  margin-bottom: 10px;
-}
+    #questionNumber {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 10px;
+    }
 
-/* プレ画面のカウントダウン */
-#preCountdown {
-  font-size: 16px;
-  color: #444;
-  margin-top: 10px;
-}
+    #preCountdown {
+      font-size: 16px;
+      color: #444;
+      margin-top: 10px;
+    }
 
-/* 画像プレースホルダー */
-.optionImagePlaceholder {
-  background: #eef3ff;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  color: #666;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
+    .optionImagePlaceholder {
+      background: #eef3ff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
 
+    .questionContainer {
+      background: #ffffff;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
 
-/* 質問カード */
-.questionContainer {
-  background: #ffffff;
-  padding: 20px;
-  margin: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+    #question {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
 
-/* 質問文 */
-#question {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
+    .optionButton {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-/* 選択肢ボタン（共通） */
-.optionButton {
-  width: 100%;
-  padding: 14px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  text-align: left;
-  cursor: pointer;
-  transition: 0.2s;
-}
+    .optionButton[data-key="A"] { background-color: #a8d8ff; }
+    .optionButton[data-key="B"] { background-color: #b6f2c2; }
+    .optionButton[data-key="C"] { background-color: #fff3a8; }
+    .optionButton[data-key="D"] { background-color: #ffb6b6; }
 
-/* パステルカラー（通常時） */
-.optionButton[data-key="A"] { background-color: #a8d8ff; }
-.optionButton[data-key="B"] { background-color: #b6f2c2; }
-.optionButton[data-key="C"] { background-color: #fff3a8; }
-.optionButton[data-key="D"] { background-color: #ffb6b6; }
+    .optionButton.selectedOption[data-key="A"] { background-color: #7fc2ff; }
+    .optionButton.selectedOption[data-key="B"] { background-color: #8be8a4; }
+    .optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
+    .optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
 
-/* 選択されたとき濃くする */
-.optionButton.selectedOption[data-key="A"] { background-color: #7fc2ff; }
-.optionButton.selectedOption[data-key="B"] { background-color: #8be8a4; }
-.optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
-.optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
+    .optionButton.selectedOption {
+      border: 3px solid #333;
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+      font-weight: 600;
+    }
 
-/* 選択中の強調（かなり分かりやすくなる） */
-.optionButton.selectedOption {
-  border: 3px solid #333;        /* 太めの枠線で強調 */
-  transform: scale(1.05);        /* 少し大きくする */
-  box-shadow: 0 6px 14px rgba(0,0,0,0.18); /* 影で浮かせる */
-  font-weight: 600;              /* 文字を少し太く */
-}
+    .noBuyButton {
+      background-color: #e8e8e8;
+    }
 
-  
-    
-.noBuyButton {
-  background-color: #e8e8e8;
-}
+    .noBuyButton.selectedOption {
+      background-color: #d0d0d0;
+      border: 3px solid #333;
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+    }
 
-.noBuyButton.selectedOption {
-  background-color: #d0d0d0;
-  border: 3px solid #333;
-  transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
-}
+    .optionButton:hover {
+      background-color: inherit;
+      transform: scale(1.03);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
 
+    .optionButton.selectedOption {
+      box-shadow: none;
+      transform: scale(1.00);
+    }
 
+    #timerBar {
+      height: 6px;
+      background-color: #6aa6ff;
+      border-radius: 3px;
+      transition: width 0.1s linear;
+      margin-bottom: 10px;
+    }
 
-/* hover時は色を変えない（影＋拡大だけ） */
-.optionButton:hover {
-  background-color: inherit; /* 色を変えない */
-  transform: scale(1.03);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
+    #timerText {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
 
-.optionButton.selectedOption {
-  box-shadow: none; /* hoverの影を消す */
-  transform: scale(1.00); /* hoverと差別化 */
-}
+    #confirmBtn {
+      background: #6aa6ff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: none;
+    }
 
-
-/* タイマーバー */
-#timerBar {
-  height: 6px;
-  background-color: #6aa6ff;
-  border-radius: 3px;
-  transition: width 0.1s linear;
-  margin-bottom: 10px;
-}
-
-/* タイマー文字 */
-#timerText {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-/* 確定ボタン */
-#confirmBtn {
-  background: #6aa6ff;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 10px;
-  display: none;
-}
-
-#confirmBtn:hover {
-  background: #4f8fff;
-}
+    #confirmBtn:hover {
+      background: #4f8fff;
+    }
 
     .screenBox {
       background: #ffffff;
@@ -281,7 +252,6 @@ body {
       box-sizing: border-box;
     }
 
-    /* プレ画面 */
     #preSituationScreen {
       display: none;
       flex-direction: column;
@@ -329,18 +299,10 @@ body {
       background: #7ac88f;
     }
 
-    /* 質問画面 */
     #playerContainer {
       display: none;
       flex-direction: column;
       min-height: 100vh;
-    }
-
-    #questionNumber {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      text-align: center;
     }
 
     #playerSituation {
@@ -403,14 +365,11 @@ body {
       font-size: 16px;
     }
 
-    /* 結果画面 */
+    /* 結果画面（CSS内のHTML混入を除去済み） */
     #finalScreen {
       display: none;
       overflow-y: auto;
       max-height: 90vh;
-      <p>結果を共有する：</p>
-<a id="shareLink" href="#" target="_blank"></a>
-
     }
 
     #resultType {
@@ -471,29 +430,29 @@ body {
   <!-- 開始画面 -->
   <div id="startScreen" class="screenBox">
     <div id="introBox" class="introBox">
-  <h2>探究アンケートへようこそ！</h2>
+      <h2>探究アンケートへようこそ！</h2>
 
-  <p>
-    このアンケートは、学校の探究活動でも使えるように作られています。<br>
-    あなたの「買い物の傾向」を診断し、行動の理由や価値観を知ることが目的です。
-  </p>
+      <p>
+        このアンケートは、学校の探究活動でも使えるように作られています。<br>
+        あなたの「買い物の傾向」を診断し、行動の理由や価値観を知ることが目的です。
+      </p>
 
-  <p>
-    一巡目は <strong>直感で選ぶ</strong>、二巡目は <strong>少し考えて選ぶ</strong> ことで、<br>
-    「衝動」「慎重」「節約」「コスパ重視」などの傾向が分かります。
-  </p>
+      <p>
+        一巡目は <strong>直感で選ぶ</strong>、二巡目は <strong>少し考えて選ぶ</strong> ことで、<br>
+        「衝動」「慎重」「節約」「コスパ重視」などの傾向が分かります。
+      </p>
 
-  <p>
-    同じ人が複数回回答すると結果が正しく出ないため、<br>
-    <strong>同じ人による複数回答はご遠慮ください。</strong><br>
-    ただし、同じ端末でも <strong>別の人なら回答してOK</strong> です。
-  </p>
+      <p>
+        同じ人が複数回回答すると結果が正しく出ないため、<br>
+        <strong>同じ人による複数回答はご遠慮ください。</strong><br>
+        ただし、同じ端末でも <strong>別の人なら回答してOK</strong> です。
+      </p>
 
-  <p>
-    最後に結果を共有できます。<br>
-    友達や家族と協力して、ぜひ楽しんでください！
-  </p>
-</div>
+      <p>
+        最後に結果を共有できます。<br>
+        友達や家族と協力して、ぜひ楽しんでください！
+      </p>
+    </div>
 
     <h2>探究アンケート</h2>
     <p>性別と年齢を入力して、アンケートを始めてください。</p>
@@ -519,15 +478,14 @@ body {
   </div>
 
   <!-- プレ画面 -->
-  <div id="preSituationScreen" class="screenBox">
+  <div id="preSituationScreen" class="screenBox" style="display:none;">
     <div id="preQuestionNumber"></div>
     <div id="preSituationText"></div>
     <div id="preCountdown"></div>
     <button id="preOkBtn" class="primaryButton">OK</button>
   </div>
-
   <!-- 質問画面 -->
-  <div id="playerContainer" class="screenBox">
+  <div id="playerContainer" class="screenBox" style="display:none;">
     <div id="questionNumber"></div>
     <div id="playerSituation"></div>
     <div id="playerQuestion"></div>
@@ -537,26 +495,32 @@ body {
 
     <div id="playerOptions"></div>
 
-    <button id="confirmBtn" class="primaryButton" style="display:none;">この選択肢で決定</button>
+    <button id="confirmBtn" class="primaryButton" style="display:none;">
+      この選択肢で決定
+    </button>
   </div>
 
   <!-- 一巡目終了 -->
   <div id="infoScreen" class="screenBox" style="display:none;">
     <h2>一巡目が終了しました</h2>
     <p>二巡目ではゆっくり考えて選べます。</p>
-    <button id="startSecondRoundBtn" class="primaryButton">二巡目をはじめる</button>
+    <button id="startSecondRoundBtn" class="primaryButton">
+      二巡目をはじめる
+    </button>
   </div>
 
   <!-- 二巡目説明 -->
   <div id="secondRoundInfo" class="screenBox" style="display:none;">
     <h2>二巡目について</h2>
     <p>時間切れはありません。じっくり考えてください。</p>
-    <button id="secondRoundOkBtn" class="primaryButton">二巡目をはじめる</button>
+    <button id="secondRoundOkBtn" class="primaryButton">
+      二巡目をはじめる
+    </button>
   </div>
-
-  <!-- 結果画面 -->
-  <div id="finalScreen" class="screenBox">
+  <!-- 結果画面（完全修正版） -->
+  <div id="finalScreen" class="screenBox" style="display:none;">
     <h2 id="resultType"></h2>
+
     <div id="typeDetailBox"></div>
 
     <h3 style="text-align:center;">あなたの傾向まとめ</h3>
@@ -564,6 +528,12 @@ body {
       <tr><th>項目</th><th>あなたの数値</th></tr>
     </table>
 
+    <!-- 共有リンク（player.js が必ず使う要素） -->
+    <p style="text-align:center; margin-top:20px;">結果を共有する：</p>
+    <a id="shareLink" href="#" target="_blank"
+       style="display:block; text-align:center; margin-bottom:20px;"></a>
+
+    <!-- 大きい共有ボタン（あなたのコードをそのまま活かす） -->
     <button id="shareBigBtn" class="primaryButton">結果を共有する</button>
   </div>
 
