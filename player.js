@@ -348,6 +348,10 @@ function handleTimeout(q) {
   nextPlayerQuestion();
 }
 
+// ★★★ loadPlayerQuestion() を閉じる ★★★
+}
+
+
 // ▼▼▼ タイプ説明文 ▼▼▼
 const typeDescriptions = {
   "せっかちタイプ（すぐ決めちゃう）":
