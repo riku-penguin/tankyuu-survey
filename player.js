@@ -221,7 +221,7 @@ q.options.forEach((opt) => {
     };
 
     optionsEl.appendChild(btn);
-});  // ← forEach 終わり（ここまではあなたの元コード）
+});  // ← forEach の正しい終わり方（余計な } は不要）
 
 // ★★★ A〜D の後に「買わない」ボタンを追加 ★★★
 const noBuyBtn = document.createElement("button");
@@ -245,6 +245,7 @@ noBuyBtn.onclick = () => {
 
 optionsEl.appendChild(noBuyBtn);
 
+  
 // 決定ボタン
 confirmBtn.onclick = () => {
   const q = playerQuestions[playerIndex];
