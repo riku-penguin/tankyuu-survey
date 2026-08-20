@@ -1,16 +1,3 @@
-// ★ 音の読み込み
-const soundClick = new Audio("sounds/click.mp3");
-soundClick.volume = 0.2;
-
-const soundStart = new Audio("sounds/start.mp3");
-soundStart.volume = 0.25;
-
-const soundTimeout = new Audio("sounds/timeout.mp3");
-soundTimeout.volume = 0.2;
-
-const soundResult = new Audio("sounds/result.mp3");
-soundResult.volume = 0.25;
-
 // ★ URL から type を取得して表示する
 const params = new URLSearchParams(location.search);
 const sharedType = params.get("type");
@@ -239,7 +226,6 @@ q.options.forEach((opt) => {
     btn.setAttribute("data-key", opt.key);
 
     btn.onclick = () => {
-      soundClick.play();
       
       selectedOption = opt;
 
@@ -281,7 +267,6 @@ optionsEl.appendChild(noBuyBtn);
 // 決定ボタン
 confirmBtn.onclick = () => {
 
-  soundClick.play();
   
   const q = playerQuestions[playerIndex];
 
@@ -337,7 +322,6 @@ confirmBtn.onclick = () => {
 
 // 一巡目の時間切れ
 function handleTimeout(q) {
-  soundTimeout.play();
   
   if (timer) clearInterval(timer);
 
@@ -439,7 +423,6 @@ function nextPlayerQuestion() {
       descBox.classList.add("show");
     }, 300);
 　　
-    soundResult.play();
     
     finalScreenEl.style.display = "block";
     return;
