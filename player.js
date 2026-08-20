@@ -156,9 +156,7 @@ function startQuestion(index) {
 
   selectedOption = null;
   confirmBtn.style.display = "none";
-
-  soundStart.play();
-
+  
   loadPlayerQuestion(index);
 }
 
@@ -250,7 +248,7 @@ noBuyBtn.setAttribute("data-key", "N");
 noBuyBtn.style.marginTop = "20px";
 
 noBuyBtn.onclick = () => {
-  soundClick.play();
+  
   selectedOption = { key: "N", label: "買わない", price: 0 };
 
   document.querySelectorAll(".optionButton").forEach(b => {
