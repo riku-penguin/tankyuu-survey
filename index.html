@@ -21,6 +21,24 @@
 .optionButton.selectedOption[data-key="C"] { background-color: #ffe36b; }
 .optionButton.selectedOption[data-key="D"] { background-color: #ff8f8f; }
 
+.introBox {
+  background: #ffffffcc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  text-align: left;
+  line-height: 1.6;
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+
+.introBox h2 {
+  margin-top: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+    
 /* 背景（心理テスト風の淡いグラデーション） */
 /* 背景：心理テスト風の淡いグラデーション（控えめ） */
 body {
@@ -390,6 +408,9 @@ body {
       display: none;
       overflow-y: auto;
       max-height: 90vh;
+      <p>結果を共有する：</p>
+<a id="shareLink" href="#" target="_blank"></a>
+
     }
 
     #resultType {
@@ -449,6 +470,31 @@ body {
 
   <!-- 開始画面 -->
   <div id="startScreen" class="screenBox">
+    <div id="introBox" class="introBox">
+  <h2>探究アンケートへようこそ！</h2>
+
+  <p>
+    このアンケートは、学校の探究活動でも使えるように作られています。<br>
+    あなたの「買い物の傾向」を診断し、行動の理由や価値観を知ることが目的です。
+  </p>
+
+  <p>
+    一巡目は <strong>直感で選ぶ</strong>、二巡目は <strong>少し考えて選ぶ</strong> ことで、<br>
+    「衝動」「慎重」「節約」「コスパ重視」などの傾向が分かります。
+  </p>
+
+  <p>
+    同じ人が複数回回答すると結果が正しく出ないため、<br>
+    <strong>同じ人による複数回答はご遠慮ください。</strong><br>
+    ただし、同じ端末でも <strong>別の人なら回答してOK</strong> です。
+  </p>
+
+  <p>
+    最後に結果を共有できます。<br>
+    友達や家族と協力して、ぜひ楽しんでください！
+  </p>
+</div>
+
     <h2>探究アンケート</h2>
     <p>性別と年齢を入力して、アンケートを始めてください。</p>
 
