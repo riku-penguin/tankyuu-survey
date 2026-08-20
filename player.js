@@ -86,29 +86,22 @@ document.getElementById("startBtn").addEventListener("click", async () => {
   showPreSituation(playerIndex);
 });
 
-// time の自動変換
 function parseTime(str) {
-  if (!str) return { t1: 10, t2: 10 };
+    if (typeof str === "number") {
+        return str;
+    }
 
-  const nums = str.match(/\d+/g);
-  if (!nums) return { t1: 10, t2: 10 };
-
-  if (nums.length === 1) {
-    const t = parseInt(nums[0]);
-    return { t1: t, t2: t };
-  }
-
-  return { t1: parseInt(nums[0]), t2: parseInt(nums[1]) };
+    const match = String(str).match(/\d+/);
+    return match ? parseInt(match[0]) : 8;
 }
 
-// プレ画面表示
 function showPreSituation(index) {
   const q = playerQuestions[index];
 
-  const { t1, t2 } = parseTime(q.time);
+  const t = parseTime(q.time);
 
-  q.time1 = t1 + 2;
-  q.time2 = t2;
+  q.time1 = t + 2;
+  q.time2 = t;
 
   hideAllScreens();
   preSituationScreen.style.display = "flex";
