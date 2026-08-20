@@ -223,6 +223,25 @@ function loadPlayerQuestion(index) {
   });
 }
 
+// 「買わない」選択肢を追加
+const noBuyBtn = document.createElement("button");
+noBuyBtn.className = "optionButton noBuyButton";
+noBuyBtn.textContent = "買わない";
+noBuyBtn.setAttribute("data-key", "N");
+
+noBuyBtn.onclick = () => {
+  selectedOption = { key: "N", label: "買わない", price: 0 };
+
+  document.querySelectorAll(".optionButton").forEach(b => {
+    b.classList.remove("selectedOption");
+  });
+  noBuyBtn.classList.add("selectedOption");
+
+  confirmBtn.style.display = "block";
+};
+
+optionsEl.appendChild(noBuyBtn);
+
 // 決定ボタン
 confirmBtn.onclick = () => {
   const q = playerQuestions[playerIndex];
