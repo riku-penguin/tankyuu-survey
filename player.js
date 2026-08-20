@@ -201,7 +201,8 @@ function loadPlayerQuestion(index) {
     }
   }, 50);
 
-  q.options.forEach((opt) => {
+// A〜D の選択肢を追加
+q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
 
@@ -243,7 +244,6 @@ noBuyBtn.onclick = () => {
 };
 
 optionsEl.appendChild(noBuyBtn);
-
 
 // 決定ボタン
 confirmBtn.onclick = () => {
