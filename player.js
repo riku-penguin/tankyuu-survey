@@ -1,3 +1,17 @@
+// ★ URL から type を取得して表示する
+const params = new URLSearchParams(location.search);
+const sharedType = params.get("type");
+
+if (sharedType) {
+  const sharedBox = document.createElement("div");
+  sharedBox.className = "sharedTypeBox";
+  sharedBox.innerHTML = `
+    <h3>あなたの友達は「${sharedType}」でした！</h3>
+    <p>あなたも診断してみよう！</p>
+  `;
+  document.getElementById("startScreen").prepend(sharedBox);
+}
+
 // ★ スプレッドシート連携URL
 const SHEET_URL =
 "https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec";
@@ -392,8 +406,12 @@ function nextPlayerQuestion() {
     fillResultTable(summary);
 
     const type = determineType(summary);
-    document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
-
+　　document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
+    
+　　const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
+　　document.getElementById("shareLink").textContent = shareUrl;
+　　document.getElementById("shareLink").href = shareUrl;
+    
     const box = document.getElementById("typeDetailBox");
     box.innerHTML = "";
 
