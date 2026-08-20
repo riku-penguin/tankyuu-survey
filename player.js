@@ -488,14 +488,15 @@ function calculateSummary() {
   const impulsiveRate = Math.round((impulsive / total) * 100);
   const carefulRate = Math.round((careful / total) * 100);
 
-  return {
+ return {
     buyRate,
     noBuyRate,
     priceSensitivity,
     impulsiveRate,
     carefulRate
-  };
-}  // ← ★ これが抜けていた！
+};
+}  // ← これが calculateSummary() を閉じるカッコ
+
 
 // タイプ判定
 function determineType(summary) {
