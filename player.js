@@ -456,44 +456,45 @@ document.getElementById("shareBigBtn").addEventListener("click", async () => {
 
 // 傾向まとめ
 function calculateSummary() {
-  let buyCount = 0;
-  let noBuyCount = 0;
-  let total = playerQuestions.length;
+let prices = [];
+let impulsive = 0;
+let careful = 0;
 
-  let prices = [];
-  let impulsive = 0;
-  let careful = 0;
+playerQuestions.forEach(q => {
+  if (q.selected === "buy") buyCount++;
+  if (q.selected === "no") noBuyCount++;
 
-  playerQuestions.forEach(q => {
-    if (q.selected === "buy") buyCount++;
-    if (q.selected === "no") noBuyCount++;
+  // ★ 修正：選んだ選択肢の価格を使う
+  if (q.selected) {
+    const opt = q.options.find(o => o.key === q.selected);
+    if (opt && opt.price != null) prices.push(opt.price);
+  }
 
-    if (q.selected === "buy") {
-      const opt = q.options.find(o => o.key === "buy");
-      if (opt) prices.push(opt.price);
-    }
+  if (q.round === 1 && q.selected === "buy") impulsive++;
+  if (q.round === 2 && q.selected === "buy") careful++;
+});
 
-    if (q.round === 1 && q.selected === "buy") impulsive++;
-    if (q.round === 2 && q.selected === "buy") careful++;
-  });
+const buyRate = Math.round((buyCount / total) * 100);
+const noBuyRate = Math.round((noBuyRate / total) * 100);
 
-  const buyRate = Math.round((buyCount / total) * 100);
-  const noBuyRate = Math.round((noBuyCount / total) * 100);
+const avgPrice = prices.length > 0
+  ? prices.reduce((a,b)=>a+b)/prices.length
+  : 0;
 
-  const avgPrice = prices.length > 0 ? prices.reduce((a,b)=>a+b)/prices.length : 0;
-  const priceSensitivity = Math.max(0, Math.min(100, Math.round(100 - (avgPrice / 1000) * 100)));
+const priceSensitivity = Math.max(0, Math.min(100,
+  Math.round(100 - (avgPrice / 1000) * 100)
+)));
 
-  const impulsiveRate = Math.round((impulsive / total) * 100);
-  const carefulRate = Math.round((careful / total) * 100);
+const impulsiveRate = Math.round((impulsive / total) * 100);
+const carefulRate = Math.round((careful / total) * 100);
 
-  return {
-    buyRate,
-    noBuyRate,
-    priceSensitivity,
-    impulsiveRate,
-    carefulRate
-  };
-}
+return {
+  buyRate,
+  noBuyRate,
+  priceSensitivity,
+  impulsiveRate,
+  carefulRate
+};
 
 // タイプ判定
 function determineType(summary) {
