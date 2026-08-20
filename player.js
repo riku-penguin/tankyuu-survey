@@ -477,6 +477,7 @@ function calculateSummary() {
   const buyRate = Math.round((buyCount / total) * 100);
   const noBuyRate = Math.round((noBuyCount / total) * 100);
 
+
   const avgPrice = prices.length > 0
     ? prices.reduce((a,b)=>a+b)/prices.length
     : 0;
