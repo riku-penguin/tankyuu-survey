@@ -220,14 +220,16 @@ function loadPlayerQuestion(index) {
     };
 
     optionsEl.appendChild(btn);
-  });
-}
+});  // ← forEach 終わり（ここまではあなたの元コード）
 
-// 「買わない」選択肢を追加
+// ★★★ A〜D の後に「買わない」ボタンを追加 ★★★
 const noBuyBtn = document.createElement("button");
 noBuyBtn.className = "optionButton noBuyButton";
 noBuyBtn.textContent = "買わない";
 noBuyBtn.setAttribute("data-key", "N");
+
+// A〜D と少し離す
+noBuyBtn.style.marginTop = "20px";
 
 noBuyBtn.onclick = () => {
   selectedOption = { key: "N", label: "買わない", price: 0 };
@@ -241,6 +243,7 @@ noBuyBtn.onclick = () => {
 };
 
 optionsEl.appendChild(noBuyBtn);
+
 
 // 決定ボタン
 confirmBtn.onclick = () => {
