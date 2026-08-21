@@ -398,20 +398,21 @@ function nextPlayerQuestion() {
     const summary = calculateSummary();
     fillResultTable(summary);
 
-    const type = determineType(summary);
-　　document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
-    
-　　const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
-　　document.getElementById("shareLink").textContent = shareUrl;
-　　document.getElementById("shareLink").href = shareUrl;
-    
-    const box = document.getElementById("typeDetailBox");
-    box.innerHTML = "";
+ const type = determineType(summary);
+document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    const desc = typeDescriptions[type];
-    const descBox = document.createElement("div");
-    descBox.className = "typeDescriptionBox";
-    descBox.textContent = desc;
+const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
+document.getElementById("shareLink").textContent = shareUrl;
+document.getElementById("shareLink").href = shareUrl;
+
+const box = document.getElementById("typeDetailBox");
+box.innerHTML = "";
+
+const desc = typeDescriptions[type];
+const descBox = document.createElement("div");
+descBox.className = "typeDescriptionBox";
+descBox.textContent = desc;
+
 
     box.appendChild(descBox);
 
