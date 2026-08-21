@@ -459,6 +459,10 @@ function calculateSummary() {
   let impulsive = 0;
   let careful = 0;
 
+  let buyCount = 0;      // ★ 追加
+  let noBuyCount = 0;    // ★ 追加
+  let total = playerQuestions.length;  // ★ 追加
+  
   playerQuestions.forEach(q => {
     if (q.selected === "buy") buyCount++;
     if (q.selected === "no") noBuyCount++;
