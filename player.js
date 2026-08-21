@@ -443,15 +443,19 @@ secondRoundOkBtn.addEventListener("click", () => {
   showPreSituation(playerIndex);
 });
 
-// 共有リンクコピー
+// 共有リンクを画面から消す
+document.getElementById("shareLink").style.display = "none";
+
+// ボタンを押したら今のURLをコピー
 document.getElementById("shareBigBtn").addEventListener("click", async () => {
   try {
-    await navigator.clipboard.writeText(SHARE_URL);
+    await navigator.clipboard.writeText(location.href);
     alert("共有用リンクをコピーしました！");
   } catch (e) {
-    alert("コピーに失敗しました。\n" + SHARE_URL);
+    alert("コピーに失敗しました。\n" + location.href);
   }
 });
+
 
 // 傾向まとめ
 function calculateSummary() {
@@ -459,8 +463,18 @@ function calculateSummary() {
   let impulsive = 0;
   let careful = 0;
 
-  let buyCount = 0;      // ★ 追加
-  let noBuyCount = 0;    // ★ 追加
+ // 買う（A〜D）
+if (["A", "B", "C", "D"].includes(q.selected)) buyCount++;
+
+// 買わない（N）
+if (q.selected === "N") noBuyCount++;
+
+// 衝動買い（1巡目）
+if (q.round === 1 && ["A","B","C","D"].includes(q.selected)) impulsive++;
+
+// 慎重買い（2巡目）
+if (q.round === 2 && ["A","B","C","D"].includes(q.selected)) careful++;
+
   let total = playerQuestions.length;  // ★ 追加
   
   playerQuestions.forEach(q => {
