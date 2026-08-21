@@ -485,9 +485,9 @@ function calculateSummary() {
     ? prices.reduce((a,b)=>a+b)/prices.length
     : 0;
 
-  const priceSensitivity = Math.max(0, Math.min(100,
-    Math.round(100 - (avgPrice / 1000) * 100)
-  )));
+const priceSensitivity = Math.max(0, Math.min(100,
+  Math.round(100 - (avgPrice / 1000) * 100)
+));
 
   const impulsiveRate = Math.round((impulsive / total) * 100);
   const carefulRate = Math.round((careful / total) * 100);
