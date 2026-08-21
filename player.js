@@ -248,7 +248,6 @@ noBuyBtn.setAttribute("data-key", "N");
 noBuyBtn.style.marginTop = "20px";
 
 noBuyBtn.onclick = () => {
-  
   selectedOption = { key: "N", label: "買わない", price: 0 };
 
   document.querySelectorAll(".optionButton").forEach(b => {
@@ -261,6 +260,7 @@ noBuyBtn.onclick = () => {
 
 optionsEl.appendChild(noBuyBtn);
 
+}
   
 // 決定ボタン
 confirmBtn.onclick = () => {
