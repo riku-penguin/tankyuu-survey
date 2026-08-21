@@ -367,8 +367,6 @@ function handleTimeout(q) {
   nextPlayerQuestion();
 }
 
-// ★★★ loadPlayerQuestion() を閉じる ★★★
-}
 
 
 // ▼▼▼ タイプ説明文 ▼▼▼
