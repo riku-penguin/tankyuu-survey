@@ -511,6 +511,7 @@ function calculateSummary() {
   };
 }
 
+
     // ★ 修正：選んだ選択肢の価格を使う
     if (q.selected) {
       const opt = q.options.find(o => o.key === q.selected);
