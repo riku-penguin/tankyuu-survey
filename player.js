@@ -1,3 +1,10 @@
+// URLから友達の動物タイプを取得
+function getFriendTypeFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("friendType"); // 例： "neko"
+}
+
+
 // ★ URL から type を取得して表示する
 const params = new URLSearchParams(location.search);
 const sharedType = params.get("type");
@@ -597,4 +604,44 @@ async function sendToSheet(data) {
   } catch (err) {
     console.error("送信エラー:", err);
   }
+}
+
+
+// ===== 相性データ =====
+const pairData = {
+  "neko_usagi": {
+    score: 78,
+    text: "気まま × 素直で、ゆるい雰囲気がちょうどよく噛み合う組み合わせです。",
+    advice: "ウサギが少しだけ主張すると、ネコが動きやすくなる。",
+    yourImg: "images/neko.png",
+    otherImg: "images/usagi.png"
+  }
+  // ← 他の組み合わせもここに追加していく
+};
+// ===== 診断タイプ → 動物タイプ変換（陸の設定版） =====
+function convertToAnimalType(myType) {
+  if (myType.includes("せっかち")) return "usagi";     // ウサギ
+  if (myType.includes("心配性")) return "fuku";        // フクロウ
+  if (myType.includes("節約家")) return "fuku";        // フクロウ
+  if (myType.includes("お得ハンター")) return "kitsune"; // キツネ
+  if (myType.includes("気分屋")) return "neko";        // ネコ
+  return null;
+}
+
+
+// ===== 相性結果を画面に反映 =====
+function showPairResult(key) {
+  const data = pairData[key];
+
+  // 相性度
+  document.getElementById("pair-score").textContent = data.score + "%";
+  document.getElementById("pair-score-text").textContent = data.score + "%";
+
+  // 立ち絵
+  document.getElementById("yourPairImg").src = data.yourImg;
+  document.getElementById("otherPairImg").src = data.otherImg;
+
+  // 相性文章
+  document.getElementById("pair-desc").innerHTML =
+    `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 }
