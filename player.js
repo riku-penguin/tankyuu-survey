@@ -405,8 +405,86 @@ function nextPlayerQuestion() {
     const summary = calculateSummary();
     fillResultTable(summary);
 
- const type = determineType(summary);
+    // ▼▼▼ タイプ判定 ▼▼▼
+    const type = determineType(summary);
+    document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
+
+    const type = determineType(summary);
 document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
+
+// ▼▼▼ 友達のタイプ表示 ▼▼▼
+const friendAnimal = getFriendTypeFromURL();
+if (friendAnimal) {
+  const friendTypeJP = {
+    usagi: "せっかち（ウサギ）",
+    fuku: "心配性（フクロウ）",
+    ham: "節約家（ハムスター）",
+    kitsune: "お得ハンター（キツネ）",
+    neko: "気分屋（ネコ）"
+  };
+
+  document.getElementById("friendTypeText").textContent =
+    `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
+
+  document.getElementById("friendTypeBox").style.display = "block";
+}
+
+    // ▼▼▼ 相性処理（ここが今回追加した部分） ▼▼▼
+
+    // 自分の動物タイプに変換（陸の設定）
+    const myAnimal = convertToAnimalType(type);
+
+    // URLから友達の動物タイプを取得
+    const friendAnimal = getFriendTypeFromURL();
+
+    // 友達のタイプがURLに入っている場合だけ相性を表示
+    if (friendAnimal && myAnimal) {
+      const key = `${friendAnimal}_${myAnimal}`;
+      showPairResult(key);
+    }
+
+    // ▼▼▼ 共有リンク生成（既存） ▼▼▼
+    const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
+    document.getElementById("shareLink").textContent = shareUrl;
+    document.getElementById("shareLink").href = shareUrl;
+
+    // ▼▼▼ タイプ説明 ▼▼▼
+    const box = document.getElementById("typeDetailBox");
+    box.innerHTML = "";
+
+    const desc = typeDescriptions[type];
+    const descBox = document.createElement("div");
+    descBox.className = "typeDescriptionBox";
+    descBox.textContent = desc;
+
+    box.appendChild(descBox);
+
+    setTimeout(() => {
+      descBox.classList.add("show");
+    }, 300);
+
+    // ▼▼▼ 結果画面表示 ▼▼▼
+    finalScreenEl.style.display = "block";
+    return;
+  }
+
+  showPreSituation(playerIndex);
+}
+
+// ▼▼▼ ここから相性処理 ▼▼▼
+
+// 自分の動物タイプに変換
+const myAnimal = convertToAnimalType(type);
+
+// URLから友達の動物タイプを取得
+const friendAnimal = getFriendTypeFromURL();
+
+// 友達のタイプがURLに入っている場合だけ相性を表示
+if (friendAnimal && myAnimal) {
+  const key = `${friendAnimal}_${myAnimal}`;
+  showPairResult(key);
+}
+;
 
 const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
 document.getElementById("shareLink").textContent = shareUrl;
@@ -629,9 +707,438 @@ function convertToAnimalType(myType) {
 }
 
 
+// ===== 相性データ（25種類） =====
+const pairData = {
+  "usagi_usagi": {
+    score: 70,
+    text: "テンポが似ていて行動が早い同士。気が合いやすい組み合わせ。",
+    advice: "お互い急ぎすぎるとすれ違うので、少しだけゆっくり話すと◎。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "usagi_fuku": {
+    score: 65,
+    text: "せっかち×慎重でバランスが良い。お互いの弱点を補える関係。",
+    advice: "ウサギが少しだけ待つ姿勢を見せると、フクロウが安心する。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "usagi_ham": {
+    score: 68,
+    text: "せっかち×節約家でテンポは違うが、目的が合えば強い組み合わせ。",
+    advice: "ウサギが焦らず説明すると、ハムスターが安心して決断できる。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/ham.png"
+  },
+
+  "usagi_kitsune": {
+    score: 72,
+    text: "行動力×合理性でテンポが合う。話が早くて相性良し。",
+    advice: "ウサギが理由を伝えると、キツネがもっと動きやすくなる。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "usagi_neko": {
+    score: 80,
+    text: "せっかち×気分屋でテンポが噛み合う。自然体で仲良くなれる。",
+    advice: "ネコの気ままさを尊重すると、さらに良い関係に。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/neko.png"
+  },
+
+  // fuku（心配性）
+  "fuku_usagi": {
+    score: 65,
+    text: "慎重×せっかちで補い合う関係。落ち着きと行動力の良い組み合わせ。",
+    advice: "フクロウがペースを少し合わせると、ウサギが安心する。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "fuku_fuku": {
+    score: 75,
+    text: "慎重同士で安心できる関係。ゆっくり丁寧に進むタイプ。",
+    advice: "話し合いを増やすとさらに信頼が深まる。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "fuku_ham": {
+    score: 78,
+    text: "慎重×節約家で価値観が似ている。堅実で安心できる組み合わせ。",
+    advice: "お互いの不安を共有するとさらに強い絆に。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/ham.png"
+  },
+
+  "fuku_kitsune": {
+    score: 68,
+    text: "慎重×合理で相性が良い。お互いの判断が噛み合う。",
+    advice: "キツネが急ぎすぎないと、フクロウがもっと動きやすい。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "fuku_neko": {
+    score: 60,
+    text: "慎重×気分屋でペース差が出やすい組み合わせ。",
+    advice: "ネコが一言だけ気持ちを伝えると、フクロウが安心する。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/neko.png"
+  },
+
+  // ham（節約家）
+  "ham_usagi": {
+    score: 68,
+    text: "節約家×せっかちでテンポは違うが、目的が合えば強い組み合わせ。",
+    advice: "ウサギが焦らず説明すると、ハムスターが安心して決断できる。",
+    yourImg: "images/ham.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "ham_fuku": {
+    score: 78,
+    text: "節約家×慎重で価値観が似ている。堅実で安心できる組み合わせ。",
+    advice: "お互いの不安を共有するとさらに強い絆に。",
+    yourImg: "images/ham.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "ham_ham": {
+    score: 80,
+    text: "節約家同士で相性抜群。無駄を嫌う価値観が一致している。",
+    advice: "たまにはご褒美を許すと関係が明るくなる。",
+    yourImg: "images/ham.png",
+    otherImg: "images/ham.png"
+  },
+
+  "ham_kitsune": {
+    score: 70,
+    text: "節約家×合理で相性が良い。効率重視の価値観が合う。",
+    advice: "キツネが理由を丁寧に伝えると、ハムスターが安心する。",
+    yourImg: "images/ham.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "ham_neko": {
+    score: 62,
+    text: "節約家×気分屋で価値観がズレやすい組み合わせ。",
+    advice: "ネコが自由さの理由を伝えると、ハムスターが理解しやすい。",
+    yourImg: "images/ham.png",
+    otherImg: "images/neko.png"
+  },
+
+  // kitsune（お得ハンター）
+  "kitsune_usagi": {
+    score: 72,
+    text: "合理×行動力でテンポが良い。決断が早くて相性良し。",
+    advice: "ウサギが理由を伝えると、キツネがもっと安心して動ける。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "kitsune_fuku": {
+    score: 68,
+    text: "合理×慎重で相性が良い。お互いの判断が噛み合う。",
+    advice: "キツネが急ぎすぎないと、フクロウがもっと動きやすい。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "kitsune_ham": {
+    score: 70,
+    text: "合理×節約家で価値観が合う。効率重視の相性。",
+    advice: "キツネが丁寧に説明すると、ハムスターが安心する。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/ham.png"
+  },
+
+  "kitsune_kitsune": {
+    score: 75,
+    text: "合理同士で話が早い。効率重視の相性。",
+    advice: "柔軟性を少し持つとさらに良い関係に。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "kitsune_neko": {
+    score: 62,
+    text: "合理×気分屋でズレが出やすい組み合わせ。",
+    advice: "キツネが柔らかく接すると、ネコが安心して動ける。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/neko.png"
+  },
+
+  // neko（気分屋）
+  "neko_usagi": {
+    score: 80,
+    text: "気分屋×せっかちでテンポが合う。自然体で仲良くなれる。",
+    advice: "ウサギが急ぎすぎないと、ネコがもっと安心する。",
+    yourImg: "images/neko.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "neko_fuku": {
+    score: 60,
+    text: "気分屋×慎重でペース差が出やすい組み合わせ。",
+    advice: "ネコが一言だけ気持ちを伝えると、フクロウが安心する。",
+    yourImg: "images/neko.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "neko_ham": {
+    score: 62,
+    text: "気分屋×節約家で価値観がズレやすい組み合わせ。",
+    advice: "ネコが自由さの理由を伝えると、ハムスターが理解しやすい。",
+    yourImg: "images/neko.png",
+    otherImg: "images/ham.png"
+  },
+
+  "neko_kitsune": {
+    score: 62,
+    text: "気分屋×合理でズレが出やすい組み合わせ。",
+    advice: "キツネが柔らかく接すると、ネコが安心して動ける。",
+    yourImg: "images/neko.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "neko_neko": {
+    score: 70,
+    text: "気分屋同士で楽しい関係。自由でゆるい雰囲気が合う。",
+    advice: "お互いの気ままさを尊重するとさらに良い。",
+    yourImg: "images/neko.png",
+    otherImg: "images/neko.png"
+  }
+};
+
+// ===== 相性データ（25種類） =====
+const pairData = {
+  "usagi_usagi": {
+    score: 70,
+    text: "テンポが似ていて行動が早い同士。気が合いやすい組み合わせ。",
+    advice: "お互い急ぎすぎるとすれ違うので、少しだけゆっくり話すと◎。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "usagi_fuku": {
+    score: 65,
+    text: "せっかち×慎重でバランスが良い。お互いの弱点を補える関係。",
+    advice: "ウサギが少しだけ待つ姿勢を見せると、フクロウが安心する。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "usagi_ham": {
+    score: 68,
+    text: "せっかち×節約家でテンポは違うが、目的が合えば強い組み合わせ。",
+    advice: "ウサギが焦らず説明すると、ハムスターが安心して決断できる。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/ham.png"
+  },
+
+  "usagi_kitsune": {
+    score: 72,
+    text: "行動力×合理性でテンポが合う。話が早くて相性良し。",
+    advice: "ウサギが理由を伝えると、キツネがもっと動きやすくなる。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "usagi_neko": {
+    score: 80,
+    text: "せっかち×気分屋でテンポが噛み合う。自然体で仲良くなれる。",
+    advice: "ネコの気ままさを尊重すると、さらに良い関係に。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/neko.png"
+  },
+
+  // fuku（心配性）
+  "fuku_usagi": {
+    score: 65,
+    text: "慎重×せっかちで補い合う関係。落ち着きと行動力の良い組み合わせ。",
+    advice: "フクロウがペースを少し合わせると、ウサギが安心する。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "fuku_fuku": {
+    score: 75,
+    text: "慎重同士で安心できる関係。ゆっくり丁寧に進むタイプ。",
+    advice: "話し合いを増やすとさらに信頼が深まる。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "fuku_ham": {
+    score: 78,
+    text: "慎重×節約家で価値観が似ている。堅実で安心できる組み合わせ。",
+    advice: "お互いの不安を共有するとさらに強い絆に。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/ham.png"
+  },
+
+  "fuku_kitsune": {
+    score: 68,
+    text: "慎重×合理で相性が良い。お互いの判断が噛み合う。",
+    advice: "キツネが急ぎすぎないと、フクロウがもっと動きやすい。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "fuku_neko": {
+    score: 60,
+    text: "慎重×気分屋でペース差が出やすい組み合わせ。",
+    advice: "ネコが一言だけ気持ちを伝えると、フクロウが安心する。",
+    yourImg: "images/fuku.png",
+    otherImg: "images/neko.png"
+  },
+
+  // ham（節約家）
+  "ham_usagi": {
+    score: 68,
+    text: "節約家×せっかちでテンポは違うが、目的が合えば強い組み合わせ。",
+    advice: "ウサギが焦らず説明すると、ハムスターが安心して決断できる。",
+    yourImg: "images/ham.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "ham_fuku": {
+    score: 78,
+    text: "節約家×慎重で価値観が似ている。堅実で安心できる組み合わせ。",
+    advice: "お互いの不安を共有するとさらに強い絆に。",
+    yourImg: "images/ham.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "ham_ham": {
+    score: 80,
+    text: "節約家同士で相性抜群。無駄を嫌う価値観が一致している。",
+    advice: "たまにはご褒美を許すと関係が明るくなる。",
+    yourImg: "images/ham.png",
+    otherImg: "images/ham.png"
+  },
+
+  "ham_kitsune": {
+    score: 70,
+    text: "節約家×合理で相性が良い。効率重視の価値観が合う。",
+    advice: "キツネが理由を丁寧に伝えると、ハムスターが安心する。",
+    yourImg: "images/ham.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "ham_neko": {
+    score: 62,
+    text: "節約家×気分屋で価値観がズレやすい組み合わせ。",
+    advice: "ネコが自由さの理由を伝えると、ハムスターが理解しやすい。",
+    yourImg: "images/ham.png",
+    otherImg: "images/neko.png"
+  },
+
+  // kitsune（お得ハンター）
+  "kitsune_usagi": {
+    score: 72,
+    text: "合理×行動力でテンポが良い。決断が早くて相性良し。",
+    advice: "ウサギが理由を伝えると、キツネがもっと安心して動ける。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "kitsune_fuku": {
+    score: 68,
+    text: "合理×慎重で相性が良い。お互いの判断が噛み合う。",
+    advice: "キツネが急ぎすぎないと、フクロウがもっと動きやすい。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "kitsune_ham": {
+    score: 70,
+    text: "合理×節約家で価値観が合う。効率重視の相性。",
+    advice: "キツネが丁寧に説明すると、ハムスターが安心する。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/ham.png"
+  },
+
+  "kitsune_kitsune": {
+    score: 75,
+    text: "合理同士で話が早い。効率重視の相性。",
+    advice: "柔軟性を少し持つとさらに良い関係に。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "kitsune_neko": {
+    score: 62,
+    text: "合理×気分屋でズレが出やすい組み合わせ。",
+    advice: "キツネが柔らかく接すると、ネコが安心して動ける。",
+    yourImg: "images/kitsune.png",
+    otherImg: "images/neko.png"
+  },
+
+  // neko（気分屋）
+  "neko_usagi": {
+    score: 80,
+    text: "気分屋×せっかちでテンポが合う。自然体で仲良くなれる。",
+    advice: "ウサギが急ぎすぎないと、ネコがもっと安心する。",
+    yourImg: "images/neko.png",
+    otherImg: "images/usagi.png"
+  },
+
+  "neko_fuku": {
+    score: 60,
+    text: "気分屋×慎重でペース差が出やすい組み合わせ。",
+    advice: "ネコが一言だけ気持ちを伝えると、フクロウが安心する。",
+    yourImg: "images/neko.png",
+    otherImg: "images/fuku.png"
+  },
+
+  "neko_ham": {
+    score: 62,
+    text: "気分屋×節約家で価値観がズレやすい組み合わせ。",
+    advice: "ネコが自由さの理由を伝えると、ハムスターが理解しやすい。",
+    yourImg: "images/neko.png",
+    otherImg: "images/ham.png"
+  },
+
+  "neko_kitsune": {
+    score: 62,
+    text: "気分屋×合理でズレが出やすい組み合わせ。",
+    advice: "キツネが柔らかく接すると、ネコが安心して動ける。",
+    yourImg: "images/neko.png",
+    otherImg: "images/kitsune.png"
+  },
+
+  "neko_neko": {
+    score: 70,
+    text: "気分屋同士で楽しい関係。自由でゆるい雰囲気が合う。",
+    advice: "お互いの気ままさを尊重するとさらに良い。",
+    yourImg: "images/neko.png",
+    otherImg: "images/neko.png"
+  }
+};
+
 // ===== 相性結果を画面に反映 =====
 function showPairResult(key) {
   const data = pairData[key];
+
+  // 相性スコア
+  document.getElementById("pair-score").textContent = `${data.score}点`;
+
+  // 相性文章
+  document.getElementById("pair-desc").innerHTML =
+    `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
+
+  // 画像
+  document.getElementById("pair-your-img").src = data.yourImg;
+  document.getElementById("pair-friend-img").src = data.otherImg;
+
+  // 相性ブロック表示
+  document.getElementById("pairResult").style.display = "block";
+}
 
   // 相性度
   document.getElementById("pair-score").textContent = data.score + "%";
@@ -641,7 +1148,20 @@ function showPairResult(key) {
   document.getElementById("yourPairImg").src = data.yourImg;
   document.getElementById("otherPairImg").src = data.otherImg;
 
-  // 相性文章
-  document.getElementById("pair-desc").innerHTML =
-    `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
+// 相性文章
+document.getElementById("pair-desc").innerHTML =
+  `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 }
+
+// ▼▼▼ 共有ボタン：自分の動物タイプ入りリンクを作る ▼▼▼
+document.getElementById("shareBigBtn").addEventListener("click", () => {
+  // 診断タイプ → 動物タイプに変換
+  const myAnimal = convertToAnimalType(type);
+
+  // 友達に送る用リンクを生成
+  const shareUrl = `${location.origin}${location.pathname}?friendType=${myAnimal}`;
+
+  // 画面に表示（既存の shareLink を使う）
+  document.getElementById("shareLink").textContent = shareUrl;
+  document.getElementById("shareLink").href = shareUrl;
+});
