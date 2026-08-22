@@ -5,6 +5,69 @@
   <title>探究アンケート</title>
 
   <style>
+.result-section {
+  background: #EFEAE4;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 12px;
+}
+
+.result-main-img {
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+.pair-title {
+  font-size: 22px;
+  text-align: center;
+  margin: 20px 0 10px;
+}
+
+.pair-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.pair-img {
+  width: 40%;
+  max-width: 150px;
+}
+
+.pair-score {
+  font-size: 28px;
+  font-weight: bold;
+  width: 20%;
+  text-align: center;
+}
+
+.pair-desc {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.share-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 999px;
+}
+
+@media (max-width: 600px) {
+  .result-section {
+    margin: 0;
+    border-radius: 0;
+  }
+}
+
+
     body {
       background: #f5f7ff;
       font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
@@ -517,8 +580,8 @@
       二巡目をはじめる
     </button>
   </div>
-  <!-- 結果画面（完全修正版） -->
-  <div id="finalScreen" class="screenBox" style="display:none;">
+ <!-- 結果画面（完全修正版） -->
+<div id="finalScreen" class="screenBox" style="display:none;">
     <h2 id="resultType"></h2>
 
     <div id="typeDetailBox"></div>
@@ -528,15 +591,33 @@
       <tr><th>項目</th><th>あなたの数値</th></tr>
     </table>
 
-    <!-- 共有リンク（player.js が必ず使う要素） -->
+    <!-- ★ここに相性ブロックだけ残す★ -->
+    <div class="result-section">
+
+      <!-- 相性度 -->
+      <h3 class="pair-title">あなたと〇〇の相性：<span id="pair-score-text">%</span></h3>
+
+      <!-- 立ち絵付き相性表示 -->
+      <div class="pair-box">
+        <img src="" class="pair-img" id="yourPairImg">
+        <div class="pair-score" id="pair-score">%</div>
+        <img src="" class="pair-img" id="otherPairImg">
+      </div>
+
+      <!-- 組み合わせ文章 -->
+      <p class="pair-desc" id="pair-desc"></p>
+
+      <!-- 共有ボタン（これは残してOK） -->
+      <button class="share-btn">結果を共有する</button>
+
+    </div>
+
+    <!-- 既存の共有リンク -->
     <p style="text-align:center; margin-top:20px;">結果を共有する：</p>
     <a id="shareLink" href="#" target="_blank"
        style="display:block; text-align:center; margin-bottom:20px;"></a>
 
-    <!-- 大きい共有ボタン（あなたのコードをそのまま活かす） -->
     <button id="shareBigBtn" class="primaryButton">結果を共有する</button>
-  </div>
+</div>
 
-  <script src="player.js"></script>
-</body>
-</html>
+<script src="player.js"></script>
