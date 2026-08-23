@@ -67,7 +67,6 @@
   }
 }
 
-
     body {
       background: #f5f7ff;
       font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
@@ -168,48 +167,6 @@
     .questionContainer,
     .preSituationScreen,
     .resultContainer {
-      background: #ffffff;
-      padding: 20px;
-      margin: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    #question {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-
-    #situation {
-      font-size: 16px;
-      color: #555;
-      margin-bottom: 12px;
-    }
-
-    #questionNumber {
-      font-size: 14px;
-      color: #777;
-      margin-bottom: 10px;
-    }
-
-    #preCountdown {
-      font-size: 16px;
-      color: #444;
-      margin-top: 10px;
-    }
-
-    .optionImagePlaceholder {
-      background: #eef3ff;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      color: #666;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    .questionContainer {
       background: #ffffff;
       padding: 20px;
       margin: 20px;
@@ -358,7 +315,17 @@
       cursor: pointer;
     }
 
-    .primaryButton:hover {
+    /* ★★★ 追加：質問画像のスタイル ★★★ */
+    .questionImage {
+      width: 100%;
+      max-width: 300px;
+      display: block;
+      margin: 20px auto;
+      border-radius: 12px;
+    }
+
+  </style>
+  .primaryButton:hover {
       background: #7ac88f;
     }
 
@@ -547,6 +514,7 @@
     <div id="preCountdown"></div>
     <button id="preOkBtn" class="primaryButton">OK</button>
   </div>
+
   <!-- 質問画面 -->
   <div id="playerContainer" class="screenBox" style="display:none;">
     <div id="questionNumber"></div>
@@ -580,9 +548,11 @@
       二巡目をはじめる
     </button>
   </div>
+
  <!-- 結果画面（完全修正版） -->
 <div id="finalScreen" class="screenBox" style="display:none;">
     <h2 id="resultType"></h2>
+
 <div id="friendTypeBox" style="display:none; margin-top:20px;">
   <p id="friendTypeText"></p>
 </div>
@@ -622,11 +592,14 @@
 
     <button id="shareBigBtn" class="primaryButton">結果を共有する</button>
 </div>
+
+<!-- ★★★ 追加：CSS を style 内に戻す（内容は1文字も変更していない） ★★★ -->
+<style>
 .questionImage {
   max-width: 100%;
   display: block;
   margin: 12px 0;
 }
-
+</style>
 
 <script src="player.js"></script>
