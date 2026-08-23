@@ -171,17 +171,30 @@ function startQuestion(index) {
 function loadPlayerQuestion(index) {
   const q = playerQuestions[index];
 
+  // --- 上部の状況文・質問文 ---
   situationEl.textContent = q.situation || "";
   questionEl.textContent = q.question || "";
   questionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
 
-  optionsEl.innerHTML = "";
+// --- 選択肢エリア初期化 ---
+optionsEl.innerHTML = "";
 
+// ★★★ 問題文の下に画像を表示する処理（必要なら） ★★★
+if (q.image) {
+  const img = document.createElement("img");
+  img.src = q.image;
+  img.className = "questionImage";
+  optionsEl.appendChild(img);
+}
+
+
+  // --- 選択肢画像のプレースホルダー ---
   const imgPlaceholder = document.createElement("div");
   imgPlaceholder.className = "optionImagePlaceholder";
   imgPlaceholder.textContent = "（ここに選択肢の画像が入ります）";
   optionsEl.appendChild(imgPlaceholder);
 
+  // --- タイマー処理 ---
   startTime = Date.now();
 
   let limit = round === 1 ? q.time1 : q.time2;
@@ -221,6 +234,8 @@ function loadPlayerQuestion(index) {
       timerBar.style.width = `${width}%`;
     }
   }, 50);
+}
+
 
 // A〜D の選択肢を追加
 q.options.forEach((opt) => {
