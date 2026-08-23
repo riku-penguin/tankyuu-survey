@@ -176,17 +176,16 @@ function loadPlayerQuestion(index) {
   questionEl.textContent = q.question || "";
   questionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
 
-// --- 選択肢エリア初期化 ---
-optionsEl.innerHTML = "";
+  // --- 選択肢エリア初期化 ---
+  optionsEl.innerHTML = "";
 
-// ★★★ 問題文の下に画像を表示する処理（必要なら） ★★★
-if (q.image) {
-  const img = document.createElement("img");
-  img.src = q.image;
-  img.className = "questionImage";
-  optionsEl.appendChild(img);
-}
-
+  // ★★★ 問題文の下に画像を表示する処理（あなたの仕様に合わせてそのまま） ★★★
+  if (q.image) {
+    const img = document.createElement("img");
+    img.src = q.image;
+    img.className = "questionImage";
+    optionsEl.appendChild(img);
+  }
 
   // --- 選択肢画像のプレースホルダー ---
   const imgPlaceholder = document.createElement("div");
@@ -234,11 +233,9 @@ if (q.image) {
       timerBar.style.width = `${width}%`;
     }
   }, 50);
-}
 
-
-// A〜D の選択肢を追加
-q.options.forEach((opt) => {
+  // A〜D の選択肢を追加
+  q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
 
@@ -246,7 +243,6 @@ q.options.forEach((opt) => {
     btn.setAttribute("data-key", opt.key);
 
     btn.onclick = () => {
-      
       selectedOption = opt;
 
       document.querySelectorAll(".optionButton").forEach(b => {
@@ -258,36 +254,32 @@ q.options.forEach((opt) => {
     };
 
     optionsEl.appendChild(btn);
-});  // ← forEach の正しい終わり方（余計な } は不要）
-
-// ★★★ A〜D の後に「買わない」ボタンを追加 ★★★
-const noBuyBtn = document.createElement("button");
-noBuyBtn.className = "optionButton noBuyButton";
-noBuyBtn.textContent = "買わない";
-noBuyBtn.setAttribute("data-key", "N");
-
-// A〜D と少し離す
-noBuyBtn.style.marginTop = "20px";
-
-noBuyBtn.onclick = () => {
-  selectedOption = { key: "N", label: "買わない", price: 0 };
-
-  document.querySelectorAll(".optionButton").forEach(b => {
-    b.classList.remove("selectedOption");
   });
-  noBuyBtn.classList.add("selectedOption");
 
-  confirmBtn.style.display = "block";
-};
+  // ★★★ A〜D の後に「買わない」ボタンを追加 ★★★
+  const noBuyBtn = document.createElement("button");
+  noBuyBtn.className = "optionButton noBuyButton";
+  noBuyBtn.textContent = "買わない";
+  noBuyBtn.setAttribute("data-key", "N";
 
-optionsEl.appendChild(noBuyBtn);
+  noBuyBtn.style.marginTop = "20px";
 
+  noBuyBtn.onclick = () => {
+    selectedOption = { key: "N", label: "買わない", price: 0 };
+
+    document.querySelectorAll(".optionButton").forEach(b => {
+      b.classList.remove("selectedOption");
+    });
+    noBuyBtn.classList.add("selectedOption");
+
+    confirmBtn.style.display = "block";
+  };
+
+  optionsEl.appendChild(noBuyBtn);
 }
-  
+
 // 決定ボタン
 confirmBtn.onclick = () => {
-
-  
   const q = playerQuestions[playerIndex];
 
   const elapsed = (Date.now() - startTime) / 1000;
@@ -342,7 +334,6 @@ confirmBtn.onclick = () => {
 
 // 一巡目の時間切れ
 function handleTimeout(q) {
-  
   if (timer) clearInterval(timer);
 
   const endTime = Date.now();
@@ -391,6 +382,7 @@ function handleTimeout(q) {
 
 
 
+
 // ▼▼▼ タイプ説明文 ▼▼▼
 const typeDescriptions = {
   "せっかちタイプ（すぐ決めちゃう）":
@@ -411,54 +403,49 @@ function nextPlayerQuestion() {
 
   playerIndex++;
 
+  // ▼▼▼ 一巡目終了 ▼▼▼
   if (round === 1 && playerIndex >= playerQuestions.length) {
     infoScreenEl.style.display = "block";
     return;
   }
 
+  // ▼▼▼ 二巡目終了 → 結果画面 ▼▼▼
   if (round === 2 && playerIndex >= playerQuestions.length) {
+
     const summary = calculateSummary();
+
+    // 結果テーブル
     fillResultTable(summary);
 
     // ▼▼▼ タイプ判定 ▼▼▼
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    const type = determineType(summary);
-document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
-
-// ▼▼▼ 友達のタイプ表示 ▼▼▼
-const friendAnimal = getFriendTypeFromURL();
-if (friendAnimal) {
-  const friendTypeJP = {
-    usagi: "せっかち（ウサギ）",
-    fuku: "心配性（フクロウ）",
-    ham: "節約家（ハムスター）",
-    kitsune: "お得ハンター（キツネ）",
-    neko: "気分屋（ネコ）"
-  };
-
-  document.getElementById("friendTypeText").textContent =
-    `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
-
-  document.getElementById("friendTypeBox").style.display = "block";
-}
-
-    // ▼▼▼ 相性処理（ここが今回追加した部分） ▼▼▼
-
-    // 自分の動物タイプに変換（陸の設定）
-    const myAnimal = convertToAnimalType(type);
-
-    // URLから友達の動物タイプを取得
+    // ▼▼▼ 友達のタイプ表示 ▼▼▼
     const friendAnimal = getFriendTypeFromURL();
+    if (friendAnimal) {
+      const friendTypeJP = {
+        usagi: "せっかち（ウサギ）",
+        fuku: "心配性（フクロウ）",
+        ham: "節約家（ハムスター）",
+        kitsune: "お得ハンター（キツネ）",
+        neko: "気分屋（ネコ）"
+      };
 
-    // 友達のタイプがURLに入っている場合だけ相性を表示
+      document.getElementById("friendTypeText").textContent =
+        `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
+
+      document.getElementById("friendTypeBox").style.display = "block";
+    }
+
+    // ▼▼▼ 相性処理 ▼▼▼
+    const myAnimal = convertToAnimalType(type);
     if (friendAnimal && myAnimal) {
       const key = `${friendAnimal}_${myAnimal}`;
       showPairResult(key);
     }
 
-    // ▼▼▼ 共有リンク生成（既存） ▼▼▼
+    // ▼▼▼ 共有リンク生成 ▼▼▼
     const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
     document.getElementById("shareLink").textContent = shareUrl;
     document.getElementById("shareLink").href = shareUrl;
@@ -483,50 +470,10 @@ if (friendAnimal) {
     return;
   }
 
+  // ▼▼▼ 次の質問へ ▼▼▼
   showPreSituation(playerIndex);
 }
 
-// ▼▼▼ ここから相性処理 ▼▼▼
-
-// 自分の動物タイプに変換
-const myAnimal = convertToAnimalType(type);
-
-// URLから友達の動物タイプを取得
-const friendAnimal = getFriendTypeFromURL();
-
-// 友達のタイプがURLに入っている場合だけ相性を表示
-if (friendAnimal && myAnimal) {
-  const key = `${friendAnimal}_${myAnimal}`;
-  showPairResult(key);
-}
-;
-
-const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
-document.getElementById("shareLink").textContent = shareUrl;
-document.getElementById("shareLink").href = shareUrl;
-
-const box = document.getElementById("typeDetailBox");
-box.innerHTML = "";
-
-const desc = typeDescriptions[type];
-const descBox = document.createElement("div");
-descBox.className = "typeDescriptionBox";
-descBox.textContent = desc;
-
-
-    box.appendChild(descBox);
-
-    setTimeout(() => {
-      descBox.classList.add("show");
-    }, 300);
-　　
-    
-    finalScreenEl.style.display = "block";
-    return;
-  }
-
-  showPreSituation(playerIndex);
-}
 
 // 二巡目開始
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
@@ -569,22 +516,15 @@ function calculateSummary() {
 
   playerQuestions.forEach(q => {
 
-    // 買う（A〜D）
     if (["A", "B", "C", "D"].includes(q.selected)) buyCount++;
-
-    // 買わない（N）
     if (q.selected === "N") noBuyCount++;
 
-    // ★ 選んだ選択肢の価格を使う
     if (q.selected) {
       const opt = q.options.find(o => o.key === q.selected);
       if (opt && opt.price != null) prices.push(opt.price);
     }
 
-    // 衝動買い（1巡目）
     if (q.round === 1 && ["A","B","C","D"].includes(q.selected)) impulsive++;
-
-    // 慎重買い（2巡目）
     if (q.round === 2 && ["A","B","C","D"].includes(q.selected)) careful++;
   });
 
