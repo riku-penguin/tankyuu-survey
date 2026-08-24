@@ -260,7 +260,7 @@ function loadPlayerQuestion(index) {
   const noBuyBtn = document.createElement("button");
   noBuyBtn.className = "optionButton noBuyButton";
   noBuyBtn.textContent = "買わない";
-  noBuyBtn.setAttribute("data-key", "N";
+  noBuyBtn.setAttribute("data-key", "N");
 
   noBuyBtn.style.marginTop = "20px";
 
