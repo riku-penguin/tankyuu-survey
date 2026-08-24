@@ -518,6 +518,13 @@ function calculateSummary() {
 function determineType(summary) {
   const { buyRate, noBuyRate, priceSensitivity, impulsiveRate, carefulRate } = summary;
 
+  if (impulsiveRate >= 60) return "せっかちタイプ（すぐ決めちゃう）";
+  if (carefulRate >= 60) return "心配性タイプ（慎重に考える）";
+  if (noBuyRate >= 60) return "節約家タイプ（買わないことが多い）";
+  if (priceSensitivity >= 60) return "お得ハンタータイプ（コスパ重視）";
+
+  return "気分屋タイプ（状況次第で変わる）";
+}
   // 各タイプのスコア
   let scores = {
     "せっかちタイプ（すぐ決めちゃう）": 0,
