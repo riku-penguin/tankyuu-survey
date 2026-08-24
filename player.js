@@ -496,6 +496,11 @@ document.getElementById("shareLink").style.display = "none";
 // ボタンを押したら今のURLをコピー
 document.getElementById("shareBigBtn").addEventListener("click", async () => {
   try {
+    document.getElementById("shareBtn").addEventListener("click", () => {
+  const message = getShareMessage(resultType, shareUrl);
+  document.getElementById("shareText").innerText = message;
+});
+
     await navigator.clipboard.writeText(location.href);
     alert("共有用リンクをコピーしました！");
   } catch (e) {
