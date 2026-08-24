@@ -1,3 +1,21 @@
+// ============================
+// 質問ごとの画像リスト
+// ============================
+const questionImages = {
+  1: "img/q1.png",
+  2: "img/q2.png",
+  3: "img/q3.png",
+  4: "img/q4.png",
+  5: "img/q5.png",
+  6: "img/q6.png",
+  7: "img/q7.png",
+  8: "img/q8.png",
+  9: "img/q9.png",
+  10: "img/q10.png",
+  11: "img/q11.png",
+  12: "img/q12.png"
+};
+
 // URLから友達の動物タイプを取得
 function getFriendTypeFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -186,23 +204,6 @@ function loadPlayerQuestion(index) {
     img.className = "questionImage";
     optionsEl.appendChild(img);
   }
-// ============================
-// 質問ごとの画像リスト
-// ============================
-const questionImages = {
-  1: "img/q1.png",
-  2: "img/q2.png",
-  3: "img/q3.png",
-  4: "img/q4.png",
-  5: "img/q5.png",
-  6: "img/q6.png",
-  7: "img/q7.png",
-  8: "img/q8.png",
-  9: "img/q9.png",
-  10: "img/q10.png",
-  11: "img/q11.png",
-  12: "img/q12.png"
-};
 
 // --- 選択肢画像の表示エリア ---
 const imgEl = document.createElement("img");
