@@ -874,16 +874,17 @@ pairData = {
 function showPairResult(key) {
   const data = pairData[key];
 
-  // 相性スコア
   document.getElementById("pair-score").textContent = `${data.score}点`;
 
-  // 相性文章
   document.getElementById("pair-desc").innerHTML =
     `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 
- // ★★★ ここで data を作る必要がある ★★★
-const pairKey = friendAnimal + "_" + myAnimal;
-const data = pairData[pairKey];
+  document.getElementById("yourPairImg").src = data.yourImg;
+  document.getElementById("otherPairImg").src = data.otherImg;
+
+  document.getElementById("pairResult").style.display = "block";
+}
+
 
 // 画像
 document.getElementById("pair-your-img").src = data.yourImg;
