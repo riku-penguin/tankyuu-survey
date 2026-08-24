@@ -655,7 +655,7 @@ let pairData = {
 function convertToAnimalType(myType) {
   if (myType.includes("せっかち")) return "usagi";     // ウサギ
   if (myType.includes("心配性")) return "fuku";        // フクロウ
-  if (myType.includes("節約家")) return "fuku";        // ハムスター
+  if (myType.includes("節約家")) return "ham";        // ハムスター
   if (myType.includes("お得ハンター")) return "kitsune"; // キツネ
   if (myType.includes("気分屋")) return "neko";        // ネコ
   return null;
