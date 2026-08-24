@@ -397,66 +397,8 @@
       color: #7a8bbd;
       font-size: 16px;
     }
-
-    /* 結果画面（CSS内のHTML混入を除去済み） */
-    #finalScreen {
-      display: none;
-      overflow-y: auto;
-      max-height: 90vh;
-    }
-
-    #resultType {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 26px;
-      font-weight: bold;
-      color: #4a6fdc;
-    }
-
-    #typeDetailBox {
-      max-height: 250px;
-      overflow-y: auto;
-      margin-top: 20px;
-    }
-
-    .typeDescriptionBox {
-      margin-top: 20px;
-      padding: 20px;
-      background: #f0f8ff;
-      border-left: 6px solid #4aa3ff;
-      border-radius: 8px;
-      font-size: 1.15em;
-      line-height: 1.7;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease;
-    }
-
-    .typeDescriptionBox.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    #resultTable {
-      margin: 20px auto;
-      width: 90%;
-      max-width: 500px;
-      border-collapse: collapse;
-      font-size: 18px;
-    }
-
-    #resultTable th {
-      border-bottom: 2px solid #ccc;
-      padding: 12px;
-    }
-
-    #resultTable td {
-      border-bottom: 1px solid #ddd;
-      padding: 12px;
-      text-align: center;
-    }
-
-  </style>
+</style>
+     </style>  <!-- ← 前半CSSの閉じタグ（あなたのコードのまま） -->
 </head>
 <body>
 
@@ -552,13 +494,13 @@
     </button>
   </div>
 
- <!-- 結果画面（完全修正版） -->
-<div id="finalScreen" class="screenBox" style="display:none;">
+  <!-- 結果画面（完全修正版） -->
+  <div id="finalScreen" class="screenBox" style="display:none;">
     <h2 id="resultType"></h2>
 
-<div id="friendTypeBox" style="display:none; margin-top:20px;">
-  <p id="friendTypeText"></p>
-</div>
+    <div id="friendTypeBox" style="display:none; margin-top:20px;">
+      <p id="friendTypeText"></p>
+    </div>
 
     <div id="typeDetailBox"></div>
 
@@ -583,8 +525,8 @@
       <!-- 組み合わせ文章 -->
       <p class="pair-desc" id="pair-desc"></p>
 
-      <!-- 共有ボタン（これは残してOK） -->
-      <button class="share-btn">結果を共有する</button>
+      <!-- 共有ボタン -->
+      <button id="shareBigBtn" class="share-btn">結果を共有する</button>
 
     </div>
 
@@ -593,16 +535,10 @@
     <a id="shareLink" href="#" target="_blank"
        style="display:block; text-align:center; margin-bottom:20px;"></a>
 
-    <button id="shareBigBtn" class="primaryButton">結果を共有する</button>
-</div>
+  </div>
 
-<!-- ★★★ 追加：CSS を style 内に戻す（内容は1文字も変更していない） ★★★ -->
-<style>
-.questionImage {
-  max-width: 100%;
-  display: block;
-  margin: 12px 0;
-}
-</style>
+  <!-- ★★★ CSSは head に移動済み ★★★ -->
 
-<script src="player.js"></script>
+  <script src="player.js"></script>
+</body>
+</html>
