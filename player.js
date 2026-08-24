@@ -881,15 +881,16 @@ function showPairResult(key) {
   document.getElementById("pair-desc").innerHTML =
     `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 
-  // 画像
-  document.getElementById("pair-your-img").src = data.yourImg;
-  document.getElementById("pair-friend-img").src = data.otherImg;
-// 相性ブロック表示
-document.getElementById("pairResult").style.display = "block";
-
-// ★★★ ここで data を作る必要がある ★★★
+ // ★★★ ここで data を作る必要がある ★★★
 const pairKey = friendAnimal + "_" + myAnimal;
 const data = pairData[pairKey];
+
+// 画像
+document.getElementById("pair-your-img").src = data.yourImg;
+document.getElementById("pair-friend-img").src = data.otherImg;
+
+// 相性ブロック表示
+document.getElementById("pairResult").style.display = "block";
 
 // 相性度
 document.getElementById("pair-score").textContent = data.score + "%";
@@ -902,7 +903,6 @@ document.getElementById("otherPairImg").src = data.otherImg;
 // 相性文章
 document.getElementById("pair-desc").innerHTML =
 `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
-
 
 
 // ▼▼▼ 共有ボタン：自分の動物タイプ入りリンクを作る ▼▼▼
