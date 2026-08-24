@@ -655,7 +655,7 @@ const pairData = {
 function convertToAnimalType(myType) {
   if (myType.includes("せっかち")) return "usagi";     // ウサギ
   if (myType.includes("心配性")) return "fuku";        // フクロウ
-  if (myType.includes("節約家")) return "fuku";        // フクロウ
+  if (myType.includes("節約家")) return "fuku";        // ハムスター
   if (myType.includes("お得ハンター")) return "kitsune"; // キツネ
   if (myType.includes("気分屋")) return "neko";        // ネコ
   return null;
@@ -663,7 +663,7 @@ function convertToAnimalType(myType) {
 
 
 // ===== 相性データ（25種類） =====
-const pairData = {
+pairData = {
   "usagi_usagi": {
     score: 70,
     text: "テンポが似ていて行動が早い同士。気が合いやすい組み合わせ。",
