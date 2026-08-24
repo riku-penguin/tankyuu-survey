@@ -493,20 +493,35 @@
     </button>
   </div>
 
-  <!-- 結果画面 -->
-  <div id="finalScreen" class="screenBox" style="display:none;">
-    <h2 id="resultType"></h2>
+ <!-- 結果画面 -->
+<div id="finalScreen" class="screenBox" style="display:none;">
+  <h2 id="resultType"></h2>
 
-    <div id="friendTypeBox" style="display:none; margin-top:20px;">
-      <p id="friendTypeText"></p>
-    </div>
+  <div id="friendTypeBox" style="display:none; margin-top:20px;">
+    <p id="friendTypeText"></p>
+  </div>
 
-    <div id="typeDetailBox"></div>
+  <div id="typeDetailBox"></div>
 
-    <h3 style="text-align:center;">あなたの傾向まとめ</h3>
-    <table id="resultTable">
-      <tr><th>項目</th><th>あなたの数値</th></tr>
-    </table>
+  <!-- ★ 動物を大きく表示する場所 -->
+  <div style="text-align:center; margin-top:20px;">
+    <img id="mainAnimalImg" style="width:300px; height:auto;">
+  </div>
+
+  <!-- ★ 共有文を表示する場所 -->
+  <div id="shareText" style="margin-top:20px; font-size:16px;"></div>
+
+  <h3 style="text-align:center;">あなたの傾向まとめ</h3>
+  <table id="resultTable">
+    <tr><th>項目</th><th>あなたの数値</th></tr>
+  </table>
+
+  <!-- ★ 関係値（相性）を表で表示する場所 -->
+  <h3 style="text-align:center; margin-top:30px;">あなたと他タイプの関係値</h3>
+  <table id="compatTable" style="margin:0 auto; border-collapse:collapse;">
+    <tr><th>あなた</th><th>相手</th><th>相性</th></tr>
+  </table>
+</div>
 
     <!-- 相性ブロック -->
     <div class="result-section">
