@@ -1,19 +1,20 @@
 // ============================
 // 質問ごとの画像リスト
 // ============================
+// ★追加：index が 0 から始まるので 0〜11 に修正
 const questionImages = {
-  1: "img/q1.png",
-  2: "img/q2.png",
-  3: "img/q3.png",
-  4: "img/q4.png",
-  5: "img/q5.png",
-  6: "img/q6.png",
-  7: "img/q7.png",
-  8: "img/q8.png",
-  9: "img/q9.png",
-  10: "img/q10.png",
-  11: "img/q11.png",
-  12: "img/q12.png"
+  0: "img/q1.png",
+  1: "img/q2.png",
+  2: "img/q3.png",
+  3: "img/q4.png",
+  4: "img/q5.png",
+  5: "img/q6.png",
+  6: "img/q7.png",
+  7: "img/q8.png",
+  8: "img/q9.png",
+  9: "img/q10.png",
+  10: "img/q11.png",
+  11: "img/q12.png"
 };
 
 // URLから友達の動物タイプを取得
@@ -47,6 +48,10 @@ const SHARE_URL =
 
 let playerQuestions = [];
 let playerIndex = 0;
+
+// ★追加：currentQuestion を定義（必須）
+let currentQuestion = 0;
+
 let startTime = 0;
 let round = 1;
 
@@ -175,8 +180,39 @@ function showPreSituation(index) {
 
 // 質問開始
 function startQuestion(index) {
+
+  // ★追加：currentQuestion をセット（必須）
+  currentQuestion = index;
+
   hideAllScreens();
 
+  playerContainerEl.style.display = "block";
+
+  selectedOption = null;
+  confirmBtn.style.display = "none";
+  
+  loadPlayerQuestion(index);
+}
+
+// 質問表示
+function loadPlayerQuestion(index) {
+  const q = playerQuestions[index];
+
+  // --- 上部の状況文・質問文 ---
+  situationEl.textContent = q.situation || "";
+  questionEl.textContent = q.question || "";
+  questionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
+
+  // --- 選択肢エリア初期化 ---
+  optionsEl.innerHTML = "";
+
+// 質問開始
+function startQuestion(index) {
+
+  // ★追加：これが無いと画像が出ない
+  currentQuestion = index;
+
+  hideAllScreens();
   playerContainerEl.style.display = "block";
 
   selectedOption = null;
@@ -205,15 +241,17 @@ function loadPlayerQuestion(index) {
     optionsEl.appendChild(img);
   }
 
-// --- 選択肢画像の表示エリア ---
-const imgEl = document.createElement("img");
-imgEl.id = "choiceImage";
-imgEl.className = "optionImagePlaceholder";
-imgEl.style.width = "300px";
-imgEl.style.height = "auto";
-optionsEl.appendChild(imgEl);
+  // --- 選択肢画像の表示エリア ---
+  const imgEl = document.createElement("img");
+  imgEl.id = "choiceImage";
+  imgEl.className = "optionImagePlaceholder";
+  imgEl.style.width = "300px";
+  imgEl.style.height = "auto";
+  optionsEl.appendChild(imgEl);
 
-imgEl.src = questionImages[currentQuestion];
+  // ★追加：質問ごとの画像をセット
+  imgEl.src = questionImages[currentQuestion];
+
   // --- タイマー処理 ---
   startTime = Date.now();
 
@@ -299,107 +337,6 @@ imgEl.src = questionImages[currentQuestion];
   optionsEl.appendChild(noBuyBtn);
 }
 
-// 決定ボタン
-confirmBtn.onclick = () => {
-  const q = playerQuestions[playerIndex];
-
-  const elapsed = (Date.now() - startTime) / 1000;
-
-  if (round === 2 && elapsed < q.time2) {
-    alert(`あと ${Math.ceil(q.time2 - elapsed)} 秒後に回答できます`);
-    return;
-  }
-
-  if (!selectedOption) {
-    alert("選択肢を選んでください");
-    return;
-  }
-
-  if (timer) clearInterval(timer);
-
-  const endTime = Date.now();
-  const answerTime = (endTime - startTime) / 1000;
-
-  q.selected = selectedOption.key;
-  q.round = round;
-
-  const summary = calculateSummary();
-  const type = determineType(summary);
-
-  sendToSheet({
-    isUserInfo: false,
-    userId,
-    questionId: q.id,
-    selected: selectedOption.key,
-    optionLabel: selectedOption.label,
-    price: selectedOption.price ?? null,
-    category: q.category ?? "",
-    time1: q.time1,
-    time2: q.time2,
-    gender: genderEl.value,
-    age: ageEl.value,
-    round,
-    answerTime1: round === 1 ? answerTime : null,
-    answerTime2: round === 2 ? answerTime : null,
-    timeout: false,
-    buyRate: summary.buyRate,
-    noBuyRate: summary.noBuyRate,
-    priceSensitivity: summary.priceSensitivity,
-    impulsiveRate: summary.impulsiveRate,
-    carefulRate: summary.carefulRate,
-    type
-  });
-
-  nextPlayerQuestion();
-};
-
-// 一巡目の時間切れ
-function handleTimeout(q) {
-  if (timer) clearInterval(timer);
-
-  const endTime = Date.now();
-  const answerTime = (endTime - startTime) / 1000;
-
-  let selectedKey = null;
-  let selectedLabel = "時間切れ";
-
-  if (selectedOption) {
-    selectedKey = selectedOption.key;
-    selectedLabel = selectedOption.label;
-  }
-
-  q.selected = selectedKey;
-  q.round = round;
-
-  const summary = calculateSummary();
-  const type = determineType(summary);
-
-  sendToSheet({
-    isUserInfo: false,
-    userId,
-    questionId: q.id,
-    selected: selectedKey,
-    optionLabel: selectedLabel,
-    price: selectedOption ? selectedOption.price : null,
-    category: q.category ?? "",
-    time1: q.time1,
-    time2: q.time2,
-    gender: genderEl.value,
-    age: ageEl.value,
-    round,
-    answerTime1: answerTime,
-    answerTime2: null,
-    timeout: true,
-    buyRate: summary.buyRate,
-    noBuyRate: summary.noBuyRate,
-    priceSensitivity: summary.priceSensitivity,
-    impulsiveRate: summary.impulsiveRate,
-    carefulRate: summary.carefulRate,
-    type
-  });
-
-  nextPlayerQuestion();
-}
 
 
 
