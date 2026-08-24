@@ -525,8 +525,7 @@ function determineType(summary) {
 
   return "気分屋タイプ（状況次第で変わる）";
 }
-  return "気分屋タイプ（状況次第で変わる）";
-}
+  
   // 各タイプのスコア
   let scores = {
     "せっかちタイプ（すぐ決めちゃう）": 0,
