@@ -884,22 +884,25 @@ function showPairResult(key) {
   // 画像
   document.getElementById("pair-your-img").src = data.yourImg;
   document.getElementById("pair-friend-img").src = data.otherImg;
+// 相性ブロック表示
+document.getElementById("pairResult").style.display = "block";
 
-  // 相性ブロック表示
-  document.getElementById("pairResult").style.display = "block";
-}
+// ★★★ ここで data を作る必要がある ★★★
+const pairKey = friendAnimal + "_" + myAnimal;
+const data = pairData[pairKey];
 
-  // 相性度
-  document.getElementById("pair-score").textContent = data.score + "%";
-  document.getElementById("pair-score-text").textContent = data.score + "%";
+// 相性度
+document.getElementById("pair-score").textContent = data.score + "%";
+document.getElementById("pair-score-text").textContent = data.score + "%";
 
-  // 立ち絵
-  document.getElementById("yourPairImg").src = data.yourImg;
-  document.getElementById("otherPairImg").src = data.otherImg;
+// 立ち絵
+document.getElementById("yourPairImg").src = data.yourImg;
+document.getElementById("otherPairImg").src = data.otherImg;
 
 // 相性文章
 document.getElementById("pair-desc").innerHTML =
-  `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
+`${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
+
 
 
 // ▼▼▼ 共有ボタン：自分の動物タイプ入りリンクを作る ▼▼▼
