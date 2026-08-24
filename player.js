@@ -900,7 +900,7 @@ function showPairResult(key) {
 // 相性文章
 document.getElementById("pair-desc").innerHTML =
   `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
-}
+
 
 // ▼▼▼ 共有ボタン：自分の動物タイプ入りリンクを作る ▼▼▼
 document.getElementById("shareBigBtn").addEventListener("click", () => {
