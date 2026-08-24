@@ -899,6 +899,15 @@ document.getElementById("shareBigBtn").addEventListener("click", () => {
   // 友達に送る用リンクを生成
   const shareUrl = `${location.origin}${location.pathname}?friendType=${myAnimal}`;
 
+  
+/* ============================
+   共有文を作る（ここに追加）
+   ============================ */
+function getShareMessage(resultType, shareUrl) {
+  return `あなたの友達の金銭タイプは「${resultType}」でした！
+あなたの金銭感覚もチェックしてみよう！
+金銭感覚心理テストはこちら → ${shareUrl}`;
+}
   // 画面に表示
   document.getElementById("shareLink").textContent = shareUrl;
   document.getElementById("shareLink").href = shareUrl;
