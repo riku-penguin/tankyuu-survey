@@ -874,36 +874,21 @@ pairData = {
 function showPairResult(key) {
   const data = pairData[key];
 
+  // 相性スコア
   document.getElementById("pair-score").textContent = `${data.score}点`;
+  document.getElementById("pair-score-text").textContent = `${data.score}点`;
 
+  // 相性文章
   document.getElementById("pair-desc").innerHTML =
     `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 
+  // 立ち絵（IDを統一）
   document.getElementById("yourPairImg").src = data.yourImg;
   document.getElementById("otherPairImg").src = data.otherImg;
 
+  // 相性ブロック表示
   document.getElementById("pairResult").style.display = "block";
 }
-
-
-// 画像
-document.getElementById("pair-your-img").src = data.yourImg;
-document.getElementById("pair-friend-img").src = data.otherImg;
-
-// 相性ブロック表示
-document.getElementById("pairResult").style.display = "block";
-
-// 相性度
-document.getElementById("pair-score").textContent = data.score + "%";
-document.getElementById("pair-score-text").textContent = data.score + "%";
-
-// 立ち絵
-document.getElementById("yourPairImg").src = data.yourImg;
-document.getElementById("otherPairImg").src = data.otherImg;
-
-// 相性文章
-document.getElementById("pair-desc").innerHTML =
-`${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 
 
 // ▼▼▼ 共有ボタン：自分の動物タイプ入りリンクを作る ▼▼▼
@@ -914,7 +899,7 @@ document.getElementById("shareBigBtn").addEventListener("click", () => {
   // 友達に送る用リンクを生成
   const shareUrl = `${location.origin}${location.pathname}?friendType=${myAnimal}`;
 
-  // 画面に表示（既存の shareLink を使う）
+  // 画面に表示
   document.getElementById("shareLink").textContent = shareUrl;
   document.getElementById("shareLink").href = shareUrl;
 });
