@@ -641,7 +641,7 @@ async function sendToSheet(data) {
 
 
 // ===== 相性データ =====
-const pairData = {
+let pairData = {
   "neko_usagi": {
     score: 78,
     text: "気まま × 素直で、ゆるい雰囲気がちょうどよく噛み合う組み合わせです。",
