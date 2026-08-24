@@ -398,7 +398,6 @@
       font-size: 16px;
     }
 </style>
-     </style>  <!-- ← 前半CSSの閉じタグ（あなたのコードのまま） -->
 </head>
 <body>
 
@@ -494,7 +493,7 @@
     </button>
   </div>
 
-  <!-- 結果画面（完全修正版） -->
+  <!-- 結果画面 -->
   <div id="finalScreen" class="screenBox" style="display:none;">
     <h2 id="resultType"></h2>
 
@@ -509,35 +508,30 @@
       <tr><th>項目</th><th>あなたの数値</th></tr>
     </table>
 
-    <!-- ★ここに相性ブロックだけ残す★ -->
+    <!-- 相性ブロック -->
     <div class="result-section">
 
-      <!-- 相性度 -->
       <h3 class="pair-title">あなたと〇〇の相性：<span id="pair-score-text">%</span></h3>
 
-      <!-- 立ち絵付き相性表示 -->
       <div class="pair-box">
         <img src="" class="pair-img" id="yourPairImg">
         <div class="pair-score" id="pair-score">%</div>
         <img src="" class="pair-img" id="otherPairImg">
       </div>
 
-      <!-- 組み合わせ文章 -->
       <p class="pair-desc" id="pair-desc"></p>
 
-      <!-- 共有ボタン -->
       <button id="shareBigBtn" class="share-btn">結果を共有する</button>
 
     </div>
 
-    <!-- 既存の共有リンク -->
     <p style="text-align:center; margin-top:20px;">結果を共有する：</p>
     <a id="shareLink" href="#" target="_blank"
        style="display:block; text-align:center; margin-bottom:20px;"></a>
 
   </div>
 
-  <!-- ★★★ CSSは head に移動済み ★★★ -->
+  <!-- 質問画像のCSS（headに移動済み） -->
 
   <script src="player.js"></script>
 </body>
