@@ -903,6 +903,8 @@ document.getElementById("shareBigBtn").addEventListener("click", () => {
 
   // 友達に送る用リンクを生成
   const shareUrl = `${location.origin}${location.pathname}?friendType=${myAnimal}`;
+const message = getShareMessage(resultType, shareUrl);
+document.getElementById("shareText").innerText = message;
 
   
 /* ============================
