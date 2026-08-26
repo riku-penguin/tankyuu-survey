@@ -338,11 +338,9 @@ function nextPlayerQuestion() {
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    // 自分の動物タイプ
     const myAnimal = convertToAnimalType(type);
-
-    // 友達の動物タイプ（URLから）
     const friendAnimal = getFriendTypeFromURL();
+
     if (friendAnimal) {
       const friendTypeJP = {
         usagi: "せっかち（ウサギ）",
@@ -358,16 +356,13 @@ function nextPlayerQuestion() {
       document.getElementById("friendTypeBox").style.display = "block";
     }
 
-    // 相性表示
     if (friendAnimal && myAnimal) {
       const key = `${friendAnimal}_${myAnimal}`;
       showPairResult(key);
     }
 
-    // 共有用URL
     const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
 
-    // メインの動物画像
     if (mainAnimalImg) {
       const animalMap = {
         "せっかちタイプ（すぐ決めちゃう）": "images/usagi.png",
@@ -379,7 +374,6 @@ function nextPlayerQuestion() {
       mainAnimalImg.src = animalMap[type] || "";
     }
 
-    // タイプ説明文
     const box = document.getElementById("typeDetailBox");
     box.innerHTML = "";
 
@@ -387,26 +381,24 @@ function nextPlayerQuestion() {
     const descBox = document.createElement("div");
     descBox.className = "typeDescriptionBox";
     descBox.textContent = desc;
-
     box.appendChild(descBox);
 
     setTimeout(() => {
       descBox.classList.add("show");
     }, 300);
 
-    // 共有文
     if (shareTextEl) {
       shareTextEl.textContent =
         `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
     }
 
     finalScreenEl.style.display = "block";
-    return;  // ★★★ 正しい位置
+    return;  // ★ 正しい位置
   }
 
-  // ★★★ 二巡目の通常進行
+  // ★ 二巡目の通常進行
   showPreSituation(playerIndex);
-}  // ★★★ nextPlayerQuestion の正しい閉じカッコ
+}  // ★ nextPlayerQuestion の正しい閉じカッコ
 
 // ============================
 // 結果表を埋める
