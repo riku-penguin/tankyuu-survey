@@ -1,7 +1,6 @@
 // ============================
 // 質問ごとの画像リスト
 // ============================
-// ★追加：index が 0 から始まるので 0〜11 に修正
 const questionImages = {
   0: "img/q1.png",
   1: "img/q2.png",
@@ -23,7 +22,6 @@ function getFriendTypeFromURL() {
   return params.get("friendType"); // 例： "neko"
 }
 
-
 // ★ URL から type を取得して表示する
 const params = new URLSearchParams(location.search);
 const sharedType = params.get("type");
@@ -40,7 +38,7 @@ if (sharedType) {
 
 // ★ スプレッドシート連携URL
 const SHEET_URL =
-"https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec";
+  "https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec";
 
 // ★ 共有用リンク
 const SHARE_URL =
@@ -48,8 +46,6 @@ const SHARE_URL =
 
 let playerQuestions = [];
 let playerIndex = 0;
-
-// ★追加：currentQuestion を定義（必須）
 let currentQuestion = 0;
 
 let startTime = 0;
@@ -131,12 +127,12 @@ document.getElementById("startBtn").addEventListener("click", async () => {
 });
 
 function parseTime(str) {
-    if (typeof str === "number") {
-        return str;
-    }
+  if (typeof str === "number") {
+    return str;
+  }
 
-    const match = String(str).match(/\d+/);
-    return match ? parseInt(match[0]) : 8;
+  const match = String(str).match(/\d+/);
+  return match ? parseInt(match[0]) : 8;
 }
 
 function showPreSituation(index) {
@@ -178,89 +174,19 @@ function showPreSituation(index) {
   };
 }
 
-// 質問開始
+// 質問開始（統一版）
 function startQuestion(index) {
+  hideAllScreens();
+  playerContainerEl.style.display = "block";
 
-  // ★追加：currentQuestion をセット（必須）
   currentQuestion = index;
-
-  hideAllScreens();
-
-  playerContainerEl.style.display = "block";
-
-  selectedOption = null;
-  confirmBtn.style.display = "none";
-  
-  loadPlayerQuestion(index);
-}
-
-// 質問表示（完全版）
-function loadPlayerQuestion(index) {
-  const q = playerQuestions[index];
-
-  // --- 上部の状況文・質問文 ---
-  situationEl.textContent = q.situation || "";
-  questionEl.textContent = q.question || "";
-  questionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
-
-  // --- 画像 ---
-  if (q.image) {
-    questionImageEl.src = q.image;
-    questionImageEl.style.display = "block";
-  } else {
-    questionImageEl.style.display = "none";
-  }
-
-  // --- 選択肢 ---
-  optionsEl.innerHTML = "";
-  q.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.className = "option-btn";
-    btn.textContent = opt.label;
-
-    btn.onclick = () => {
-      selectedOption = opt.key;
-      confirmBtn.style.display = "block";
-
-      // 選択状態の反映
-      document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
-    };
-
-    optionsEl.appendChild(btn);
-  });
-
-  // --- タイマー ---
-  let remain = q.time1;
-  timerEl.textContent = `${remain} 秒`;
-
-  if (questionTimer) clearInterval(questionTimer);
-  questionTimer = setInterval(() => {
-    remain--;
-    timerEl.textContent = `${remain} 秒`;
-
-    if (remain <= 0) {
-      clearInterval(questionTimer);
-      confirmBtn.style.display = "block";
-    }
-  }, 1000);
-}
-
-
-// 質問開始（完全版）
-function startQuestion(index) {
-  hideAllScreens();
-  playerContainerEl.style.display = "block";
-
-  currentQuestion = index;   // ★これが無いと画像が出ない
   selectedOption = null;
   confirmBtn.style.display = "none";
 
   loadPlayerQuestion(index);
 }
 
-
-// 質問表示
+// 質問表示（統一版）
 function loadPlayerQuestion(index) {
   const q = playerQuestions[index];
 
@@ -272,7 +198,7 @@ function loadPlayerQuestion(index) {
   // --- 選択肢エリア初期化 ---
   optionsEl.innerHTML = "";
 
-  // ★★★ 問題文の下に画像を表示する処理（あなたの仕様に合わせてそのまま） ★★★
+  // ★ 問題文の下に画像を表示
   if (q.image) {
     const img = document.createElement("img");
     img.src = q.image;
@@ -280,7 +206,7 @@ function loadPlayerQuestion(index) {
     optionsEl.appendChild(img);
   }
 
-  // --- 選択肢画像の表示エリア ---
+  // --- 質問ごとの画像表示エリア ---
   const imgEl = document.createElement("img");
   imgEl.id = "choiceImage";
   imgEl.className = "optionImagePlaceholder";
@@ -288,96 +214,90 @@ function loadPlayerQuestion(index) {
   imgEl.style.height = "auto";
   optionsEl.appendChild(imgEl);
 
-  // ★追加：質問ごとの画像をセット
   imgEl.src = questionImages[currentQuestion];
 
- // --- タイマー処理 ---
-startTime = Date.now();
+  // --- タイマー処理 ---
+  startTime = Date.now();
 
-let limit = round === 1 ? q.time1 : q.time2;
+  let limit = round === 1 ? q.time1 : q.time2;
 
-if (timer) clearInterval(timer);
-timer = null;
+  if (timer) clearInterval(timer);
+  timer = null;
 
-timerBar.style.width = round === 1 ? "100%" : "0%";
-timerText.textContent =
-  round === 1 ? `残り時間: ${limit} 秒` : `経過時間: 0 秒`;
+  timerBar.style.width = round === 1 ? "100%" : "0%";
+  timerText.textContent =
+    round === 1 ? `残り時間: ${limit} 秒` : `経過時間: 0 秒`;
 
-timer = setInterval(() => {
-  const now = Date.now();
-  const elapsed = (now - startTime) / 1000;
+  timer = setInterval(() => {
+    const now = Date.now();
+    const elapsed = (now - startTime) / 1000;
 
-  if (round === 1) {
-    const remaining = limit - elapsed;
+    if (round === 1) {
+      const remaining = limit - elapsed;
 
-    if (remaining <= 0) {
-      clearInterval(timer);
-      timer = null;
-      handleTimeout(q);
-      return;
+      if (remaining <= 0) {
+        clearInterval(timer);
+        timer = null;
+        handleTimeout(q);
+        return;
+      }
+
+      timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
+      timerBar.style.width = `${(remaining / limit) * 100}%`;
+    } else {
+      timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
+
+      const unlock = q.time2;
+
+      let width = (elapsed / unlock) * 100;
+      if (width > 100) width = 100;
+
+      timerBar.style.width = `${width}%`;
     }
+  }, 50);
 
-    timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
-    timerBar.style.width = `${(remaining / limit) * 100}%`;
+  // --- A〜D の選択肢を追加 ---
+  q.options.forEach((opt) => {
+    const btn = document.createElement("button");
+    btn.className = "optionButton";
 
-  } else {
-    timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
+    btn.textContent = `${opt.label}（¥${opt.price}）`;
+    btn.setAttribute("data-key", opt.key);
 
-    const unlock = q.time2;
+    btn.onclick = () => {
+      selectedOption = opt;
 
-    let width = (elapsed / unlock) * 100;
-    if (width > 100) width = 100;
+      document.querySelectorAll(".optionButton").forEach(b => {
+        b.classList.remove("selectedOption");
+      });
+      btn.classList.add("selectedOption");
 
-    timerBar.style.width = `${width}%`;
-  }
-}, 50);
+      confirmBtn.style.display = "block";
+    };
 
+    optionsEl.appendChild(btn);
+  });
 
-// --- A〜D の選択肢を追加 ---
-q.options.forEach((opt) => {
-  const btn = document.createElement("button");
-  btn.className = "optionButton";
+  // --- 「買わない」ボタン追加 ---
+  const noBuyBtn = document.createElement("button");
+  noBuyBtn.className = "optionButton noBuyButton";
+  noBuyBtn.textContent = "買わない";
+  noBuyBtn.setAttribute("data-key", "N");
+  noBuyBtn.style.marginTop = "20px";
 
-  btn.textContent = `${opt.label}（¥${opt.price}）`;
-  btn.setAttribute("data-key", opt.key);
-
-  btn.onclick = () => {
-    selectedOption = opt;
+  noBuyBtn.onclick = () => {
+    selectedOption = { key: "N", label: "買わない", price: 0 };
 
     document.querySelectorAll(".optionButton").forEach(b => {
       b.classList.remove("selectedOption");
     });
-    btn.classList.add("selectedOption");
+    noBuyBtn.classList.add("selectedOption");
 
     confirmBtn.style.display = "block";
   };
 
-  optionsEl.appendChild(btn);
-});
-
-
-// --- 「買わない」ボタン追加 ---
-const noBuyBtn = document.createElement("button");
-noBuyBtn.className = "optionButton noBuyButton";
-noBuyBtn.textContent = "買わない";
-noBuyBtn.setAttribute("data-key", "N");
-noBuyBtn.style.marginTop = "20px";
-
-noBuyBtn.onclick = () => {
-  selectedOption = { key: "N", label: "買わない", price: 0 };
-
-  document.querySelectorAll(".optionButton").forEach(b => {
-    b.classList.remove("selectedOption");
-  });
-  noBuyBtn.classList.add("selectedOption");
-
-  confirmBtn.style.display = "block";
-};
-
-optionsEl.appendChild(noBuyBtn);
-
-
-
+  optionsEl.appendChild(noBuyBtn);
+}
 
 // ▼▼▼ タイプ説明文 ▼▼▼
 const typeDescriptions = {
@@ -392,7 +312,6 @@ const typeDescriptions = {
   "気分屋タイプ（状況次第で変わる）":
     "あなたは『その時の気分を大事にする』自由なタイプ。新しいものや面白いものにすぐ興味がわく、好奇心いっぱいの人です。"
 };
-
 
 // ▼▼▼ 次の質問へ ▼▼▼
 function nextPlayerQuestion() {
@@ -462,8 +381,6 @@ function nextPlayerQuestion() {
   showPreSituation(playerIndex);
 }
 
-
-
 // ▼▼▼ 二巡目開始 ▼▼▼
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
   hideAllScreens();
@@ -482,22 +399,15 @@ secondRoundOkBtn.addEventListener("click", () => {
 // ▼▼▼ 共有リンクを画面から消す ▼▼▼
 document.getElementById("shareLink").style.display = "none";
 
-
 // ボタンを押したら今のURLをコピー
 document.getElementById("shareBigBtn").addEventListener("click", async () => {
   try {
-    document.getElementById("shareBtn").addEventListener("click", () => {
-  const message = getShareMessage(resultType, shareUrl);
-  document.getElementById("shareText").innerText = message;
-});
-
     await navigator.clipboard.writeText(location.href);
     alert("共有用リンクをコピーしました！");
   } catch (e) {
     alert("コピーに失敗しました。\n" + location.href);
   }
 });
-
 
 // 傾向まとめ
 function calculateSummary() {
@@ -550,7 +460,6 @@ function calculateSummary() {
 function determineType(summary) {
   const { buyRate, noBuyRate, priceSensitivity, impulsiveRate, carefulRate } = summary;
 
-  // 各タイプのスコア
   let scores = {
     "せっかちタイプ（すぐ決めちゃう）": 0,
     "心配性タイプ（慎重に考える）": 0,
@@ -581,7 +490,6 @@ function determineType(summary) {
     Math.abs(buyRate - noBuyRate);
   scores["気分屋タイプ（状況次第で変わる）"] += (100 - balance) / 20;
 
-  // 最も高いタイプを返す
   let bestType = null;
   let bestScore = -Infinity;
 
@@ -594,7 +502,6 @@ function determineType(summary) {
 
   return bestType;
 }
-
 
 // 結果表を埋める
 function fillResultTable(summary) {
@@ -633,19 +540,19 @@ async function sendToSheet(data) {
     console.error("送信エラー:", err);
   }
 }
+
 // ===== 診断タイプ → 動物タイプ変換（陸の設定版） =====
 function convertToAnimalType(myType) {
   if (myType.includes("せっかち")) return "usagi";     // ウサギ
   if (myType.includes("心配性")) return "fuku";        // フクロウ
-  if (myType.includes("節約家")) return "ham";        // ハムスター
+  if (myType.includes("節約家")) return "ham";         // ハムスター
   if (myType.includes("お得ハンター")) return "kitsune"; // キツネ
   if (myType.includes("気分屋")) return "neko";        // ネコ
   return null;
 }
 
-
 // ===== 相性データ（25種類） =====
-pairData = {
+let pairData = {
   "usagi_usagi": {
     score: 70,
     text: "テンポが似ていて行動が早い同士。気が合いやすい組み合わせ。",
@@ -850,6 +757,7 @@ pairData = {
     otherImg: "images/neko.png"
   }
 };
+
 // ===== 相性結果を画面に反映 =====
 function showPairResult(key) {
   const data = pairData[key];
