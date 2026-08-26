@@ -836,8 +836,6 @@ pairData = {
   }
 };
 
-};
-
 function showPairResult(key) {
   const data = pairData[key];
   if (!data) return;
