@@ -1,3 +1,11 @@
+const questionImageEl = document.getElementById("questionImage");
+const timerEl = document.getElementById("timerEl");
+let questionTimer = null;
+
+function handleTimeout(q) {
+  confirmBtn.style.display = "block";
+}
+
 // ============================
 // 質問ごとの画像リスト
 // ============================
