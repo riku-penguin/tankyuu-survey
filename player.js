@@ -400,6 +400,26 @@ function nextPlayerQuestion() {
 showPreSituation(playerIndex);
 
 }  // ★ nextPlayerQuestion の正しい閉じカッコ
+// ============================
+// 二巡目開始ボタン
+// ============================
+
+document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
+  hideAllScreens();
+  secondRoundInfo.style.display = "block";
+});
+
+// ============================
+// 二巡目説明 → スタート
+// ============================
+
+document.getElementById("secondRoundOkBtn").addEventListener("click", () => {
+  round = 2;
+  playerIndex = 0;
+
+  hideAllScreens();
+  showPreSituation(playerIndex);
+});
 
 // ============================
 // 結果表を埋める
