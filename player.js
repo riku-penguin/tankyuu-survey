@@ -291,91 +291,90 @@ function loadPlayerQuestion(index) {
   // ★追加：質問ごとの画像をセット
   imgEl.src = questionImages[currentQuestion];
 
-  // --- タイマー処理 ---
-  startTime = Date.now();
+ // --- タイマー処理 ---
+startTime = Date.now();
 
-  let limit = round === 1 ? q.time1 : q.time2;
+let limit = round === 1 ? q.time1 : q.time2;
 
-  if (timer) clearInterval(timer);
-  timer = null;
+if (timer) clearInterval(timer);
+timer = null;
 
-  timerBar.style.width = round === 1 ? "100%" : "0%";
-  timerText.textContent =
-    round === 1 ? `残り時間: ${limit} 秒` : `経過時間: 0 秒`;
+timerBar.style.width = round === 1 ? "100%" : "0%";
+timerText.textContent =
+  round === 1 ? `残り時間: ${limit} 秒` : `経過時間: 0 秒`;
 
-  timer = setInterval(() => {
-    const now = Date.now();
-    const elapsed = (now - startTime) / 1000;
+timer = setInterval(() => {
+  const now = Date.now();
+  const elapsed = (now - startTime) / 1000;
 
-    if (round === 1) {
-      const remaining = limit - elapsed;
+  if (round === 1) {
+    const remaining = limit - elapsed;
 
-      if (remaining <= 0) {
-        clearInterval(timer);
-        timer = null;
-        handleTimeout(q);
-        return;
-      }
-
-      timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
-      timerBar.style.width = `${(remaining / limit) * 100}%`;
-
-    } else {
-      timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
-
-      const unlock = q.time2;
-
-      let width = (elapsed / unlock) * 100;
-      if (width > 100) width = 100;
-
-      timerBar.style.width = `${width}%`;
+    if (remaining <= 0) {
+      clearInterval(timer);
+      timer = null;
+      handleTimeout(q);
+      return;
     }
-  }, 50);
 
-  // A〜D の選択肢を追加
-  q.options.forEach((opt) => {
-    const btn = document.createElement("button");
-    btn.className = "optionButton";
+    timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
+    timerBar.style.width = `${(remaining / limit) * 100}%`;
 
-    btn.textContent = `${opt.label}（¥${opt.price}）`;
-    btn.setAttribute("data-key", opt.key);
+  } else {
+    timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
 
-    btn.onclick = () => {
-      selectedOption = opt;
+    const unlock = q.time2;
 
-      document.querySelectorAll(".optionButton").forEach(b => {
-        b.classList.remove("selectedOption");
-      });
-      btn.classList.add("selectedOption");
+    let width = (elapsed / unlock) * 100;
+    if (width > 100) width = 100;
 
-      confirmBtn.style.display = "block";
-    };
+    timerBar.style.width = `${width}%`;
+  }
+}, 50);
 
-    optionsEl.appendChild(btn);
-  });
 
-  // ★★★ A〜D の後に「買わない」ボタンを追加 ★★★
-  const noBuyBtn = document.createElement("button");
-  noBuyBtn.className = "optionButton noBuyButton";
-  noBuyBtn.textContent = "買わない";
-  noBuyBtn.setAttribute("data-key", "N");
+// --- A〜D の選択肢を追加 ---
+q.options.forEach((opt) => {
+  const btn = document.createElement("button");
+  btn.className = "optionButton";
 
-  noBuyBtn.style.marginTop = "20px";
+  btn.textContent = `${opt.label}（¥${opt.price}）`;
+  btn.setAttribute("data-key", opt.key);
 
-  noBuyBtn.onclick = () => {
-    selectedOption = { key: "N", label: "買わない", price: 0 };
+  btn.onclick = () => {
+    selectedOption = opt;
 
     document.querySelectorAll(".optionButton").forEach(b => {
       b.classList.remove("selectedOption");
     });
-    noBuyBtn.classList.add("selectedOption");
+    btn.classList.add("selectedOption");
 
     confirmBtn.style.display = "block";
   };
 
-  optionsEl.appendChild(noBuyBtn);
-}
+  optionsEl.appendChild(btn);
+});
 
+
+// --- 「買わない」ボタン追加 ---
+const noBuyBtn = document.createElement("button");
+noBuyBtn.className = "optionButton noBuyButton";
+noBuyBtn.textContent = "買わない";
+noBuyBtn.setAttribute("data-key", "N");
+noBuyBtn.style.marginTop = "20px";
+
+noBuyBtn.onclick = () => {
+  selectedOption = { key: "N", label: "買わない", price: 0 };
+
+  document.querySelectorAll(".optionButton").forEach(b => {
+    b.classList.remove("selectedOption");
+  });
+  noBuyBtn.classList.add("selectedOption");
+
+  confirmBtn.style.display = "block";
+};
+
+optionsEl.appendChild(noBuyBtn);
 
 
 
@@ -394,31 +393,28 @@ const typeDescriptions = {
     "あなたは『その時の気分を大事にする』自由なタイプ。新しいものや面白いものにすぐ興味がわく、好奇心いっぱいの人です。"
 };
 
-// 次の質問へ
+
+// ▼▼▼ 次の質問へ ▼▼▼
 function nextPlayerQuestion() {
   hideAllScreens();
-
   playerIndex++;
 
-  // ▼▼▼ 一巡目終了 ▼▼▼
+  // 一巡目終了
   if (round === 1 && playerIndex >= playerQuestions.length) {
     infoScreenEl.style.display = "block";
     return;
   }
 
-  // ▼▼▼ 二巡目終了 → 結果画面 ▼▼▼
+  // 二巡目終了 → 結果画面
   if (round === 2 && playerIndex >= playerQuestions.length) {
 
     const summary = calculateSummary();
 
-    // 結果テーブル
     fillResultTable(summary);
 
-    // ▼▼▼ タイプ判定 ▼▼▼
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    // ▼▼▼ 友達のタイプ表示 ▼▼▼
     const friendAnimal = getFriendTypeFromURL();
     if (friendAnimal) {
       const friendTypeJP = {
@@ -435,19 +431,16 @@ function nextPlayerQuestion() {
       document.getElementById("friendTypeBox").style.display = "block";
     }
 
-    // ▼▼▼ 相性処理 ▼▼▼
     const myAnimal = convertToAnimalType(type);
     if (friendAnimal && myAnimal) {
       const key = `${friendAnimal}_${myAnimal}`;
       showPairResult(key);
     }
 
-    // ▼▼▼ 共有リンク生成 ▼▼▼
     const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
     document.getElementById("shareLink").textContent = shareUrl;
     document.getElementById("shareLink").href = shareUrl;
 
-    // ▼▼▼ タイプ説明 ▼▼▼
     const box = document.getElementById("typeDetailBox");
     box.innerHTML = "";
 
@@ -462,23 +455,22 @@ function nextPlayerQuestion() {
       descBox.classList.add("show");
     }, 300);
 
-    // ▼▼▼ 結果画面表示 ▼▼▼
     finalScreenEl.style.display = "block";
     return;
   }
 
-  // ▼▼▼ 次の質問へ ▼▼▼
   showPreSituation(playerIndex);
 }
 
 
-// 二巡目開始
+
+// ▼▼▼ 二巡目開始 ▼▼▼
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
   hideAllScreens();
   secondRoundInfo.style.display = "block";
 });
 
-// 二巡目説明 → スタート
+// ▼▼▼ 二巡目説明 → スタート ▼▼▼
 secondRoundOkBtn.addEventListener("click", () => {
   round = 2;
   playerIndex = 0;
@@ -487,8 +479,9 @@ secondRoundOkBtn.addEventListener("click", () => {
   showPreSituation(playerIndex);
 });
 
-// 共有リンクを画面から消す
+// ▼▼▼ 共有リンクを画面から消す ▼▼▼
 document.getElementById("shareLink").style.display = "none";
+
 
 // ボタンを押したら今のURLをコピー
 document.getElementById("shareBigBtn").addEventListener("click", async () => {
