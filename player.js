@@ -389,7 +389,8 @@ function nextPlayerQuestion() {
 
     if (shareTextEl) {
       shareTextEl.textContent =
-        `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
+        `あなたの診断タイプは「${type}」でした！別で送った相性表を見てほかの人と比べてみてください！
+        ご協力ありがとうございました！`;
     }
 
     finalScreenEl.style.display = "block";
