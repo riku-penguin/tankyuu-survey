@@ -553,18 +553,10 @@ function calculateSummary() {
   };
 }
 
-// タイプ判定
+// タイプ判定（完全版）
 function determineType(summary) {
   const { buyRate, noBuyRate, priceSensitivity, impulsiveRate, carefulRate } = summary;
 
-  if (impulsiveRate >= 60) return "せっかちタイプ（すぐ決めちゃう）";
-  if (carefulRate >= 60) return "心配性タイプ（慎重に考える）";
-  if (noBuyRate >= 60) return "節約家タイプ（買わないことが多い）";
-  if (priceSensitivity >= 60) return "お得ハンタータイプ（コスパ重視）";
-
-  return "気分屋タイプ（状況次第で変わる）";
-}
-  
   // 各タイプのスコア
   let scores = {
     "せっかちタイプ（すぐ決めちゃう）": 0,
@@ -574,29 +566,29 @@ function determineType(summary) {
     "気分屋タイプ（状況次第で変わる）": 0
   };
 
-  // せっかち：衝動買いが多い
+  // せっかち
   scores["せっかちタイプ（すぐ決めちゃう）"] += impulsiveRate / 10;
   scores["せっかちタイプ（すぐ決めちゃう）"] += buyRate / 20;
 
-  // 心配性：慎重に買う、価格に敏感
+  // 心配性
   scores["心配性タイプ（慎重に考える）"] += carefulRate / 10;
   scores["心配性タイプ（慎重に考える）"] += priceSensitivity / 20;
 
-  // 節約家：買わない率が高い
+  // 節約家
   scores["節約家タイプ（買わないことが多い）"] += noBuyRate / 10;
   scores["節約家タイプ（買わないことが多い）"] += priceSensitivity / 30;
 
-  // お得ハンター：価格に敏感＋買う率もそこそこ
+  // お得ハンター
   scores["お得ハンタータイプ（コスパ重視）"] += priceSensitivity / 15;
   scores["お得ハンタータイプ（コスパ重視）"] += buyRate / 30;
 
-  // 気分屋：バランス型
+  // 気分屋
   const balance =
     Math.abs(impulsiveRate - carefulRate) +
     Math.abs(buyRate - noBuyRate);
   scores["気分屋タイプ（状況次第で変わる）"] += (100 - balance) / 20;
 
-  // 最もスコアが高いタイプを選ぶ
+  // 最も高いタイプを返す
   let bestType = null;
   let bestScore = -Infinity;
 
