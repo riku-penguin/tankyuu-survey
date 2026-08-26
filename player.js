@@ -877,18 +877,6 @@ function showPairResult(key) {
   document.getElementById("pair-desc").innerHTML =
     `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 
-// ===== 相性結果を画面に反映 =====
-function showPairResult(key) {
-  const data = pairData[key];
-
-  // 相性スコア
-  document.getElementById("pair-score").textContent = `${data.score}点`;
-  document.getElementById("pair-score-text").textContent = `${data.score}点`;
-
-  // 相性文章
-  document.getElementById("pair-desc").innerHTML =
-    `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
-
   // 立ち絵（IDを統一）
   document.getElementById("yourPairImg").src = data.yourImg;
   document.getElementById("otherPairImg").src = data.otherImg;
