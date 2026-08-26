@@ -877,35 +877,22 @@ function showPairResult(key) {
   document.getElementById("pair-desc").innerHTML =
     `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 
+ // ===== 相性結果を画面に反映 =====
+function showPairResult(key) {
+  const data = pairData[key];
+
+  // 相性スコア
+  document.getElementById("pair-score").textContent = `${data.score}点`;
+  document.getElementById("pair-score-text").textContent = `${data.score}点`;
+
+  // 相性文章
+  document.getElementById("pair-desc").innerHTML =
+    `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
+
   // 立ち絵（IDを統一）
   document.getElementById("yourPairImg").src = data.yourImg;
   document.getElementById("otherPairImg").src = data.otherImg;
 
   // 相性ブロック表示
   document.getElementById("pairResult").style.display = "block";
-}
-
-
-// ▼▼▼ 共有ボタン：自分の動物タイプ入りリンクを作る ▼▼▼
-document.getElementById("shareBigBtn").addEventListener("click", () => {
-  // 診断タイプ・動物タイプに変換
-  const myAnimal = convertToAnimalType(type);
-
-  // 友達に送る用リンクを生成
-  const shareUrl = `${location.origin}${location.pathname}?friendType=${myAnimal}`;
-  const message = getShareMessage(resultType, shareUrl);
-  document.getElementById("shareText").innerText = message;
-
-  // 画面に表示
-  document.getElementById("shareLink").textContent = shareUrl;
-  document.getElementById("shareLink").href = shareUrl;
-});
-
-/* ============================
-共有文を作る
-============================ */
-function getShareMessage(resultType, shareUrl) {
-  return `あなたの友達の金銭タイプは「${resultType}」でした！
-あなたの金銭感覚もチェックしてみよう！
-金銭感覚心理テストはこちら → ${shareUrl}`;
 }
