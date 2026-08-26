@@ -194,7 +194,7 @@ function startQuestion(index) {
   loadPlayerQuestion(index);
 }
 
-// 質問表示
+// 質問表示（完全版）
 function loadPlayerQuestion(index) {
   const q = playerQuestions[index];
 
@@ -203,23 +203,62 @@ function loadPlayerQuestion(index) {
   questionEl.textContent = q.question || "";
   questionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
 
-  // --- 選択肢エリア初期化 ---
+  // --- 画像 ---
+  if (q.image) {
+    questionImageEl.src = q.image;
+    questionImageEl.style.display = "block";
+  } else {
+    questionImageEl.style.display = "none";
+  }
+
+  // --- 選択肢 ---
   optionsEl.innerHTML = "";
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.textContent = opt.label;
 
-// 質問開始
+    btn.onclick = () => {
+      selectedOption = opt.key;
+      confirmBtn.style.display = "block";
+
+      // 選択状態の反映
+      document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    };
+
+    optionsEl.appendChild(btn);
+  });
+
+  // --- タイマー ---
+  let remain = q.time1;
+  timerEl.textContent = `${remain} 秒`;
+
+  if (questionTimer) clearInterval(questionTimer);
+  questionTimer = setInterval(() => {
+    remain--;
+    timerEl.textContent = `${remain} 秒`;
+
+    if (remain <= 0) {
+      clearInterval(questionTimer);
+      confirmBtn.style.display = "block";
+    }
+  }, 1000);
+}
+
+
+// 質問開始（完全版）
 function startQuestion(index) {
-
-  // ★追加：これが無いと画像が出ない
-  currentQuestion = index;
-
   hideAllScreens();
   playerContainerEl.style.display = "block";
 
+  currentQuestion = index;   // ★これが無いと画像が出ない
   selectedOption = null;
   confirmBtn.style.display = "none";
-  
+
   loadPlayerQuestion(index);
 }
+
 
 // 質問表示
 function loadPlayerQuestion(index) {
