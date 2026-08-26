@@ -451,18 +451,20 @@ function fillResultTable(summary) {
       descBox.classList.add("show");
     }, 300);
 
-    // 共有文
-    if (shareTextEl) {
-      shareTextEl.textContent =
-        `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
-    }
-
-    finalScreenEl.style.display = "block";
-    return;
-  }
-
-  showPreSituation(playerIndex);
+ // 共有文
+if (shareTextEl) {
+  shareTextEl.textContent =
+    `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
 }
+
+finalScreenEl.style.display = "block";
+
+// ★★★ この return は nextPlayerQuestion の中にある必要がある
+return;
+}  // ★★★ ここが「二巡目終了 → 結果画面」の if の閉じカッコ
+
+// ★★★ ここから先はあなたの元コードの「次の質問へ進む処理」
+showPreSituation(playerIndex);
 
 // ============================
 // 二巡目開始ボタン
