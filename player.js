@@ -617,17 +617,7 @@ const pairData = {
     yourImg: "images/usagi.png",
     otherImg: "images/usagi.png"
   },
-  // ===== 相性データ =====
-let pairData = {
-  "neko_usagi": {
-    score: 78,
-    text: "気まま × 素直で、ゆるい雰囲気がちょうどよく噛み合う組み合わせです。",
-    advice: "ウサギが少しだけ主張すると、ネコが動きやすくなる。",
-    yourImg: "images/neko.png",
-    otherImg: "images/usagi.png"
-  }
-  // ← 他の組み合わせもここに追加していく
-};
+
 // ===== 診断タイプ → 動物タイプ変換（陸の設定版） =====
 function convertToAnimalType(myType) {
   if (myType.includes("せっかち")) return "usagi";     // ウサギ
