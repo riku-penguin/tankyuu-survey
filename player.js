@@ -333,19 +333,47 @@ function nextPlayerQuestion() {
   // 二巡目終了 → 結果画面
   if (round === 2 && playerIndex >= playerQuestions.length) {
     const summary = calculateSummary();
+
+    // ★ここで呼び出す（関数は外にある）
     fillResultTable(summary);
 
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    // ============================
-// 結果表を埋める
+    // 自分の動物タイプ
+    const myAnimal = convertToAnimalType(type);
+
+    // 友達の動物タイプ（URLから）
+    const friendAnimal = getFriendTypeFromURL();
+    if (friendAnimal) {
+      const friendTypeJP = {
+        usagi: "せっかち（ウサギ）",
+        fuku: "心配性（フクロウ）",
+        ham: "節約家（ハムスター）",
+        kitsune: "お得ハンター（キツネ）",
+        neko: "気分屋（ネコ）"
+      };
+
+      document.getElementById("friendTypeText").textContent =
+        `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
+
+      document.getElementById("friendTypeBox").style.display = "block";
+    }
+
+    // ここから先の処理はそのままでOK
+    // （相性表示や結果画面の表示など）
+  }
+}
+
+// ============================
+// 結果表を埋める（★必ず nextPlayerQuestion の外に置く）
 // ============================
 
 function fillResultTable(summary) {
   const table = document.getElementById("resultTable");
+  if (!table) return;
 
-  // 表を初期化（2回目以降の表示で重複しないように）
+  // 初期化（2回目以降の表示で重複しないように）
   table.innerHTML = "";
 
   const rows = [
@@ -365,6 +393,7 @@ function fillResultTable(summary) {
     table.appendChild(tr);
   });
 }
+
 
     // 自分の動物タイプ
     const myAnimal = convertToAnimalType(type);
