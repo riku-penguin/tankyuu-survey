@@ -863,8 +863,6 @@ pairData = {
     otherImg: "images/neko.png"
   }
 };
-
-
 // ===== 相性結果を画面に反映 =====
 function showPairResult(key) {
   const data = pairData[key];
