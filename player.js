@@ -338,6 +338,34 @@ function nextPlayerQuestion() {
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
+    // ============================
+// 結果表を埋める
+// ============================
+
+function fillResultTable(summary) {
+  const table = document.getElementById("resultTable");
+
+  // 表を初期化（2回目以降の表示で重複しないように）
+  table.innerHTML = "";
+
+  const rows = [
+    ["買う傾向", summary.buyRate],
+    ["節約傾向", summary.noBuyRate],
+    ["値段への敏感度", summary.priceSensitivity],
+    ["衝動買い度（一巡目）", summary.impulsiveRate],
+    ["慎重度（二巡目）", summary.carefulRate]
+  ];
+
+  rows.forEach(([label, value]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="padding: 10px; border-bottom: 1px solid #ddd;">${label}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #ddd;">${value}%</td>
+    `;
+    table.appendChild(tr);
+  });
+}
+
     // 自分の動物タイプ
     const myAnimal = convertToAnimalType(type);
 
