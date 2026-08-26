@@ -877,7 +877,7 @@ function showPairResult(key) {
   document.getElementById("pair-desc").innerHTML =
     `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
 
- // ===== 相性結果を画面に反映 =====
+// ===== 相性結果を画面に反映 =====
 function showPairResult(key) {
   const data = pairData[key];
 
