@@ -397,7 +397,7 @@ function nextPlayerQuestion() {
   }
 
   // ★ 二巡目の通常進行
-  showPreSituation(playerIndex);
+
 }  // ★ nextPlayerQuestion の正しい閉じカッコ
 
 // ============================
