@@ -333,8 +333,6 @@ function nextPlayerQuestion() {
   // 二巡目終了 → 結果画面
   if (round === 2 && playerIndex >= playerQuestions.length) {
     const summary = calculateSummary();
-
-    // ★ここで呼び出す（関数は外にある）
     fillResultTable(summary);
 
     const type = determineType(summary);
@@ -360,20 +358,64 @@ function nextPlayerQuestion() {
       document.getElementById("friendTypeBox").style.display = "block";
     }
 
-    // ここから先の処理はそのままでOK
-    // （相性表示や結果画面の表示など）
+    // 相性表示
+    if (friendAnimal && myAnimal) {
+      const key = `${friendAnimal}_${myAnimal}`;
+      showPairResult(key);
+    }
+
+    // 共有用URL
+    const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
+
+    // メインの動物画像
+    if (mainAnimalImg) {
+      const animalMap = {
+        "せっかちタイプ（すぐ決めちゃう）": "images/usagi.png",
+        "心配性タイプ（慎重に考える）": "images/fuku.png",
+        "節約家タイプ（買わないことが多い）": "images/ham.png",
+        "お得ハンタータイプ（コスパ重視）": "images/kitsune.png",
+        "気分屋タイプ（状況次第で変わる）": "images/neko.png"
+      };
+      mainAnimalImg.src = animalMap[type] || "";
+    }
+
+    // タイプ説明文
+    const box = document.getElementById("typeDetailBox");
+    box.innerHTML = "";
+
+    const desc = typeDescriptions[type];
+    const descBox = document.createElement("div");
+    descBox.className = "typeDescriptionBox";
+    descBox.textContent = desc;
+
+    box.appendChild(descBox);
+
+    setTimeout(() => {
+      descBox.classList.add("show");
+    }, 300);
+
+    // 共有文
+    if (shareTextEl) {
+      shareTextEl.textContent =
+        `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
+    }
+
+    finalScreenEl.style.display = "block";
+    return;  // ★★★ ここは nextPlayerQuestion の中
   }
-}
+
+  // ★★★ 二巡目じゃなければ次の質問へ
+  showPreSituation(playerIndex);
+}  // ★★★ これが nextPlayerQuestion の正しい閉じカッコ
 
 // ============================
-// 結果表を埋める（★必ず nextPlayerQuestion の外に置く）
+// 結果表を埋める
 // ============================
 
 function fillResultTable(summary) {
   const table = document.getElementById("resultTable");
   if (!table) return;
 
-  // 初期化（2回目以降の表示で重複しないように）
   table.innerHTML = "";
 
   const rows = [
@@ -393,91 +435,6 @@ function fillResultTable(summary) {
     table.appendChild(tr);
   });
 }
-// 相性表示
-if (friendAnimal && myAnimal) {
-  const key = `${friendAnimal}_${myAnimal}`;
-  showPairResult(key);
-}
-
-// 共有用URL
-const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
-
-// メインの動物画像
-if (mainAnimalImg) {
-  const animalMap = {
-    "せっかちタイプ（すぐ決めちゃう）": "images/usagi.png",
-    "心配性タイプ（慎重に考える）": "images/fuku.png",
-    "節約家タイプ（買わないことが多い）": "images/ham.png",
-    "お得ハンタータイプ（コスパ重視）": "images/kitsune.png",
-    "気分屋タイプ（状況次第で変わる）": "images/neko.png"
-  };
-  mainAnimalImg.src = animalMap[type] || "";
-}
-
-// タイプ説明文
-const box = document.getElementById("typeDetailBox");
-box.innerHTML = "";
-
-const desc = typeDescriptions[type];
-const descBox = document.createElement("div");
-descBox.className = "typeDescriptionBox";
-descBox.textContent = desc;
-
-box.appendChild(descBox);
-
-setTimeout(() => {
-  descBox.classList.add("show");
-}, 300);
-
-// 共有文
-if (shareTextEl) {
-  shareTextEl.textContent =
-    `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
-}
-
-finalScreenEl.style.display = "block";
-
-// ★★★ この return は nextPlayerQuestion の中にある必要がある
-return;
-}  // ★★★ ここが「二巡目終了 → 結果画面」の if の閉じカッコ
-
-showPreSituation(playerIndex);
-}  // ★★★ ここが nextPlayerQuestion の閉じカッコ
-
-
-// ★★★ ここから先はあなたの元コードの「次の質問へ進む処理」
-showPreSituation(playerIndex);
-
-// ============================
-// 二巡目開始ボタン
-// ============================
-
-document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
-  hideAllScreens();
-  secondRoundInfo.style.display = "block";
-});
-
-// 二巡目説明 → スタート
-secondRoundOkBtn.addEventListener("click", () => {
-  round = 2;
-  playerIndex = 0;
-
-  hideAllScreens();
-  showPreSituation(playerIndex);
-});
-
-// ============================
-// 結果共有ボタン（URLコピー）
-// ============================
-
-document.getElementById("shareBigBtn").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(location.href);
-    alert("共有用リンクをコピーしました！");
-  } catch (e) {
-    alert("コピーに失敗しました。\n" + location.href);
-  }
-});
 
 // ============================
 // 傾向まとめ
