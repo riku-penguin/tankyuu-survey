@@ -393,65 +393,43 @@ function fillResultTable(summary) {
     table.appendChild(tr);
   });
 }
+// 相性表示
+if (friendAnimal && myAnimal) {
+  const key = `${friendAnimal}_${myAnimal}`;
+  showPairResult(key);
+}
 
+// 共有用URL
+const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
 
-    // 自分の動物タイプ
-    const myAnimal = convertToAnimalType(type);
+// メインの動物画像
+if (mainAnimalImg) {
+  const animalMap = {
+    "せっかちタイプ（すぐ決めちゃう）": "images/usagi.png",
+    "心配性タイプ（慎重に考える）": "images/fuku.png",
+    "節約家タイプ（買わないことが多い）": "images/ham.png",
+    "お得ハンタータイプ（コスパ重視）": "images/kitsune.png",
+    "気分屋タイプ（状況次第で変わる）": "images/neko.png"
+  };
+  mainAnimalImg.src = animalMap[type] || "";
+}
 
-    // 友達の動物タイプ（URLから）
-    const friendAnimal = getFriendTypeFromURL();
-    if (friendAnimal) {
-      const friendTypeJP = {
-        usagi: "せっかち（ウサギ）",
-        fuku: "心配性（フクロウ）",
-        ham: "節約家（ハムスター）",
-        kitsune: "お得ハンター（キツネ）",
-        neko: "気分屋（ネコ）"
-      };
+// タイプ説明文
+const box = document.getElementById("typeDetailBox");
+box.innerHTML = "";
 
-      document.getElementById("friendTypeText").textContent =
-        `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
+const desc = typeDescriptions[type];
+const descBox = document.createElement("div");
+descBox.className = "typeDescriptionBox";
+descBox.textContent = desc;
 
-      document.getElementById("friendTypeBox").style.display = "block";
-    }
+box.appendChild(descBox);
 
-    // 相性表示
-    if (friendAnimal && myAnimal) {
-      const key = `${friendAnimal}_${myAnimal}`;
-      showPairResult(key);
-    }
+setTimeout(() => {
+  descBox.classList.add("show");
+}, 300);
 
-    // 共有用URL
-    const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
-
-    // メインの動物画像
-    if (mainAnimalImg) {
-      const animalMap = {
-        "せっかちタイプ（すぐ決めちゃう）": "images/usagi.png",
-        "心配性タイプ（慎重に考える）": "images/fuku.png",
-        "節約家タイプ（買わないことが多い）": "images/ham.png",
-        "お得ハンタータイプ（コスパ重視）": "images/kitsune.png",
-        "気分屋タイプ（状況次第で変わる）": "images/neko.png"
-      };
-      mainAnimalImg.src = animalMap[type] || "";
-    }
-
-    // タイプ説明文
-    const box = document.getElementById("typeDetailBox");
-    box.innerHTML = "";
-
-    const desc = typeDescriptions[type];
-    const descBox = document.createElement("div");
-    descBox.className = "typeDescriptionBox";
-    descBox.textContent = desc;
-
-    box.appendChild(descBox);
-
-    setTimeout(() => {
-      descBox.classList.add("show");
-    }, 300);
-
- // 共有文
+// 共有文
 if (shareTextEl) {
   shareTextEl.textContent =
     `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
@@ -462,6 +440,10 @@ finalScreenEl.style.display = "block";
 // ★★★ この return は nextPlayerQuestion の中にある必要がある
 return;
 }  // ★★★ ここが「二巡目終了 → 結果画面」の if の閉じカッコ
+
+showPreSituation(playerIndex);
+}  // ★★★ ここが nextPlayerQuestion の閉じカッコ
+
 
 // ★★★ ここから先はあなたの元コードの「次の質問へ進む処理」
 showPreSituation(playerIndex);
