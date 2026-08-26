@@ -401,12 +401,12 @@ function nextPlayerQuestion() {
     }
 
     finalScreenEl.style.display = "block";
-    return;  // ★★★ ここは nextPlayerQuestion の中
+    return;  // ★★★ 正しい位置
   }
 
-  // ★★★ 二巡目じゃなければ次の質問へ
+  // ★★★ 二巡目の通常進行
   showPreSituation(playerIndex);
-}  // ★★★ これが nextPlayerQuestion の正しい閉じカッコ
+}  // ★★★ nextPlayerQuestion の正しい閉じカッコ
 
 // ============================
 // 結果表を埋める
