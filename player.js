@@ -1,28 +1,13 @@
-const questionImageEl = document.getElementById("questionImage");
-const timerEl = document.getElementById("timerEl");
-let questionTimer = null;
-
-function handleTimeout(q) {
-  confirmBtn.style.display = "block";
-}
-
 // ============================
-// 質問ごとの画像リスト
+// 定数・URLまわり
 // ============================
-const questionImages = {
-  0: "img/q1.png",
-  1: "img/q2.png",
-  2: "img/q3.png",
-  3: "img/q4.png",
-  4: "img/q5.png",
-  5: "img/q6.png",
-  6: "img/q7.png",
-  7: "img/q8.png",
-  8: "img/q9.png",
-  9: "img/q10.png",
-  10: "img/q11.png",
-  11: "img/q12.png"
-};
+
+// スプレッドシート連携URL
+const SHEET_URL =
+  "https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec";
+
+// 共有用リンク（ベースURL）
+const SHARE_URL = "https://riku-penguin.github.io/tankyuu-survey/";
 
 // URLから友達の動物タイプを取得
 function getFriendTypeFromURL() {
@@ -30,7 +15,7 @@ function getFriendTypeFromURL() {
   return params.get("friendType"); // 例： "neko"
 }
 
-// ★ URL から type を取得して表示する
+// URLから type を取得して表示（友達の診断結果）
 const params = new URLSearchParams(location.search);
 const sharedType = params.get("type");
 
@@ -44,13 +29,9 @@ if (sharedType) {
   document.getElementById("startScreen").prepend(sharedBox);
 }
 
-// ★ スプレッドシート連携URL
-const SHEET_URL =
-  "https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec";
-
-// ★ 共有用リンク
-const SHARE_URL =
-  "https://riku-penguin.github.io/tankyuu-survey/";
+// ============================
+// 変数・DOM取得
+// ============================
 
 let playerQuestions = [];
 let playerIndex = 0;
@@ -64,10 +45,10 @@ let preTimer = null;
 
 let selectedOption = null;
 
-// ★ 回答者ID
+// 回答者ID
 let userId = null;
 
-// ▼▼▼ プレ画面の要素 ▼▼▼
+// プレ画面の要素
 const preSituationScreen = document.getElementById("preSituationScreen");
 const preSituationText = document.getElementById("preSituationText");
 const preCountdown = document.getElementById("preCountdown");
@@ -92,11 +73,21 @@ const questionNumber = document.getElementById("questionNumber");
 
 const confirmBtn = document.getElementById("confirmBtn");
 
+// 質問画像（問題文の下に出す用）
+const questionImageEl = document.getElementById("questionImage");
+
 // 二巡目説明画面
 const secondRoundInfo = document.getElementById("secondRoundInfo");
 const secondRoundOkBtn = document.getElementById("secondRoundOkBtn");
 
-// 全画面を消す
+// 結果画面用
+const mainAnimalImg = document.getElementById("mainAnimalImg");
+const shareTextEl = document.getElementById("shareText");
+
+// ============================
+// 画面切り替え
+// ============================
+
 function hideAllScreens() {
   startScreenEl.style.display = "none";
   preSituationScreen.style.display = "none";
@@ -106,7 +97,29 @@ function hideAllScreens() {
   secondRoundInfo.style.display = "none";
 }
 
+// ============================
+// スプレッドシート送信
+// ============================
+
+async function sendToSheet(data) {
+  try {
+    await fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (err) {
+    console.error("送信エラー:", err);
+  }
+}
+
+// ============================
 // 開始ボタン
+// ============================
+
 document.getElementById("startBtn").addEventListener("click", async () => {
   if (!genderEl.value || !ageEl.value) {
     alert("性別と年齢を入力してください");
@@ -134,22 +147,28 @@ document.getElementById("startBtn").addEventListener("click", async () => {
   showPreSituation(playerIndex);
 });
 
+// ============================
+// 時間文字列 → 数値変換
+// ============================
+
 function parseTime(str) {
   if (typeof str === "number") {
     return str;
   }
-
   const match = String(str).match(/\d+/);
   return match ? parseInt(match[0]) : 8;
 }
+
+// ============================
+// プレ画面表示
+// ============================
 
 function showPreSituation(index) {
   const q = playerQuestions[index];
 
   const t = parseTime(q.time);
-
-  q.time1 = t + 2;
-  q.time2 = t;
+  q.time1 = t + 2; // 一巡目の制限時間
+  q.time2 = t;     // 二巡目の「解禁までの時間」
 
   hideAllScreens();
   preSituationScreen.style.display = "flex";
@@ -182,7 +201,10 @@ function showPreSituation(index) {
   };
 }
 
-// 質問開始（統一版）
+// ============================
+// 質問開始
+// ============================
+
 function startQuestion(index) {
   hideAllScreens();
   playerContainerEl.style.display = "block";
@@ -194,39 +216,31 @@ function startQuestion(index) {
   loadPlayerQuestion(index);
 }
 
-// 質問表示（統一版）
+// ============================
+// 質問表示（参考画像なしの安定版）
+// ============================
+
 function loadPlayerQuestion(index) {
   const q = playerQuestions[index];
 
-  // --- 上部の状況文・質問文 ---
+  // 上部の状況文・質問文
   situationEl.textContent = q.situation || "";
   questionEl.textContent = q.question || "";
   questionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
 
-  // --- 選択肢エリア初期化 ---
-  optionsEl.innerHTML = "";
-
-  // ★ 問題文の下に画像を表示
+  // 質問画像（あれば表示、なければ非表示）
   if (q.image) {
-    const img = document.createElement("img");
-    img.src = q.image;
-    img.className = "questionImage";
-    optionsEl.appendChild(img);
+    questionImageEl.src = q.image;
+    questionImageEl.style.display = "block";
+  } else {
+    questionImageEl.style.display = "none";
   }
 
-  // --- 質問ごとの画像表示エリア ---
-  const imgEl = document.createElement("img");
-  imgEl.id = "choiceImage";
-  imgEl.className = "optionImagePlaceholder";
-  imgEl.style.width = "300px";
-  imgEl.style.height = "auto";
-  optionsEl.appendChild(imgEl);
+  // 選択肢エリア初期化
+  optionsEl.innerHTML = "";
 
-  imgEl.src = questionImages[currentQuestion];
-
-  // --- タイマー処理 ---
+  // タイマー処理
   startTime = Date.now();
-
   let limit = round === 1 ? q.time1 : q.time2;
 
   if (timer) clearInterval(timer);
@@ -246,17 +260,18 @@ function loadPlayerQuestion(index) {
       if (remaining <= 0) {
         clearInterval(timer);
         timer = null;
-        handleTimeout(q);
+        // 時間切れ → 決定ボタンだけ出す
+        confirmBtn.style.display = "block";
         return;
       }
 
       timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
       timerBar.style.width = `${(remaining / limit) * 100}%`;
+
     } else {
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
 
       const unlock = q.time2;
-
       let width = (elapsed / unlock) * 100;
       if (width > 100) width = 100;
 
@@ -264,16 +279,15 @@ function loadPlayerQuestion(index) {
     }
   }, 50);
 
-  // --- A〜D の選択肢を追加 ---
+  // A〜D の選択肢を追加
   q.options.forEach((opt) => {
     const btn = document.createElement("button");
     btn.className = "optionButton";
-
     btn.textContent = `${opt.label}（¥${opt.price}）`;
     btn.setAttribute("data-key", opt.key);
 
     btn.onclick = () => {
-      selectedOption = opt;
+      selectedOption = { key: opt.key, label: opt.label, price: opt.price };
 
       document.querySelectorAll(".optionButton").forEach(b => {
         b.classList.remove("selectedOption");
@@ -286,12 +300,11 @@ function loadPlayerQuestion(index) {
     optionsEl.appendChild(btn);
   });
 
-  // --- 「買わない」ボタン追加 ---
+  // 「買わない」ボタン追加
   const noBuyBtn = document.createElement("button");
   noBuyBtn.className = "optionButton noBuyButton";
   noBuyBtn.textContent = "買わない";
   noBuyBtn.setAttribute("data-key", "N");
-  noBuyBtn.style.marginTop = "20px";
 
   noBuyBtn.onclick = () => {
     selectedOption = { key: "N", label: "買わない", price: 0 };
@@ -307,21 +320,23 @@ function loadPlayerQuestion(index) {
   optionsEl.appendChild(noBuyBtn);
 }
 
-// ▼▼▼ タイプ説明文 ▼▼▼
-const typeDescriptions = {
-  "せっかちタイプ（すぐ決めちゃう）":
-    "あなたは『ピンときたらすぐ行動！』のタイプ。直感がとても鋭くて、迷う時間よりもワクワクを大事にする人です。",
-  "心配性タイプ（慎重に考える）":
-    "あなたは『じっくり考えてから動く』安心感のあるタイプ。選ぶときも、ちゃんと理由を持って決めたい人です。",
-  "節約家タイプ（買わないことが多い）":
-    "あなたは『本当に必要なものだけ選ぶ』しっかり者タイプ。ムダを見つけるのが上手で、賢いお金の使い方ができます。",
-  "お得ハンタータイプ（コスパ重視）":
-    "あなたは『値段以上の価値があるか』を見抜く名人。安いから買うのではなく、ちゃんと“良い買い物”をしたいタイプです。",
-  "気分屋タイプ（状況次第で変わる）":
-    "あなたは『その時の気分を大事にする』自由なタイプ。新しいものや面白いものにすぐ興味がわく、好奇心いっぱいの人です。"
+// ============================
+// 決定ボタン
+// ============================
+
+confirmBtn.onclick = () => {
+  if (!selectedOption) return;
+
+  playerQuestions[currentQuestion].selected = selectedOption.key;
+  playerQuestions[currentQuestion].round = round;
+
+  nextPlayerQuestion();
 };
 
-// ▼▼▼ 次の質問へ ▼▼▼
+// ============================
+// 次の質問へ
+// ============================
+
 function nextPlayerQuestion() {
   hideAllScreens();
   playerIndex++;
@@ -334,14 +349,16 @@ function nextPlayerQuestion() {
 
   // 二巡目終了 → 結果画面
   if (round === 2 && playerIndex >= playerQuestions.length) {
-
     const summary = calculateSummary();
-
     fillResultTable(summary);
 
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
+    // 自分の動物タイプ
+    const myAnimal = convertToAnimalType(type);
+
+    // 友達の動物タイプ（URLから）
     const friendAnimal = getFriendTypeFromURL();
     if (friendAnimal) {
       const friendTypeJP = {
@@ -358,16 +375,28 @@ function nextPlayerQuestion() {
       document.getElementById("friendTypeBox").style.display = "block";
     }
 
-    const myAnimal = convertToAnimalType(type);
+    // 相性表示（要素がある場合のみ）
     if (friendAnimal && myAnimal) {
       const key = `${friendAnimal}_${myAnimal}`;
       showPairResult(key);
     }
 
+    // 共有用URL（自分のタイプ付き）
     const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
-    document.getElementById("shareLink").textContent = shareUrl;
-    document.getElementById("shareLink").href = shareUrl;
 
+    // メインの動物画像（任意で差し替え）
+    if (mainAnimalImg) {
+      const animalMap = {
+        "せっかちタイプ（すぐ決めちゃう）": "images/usagi.png",
+        "心配性タイプ（慎重に考える）": "images/fuku.png",
+        "節約家タイプ（買わないことが多い）": "images/ham.png",
+        "お得ハンタータイプ（コスパ重視）": "images/kitsune.png",
+        "気分屋タイプ（状況次第で変わる）": "images/neko.png"
+      };
+      mainAnimalImg.src = animalMap[type] || "";
+    }
+
+    // タイプ説明文
     const box = document.getElementById("typeDetailBox");
     box.innerHTML = "";
 
@@ -382,6 +411,12 @@ function nextPlayerQuestion() {
       descBox.classList.add("show");
     }, 300);
 
+    // 共有文（テキスト）
+    if (shareTextEl) {
+      shareTextEl.textContent =
+        `あなたの診断タイプは「${type}」でした！この結果ページのURLをコピーして、友達にも診断してもらおう！`;
+    }
+
     finalScreenEl.style.display = "block";
     return;
   }
@@ -389,13 +424,16 @@ function nextPlayerQuestion() {
   showPreSituation(playerIndex);
 }
 
-// ▼▼▼ 二巡目開始 ▼▼▼
+// ============================
+// 二巡目開始ボタン
+// ============================
+
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
   hideAllScreens();
   secondRoundInfo.style.display = "block";
 });
 
-// ▼▼▼ 二巡目説明 → スタート ▼▼▼
+// 二巡目説明 → スタート
 secondRoundOkBtn.addEventListener("click", () => {
   round = 2;
   playerIndex = 0;
@@ -404,10 +442,10 @@ secondRoundOkBtn.addEventListener("click", () => {
   showPreSituation(playerIndex);
 });
 
-// ▼▼▼ 共有リンクを画面から消す ▼▼▼
-document.getElementById("shareLink").style.display = "none";
+// ============================
+// 結果共有ボタン（URLコピー）
+// ============================
 
-// ボタンを押したら今のURLをコピー
 document.getElementById("shareBigBtn").addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(location.href);
@@ -417,7 +455,10 @@ document.getElementById("shareBigBtn").addEventListener("click", async () => {
   }
 });
 
+// ============================
 // 傾向まとめ
+// ============================
+
 function calculateSummary() {
   let prices = [];
   let impulsive = 0;
@@ -428,7 +469,6 @@ function calculateSummary() {
   let total = playerQuestions.length;
 
   playerQuestions.forEach(q => {
-
     if (["A", "B", "C", "D"].includes(q.selected)) buyCount++;
     if (q.selected === "N") noBuyCount++;
 
@@ -464,7 +504,7 @@ function calculateSummary() {
   };
 }
 
-// タイプ判定（完全版）
+// タイプ判定
 function determineType(summary) {
   const { buyRate, noBuyRate, priceSensitivity, impulsiveRate, carefulRate } = summary;
 
@@ -533,34 +573,74 @@ function fillResultTable(summary) {
   });
 }
 
-// ▼▼▼ スプレッドシート送信 ▼▼▼
-async function sendToSheet(data) {
-  try {
-    await fetch(SHEET_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-  } catch (err) {
-    console.error("送信エラー:", err);
-  }
+// ============================
+// 診断タイプ → 動物タイプ変換
+// ============================
+
+function convertToAnimalType(myType) {
+  if (myType.includes("せっかち")) return "usagi";
+  if (myType.includes("心配性")) return "fuku";
+  if (myType.includes("節約家")) return "ham";
+  if (myType.includes("お得ハンター")) return "kitsune";
+  if (myType.includes("気分屋")) return "neko";
+  return null;
 }
 
+// ============================
+// タイプ説明文
+// ============================
+
+const typeDescriptions = {
+  "せっかちタイプ（すぐ決めちゃう）":
+    "あなたは『ピンときたらすぐ行動！』のタイプ。直感がとても鋭くて、迷う時間よりもワクワクを大事にする人です。",
+  "心配性タイプ（慎重に考える）":
+    "あなたは『じっくり考えてから動く』安心感のあるタイプ。選ぶときも、ちゃんと理由を持って決めたい人です。",
+  "節約家タイプ（買わないことが多い）":
+    "あなたは『本当に必要なものだけ選ぶ』しっかり者タイプ。ムダを見つけるのが上手で、賢いお金の使い方ができます。",
+  "お得ハンタータイプ（コスパ重視）":
+    "あなたは『値段以上の価値があるか』を見抜く名人。安いから買うのではなく、ちゃんと“良い買い物”をしたいタイプです。",
+  "気分屋タイプ（状況次第で変わる）":
+    "あなたは『その時の気分を大事にする』自由なタイプ。新しいものや面白いものにすぐ興味がわく、好奇心いっぱいの人です。"
+};
+
+// ============================
+// 相性データ & 表示
+// ============================
+
+const pairData = {
+  // ここは陸が送ってくれた pairData をそのまま使う
+  // usagi_usagi 〜 neko_neko まで全部
+  "usagi_usagi": {
+    score: 70,
+    text: "テンポが似ていて行動が早い同士。気が合いやすい組み合わせ。",
+    advice: "お互い急ぎすぎるとすれ違うので、少しだけゆっくり話すと◎。",
+    yourImg: "images/usagi.png",
+    otherImg: "images/usagi.png"
+  },
+  // ===== 相性データ =====
+let pairData = {
+  "neko_usagi": {
+    score: 78,
+    text: "気まま × 素直で、ゆるい雰囲気がちょうどよく噛み合う組み合わせです。",
+    advice: "ウサギが少しだけ主張すると、ネコが動きやすくなる。",
+    yourImg: "images/neko.png",
+    otherImg: "images/usagi.png"
+  }
+  // ← 他の組み合わせもここに追加していく
+};
 // ===== 診断タイプ → 動物タイプ変換（陸の設定版） =====
 function convertToAnimalType(myType) {
   if (myType.includes("せっかち")) return "usagi";     // ウサギ
   if (myType.includes("心配性")) return "fuku";        // フクロウ
-  if (myType.includes("節約家")) return "ham";         // ハムスター
+  if (myType.includes("節約家")) return "ham";        // ハムスター
   if (myType.includes("お得ハンター")) return "kitsune"; // キツネ
   if (myType.includes("気分屋")) return "neko";        // ネコ
   return null;
 }
 
+
 // ===== 相性データ（25種類） =====
-let pairData = {
+pairData = {
   "usagi_usagi": {
     score: 70,
     text: "テンポが似ていて行動が早い同士。気が合いやすい組み合わせ。",
@@ -766,22 +846,32 @@ let pairData = {
   }
 };
 
-// ===== 相性結果を画面に反映 =====
+};
+
 function showPairResult(key) {
   const data = pairData[key];
+  if (!data) return;
 
-  // 相性スコア
-  document.getElementById("pair-score").textContent = `${data.score}点`;
-  document.getElementById("pair-score-text").textContent = `${data.score}点`;
+  const pairScoreEl = document.getElementById("pair-score");
+  const pairScoreTextEl = document.getElementById("pair-score-text");
+  const pairDescEl = document.getElementById("pair-desc");
+  const yourImgEl = document.getElementById("yourPairImg");
+  const otherImgEl = document.getElementById("otherPairImg");
+  const pairResultEl = document.getElementById("pairResult");
 
-  // 相性文章
-  document.getElementById("pair-desc").innerHTML =
-    `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
+  // 要素が存在しない場合は何もしない（エラー防止）
+  if (!pairResultEl) return;
 
-  // 立ち絵（IDを統一）
-  document.getElementById("yourPairImg").src = data.yourImg;
-  document.getElementById("otherPairImg").src = data.otherImg;
+  if (pairScoreEl) pairScoreEl.textContent = `${data.score}点`;
+  if (pairScoreTextEl) pairScoreTextEl.textContent = `${data.score}点`;
 
-  // 相性ブロック表示
-  document.getElementById("pairResult").style.display = "block";
+  if (pairDescEl) {
+    pairDescEl.innerHTML =
+      `${data.text}<br><br><strong>こうすれば上手くいく：</strong>${data.advice}`;
+  }
+
+  if (yourImgEl) yourImgEl.src = data.yourImg;
+  if (otherImgEl) otherImgEl.src = data.otherImg;
+
+  pairResultEl.style.display = "block";
 }
