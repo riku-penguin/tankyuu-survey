@@ -399,16 +399,17 @@ function nextPlayerQuestion() {
 
     const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
 
-    if (mainAnimalImg) {
-      const animalMap = {
-        "せっかちタイプ（すぐ決めちゃう）": "images/usagi.png",
-        "心配性タイプ（慎重に考える）": "images/fuku.png",
-        "節約家タイプ（買わないことが多い）": "images/ham.png",
-        "お得ハンタータイプ（コスパ重視）": "images/kitsune.png",
-        "気分屋タイプ（状況次第で変わる）": "images/neko.png"
-      };
-      mainAnimalImg.src = animalMap[type] || "";
-    }
+   if (mainAnimalImg && myAnimal) {
+  const animalMap = {
+    usagi: "images/usagi.png",
+    fuku: "images/fuku.png",
+    ham: "images/ham.png",
+    kitsune: "images/kitsune.png",
+    neko: "images/neko.png"
+  };
+  mainAnimalImg.src = animalMap[myAnimal];
+}
+
 
     const box = document.getElementById("typeDetailBox");
     box.innerHTML = "";
