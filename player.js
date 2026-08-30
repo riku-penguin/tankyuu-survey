@@ -667,7 +667,7 @@ function showPairResult(key) {
   if (!pairResultEl) return;
 
   if (pairScoreEl) pairScoreEl.textContent = `${data.score}点`;
-  if (pairScoreTextEl) pairScoreTextEl.textContent = `${data.score}点`;
+  if (pairScoreTextEl) pairScoreTextEl.textContent = `${data.scoreText}`;
 
   if (pairDescEl) {
     pairDescEl.innerHTML =
@@ -679,3 +679,4 @@ function showPairResult(key) {
 
   pairResultEl.style.display = "block";
 }
+
