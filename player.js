@@ -399,16 +399,15 @@ function nextPlayerQuestion() {
 
     const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
 
-   if (mainAnimalImg && myAnimal) {
-  const animalMap = {
-    usagi: "images/usagi.png",
-    fuku: "images/fuku.png",
-    ham: "images/ham.png",
-    kitsune: "images/kitsune.png",
-    neko: "images/neko.png"
-  };
-  mainAnimalImg.src = animalMap[myAnimal];
-}
+const animalMap = {
+  usagi: "https://i.imgur.com/HmSkZwY.png",
+  kitsune: "https://i.imgur.com/xDcTHq2.png",
+  fuku: "https://i.imgur.com/HpkpQSA.png",
+  neko: "https://i.imgur.com/POEgiJ4.png",
+  ham: "https://i.imgur.com/0cvIJzT.png"
+};
+
+
 
 
     const box = document.getElementById("typeDetailBox");
