@@ -1,6 +1,6 @@
 // スプレッドシート連携URL
 const SHEET_URL =
-  "https://script.google.com/macros/s/AKfycbx56s7eC_RCqL6hFfjPH-J7I9jIVD49ti8I41liLIVYuh68Wh4FB4r3VqzgqllIrGadlA/exec";
+  ""https://withered-dawn-9880.riku20090730.workers.dev";
 
 // 共有用リンク（ベースURL）
 const SHARE_URL = "https://riku-penguin.github.io/tankyuu-survey/";
