@@ -383,71 +383,29 @@ const myAnimal = convertToAnimalType(type);
 // 画像をセット
 mainAnimalImg.src = animalMap[myAnimal];
 
+// 友達タイプを取得
+const friendAnimal = getFriendTypeFromURL();
 
-    
-    const myAnimal = convertToAnimalType(type);
-    const friendAnimal = getFriendTypeFromURL();
+if (friendAnimal) {
+  const friendTypeJP = {
+    usagi: "せっかち（ウサギ）",
+    fuku: "心配性（フクロウ）",
+    ham: "節約家（ハムスター）",
+    kitsune: "お得ハンター（キツネ）",
+    neko: "気分屋（ネコ）"
+  };
 
-    if (friendAnimal) {
-      const friendTypeJP = {
-        usagi: "せっかち（ウサギ）",
-        fuku: "心配性（フクロウ）",
-        ham: "節約家（ハムスター）",
-        kitsune: "お得ハンター（キツネ）",
-        neko: "気分屋（ネコ）"
-      };
+  document.getElementById("friendTypeText").textContent =
+    `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
 
-      document.getElementById("friendTypeText").textContent =
-        `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
+  document.getElementById("friendTypeBox").style.display = "block";
+}
 
-      document.getElementById("friendTypeBox").style.display = "block";
-    }
+if (friendAnimal && myAnimal) {
+  const key = `${friendAnimal}_${myAnimal}`;
+  showPairResult(key);
+}
 
-    if (friendAnimal && myAnimal) {
-      const key = `${friendAnimal}_${myAnimal}`;
-      showPairResult(key);
-    }
-
-    const shareUrl = `${location.origin}${location.pathname}?type=${encodeURIComponent(type)}`;
-
-const animalMap = {
-  usagi: "https://i.imgur.com/HmSkZwY.png",
-  kitsune: "https://i.imgur.com/xDcTHq2.png",
-  fuku: "https://i.imgur.com/HpkpQSA.png",
-  neko: "https://i.imgur.com/POEgiJ4.png",
-  ham: "https://i.imgur.com/0cvIJzT.png"
-};
-
-
-
-
-    const box = document.getElementById("typeDetailBox");
-    box.innerHTML = "";
-
-    const desc = typeDescriptions[type];
-    const descBox = document.createElement("div");
-    descBox.className = "typeDescriptionBox";
-    descBox.textContent = desc;
-    box.appendChild(descBox);
-
-    setTimeout(() => {
-      descBox.classList.add("show");
-    }, 300);
-
-    if (shareTextEl) {
-      shareTextEl.textContent =
-        `あなたの診断タイプは「${type}」でした！別で送った相性表を見てほかの人と比べてみてください！
-        ご協力ありがとうございました！`;
-    }
-
-    finalScreenEl.style.display = "block";
-    return;  // ★ 正しい位置
-  }
-
-  // ★ 二巡目の通常進行
-showPreSituation(playerIndex);
-
-}  // ★ nextPlayerQuestion の正しい閉じカッコ
 // ============================
 // 二巡目開始ボタン
 // ============================
