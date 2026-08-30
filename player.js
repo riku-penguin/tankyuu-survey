@@ -278,56 +278,22 @@ function loadPlayerQuestion(index) {
 
       timerText.textContent = `残り時間: ${Math.ceil(remaining)} 秒`;
       timerBar.style.width = `${(remaining / limit) * 100}%`;
+} else {
+  // ★ 二巡目：経過時間を表示
+  timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
 
-    } else {
-      timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
+  const unlock = q.time2;
+  let width = (elapsed / unlock) * 100;
+  if (width > 100) width = 100;
 
-      const unlock = q.time2;
-      let width = (elapsed / unlock) * 100;
-      if (width > 100) width = 100;
+  timerBar.style.width = `${width}%`;
 
-      timerBar.style.width = `${width}%`;
-    }
-  }, 50);
-
-  q.options.forEach((opt) => {
-    const btn = document.createElement("button");
-    btn.className = "optionButton";
-    btn.textContent = `${opt.label}（¥${opt.price}）`;
-    btn.setAttribute("data-key", opt.key);
-
-    btn.onclick = () => {
-      selectedOption = { key: opt.key, label: opt.label, price: opt.price };
-
-      document.querySelectorAll(".optionButton").forEach(b => {
-        b.classList.remove("selectedOption");
-      });
-      btn.classList.add("selectedOption");
-
-      confirmBtn.style.display = "block";
-    };
-
-    optionsEl.appendChild(btn);
-  });
-
-  const noBuyBtn = document.createElement("button");
-  noBuyBtn.className = "optionButton noBuyButton";
-  noBuyBtn.textContent = "買わない";
-  noBuyBtn.setAttribute("data-key", "N");
-
-  noBuyBtn.onclick = () => {
-    selectedOption = { key: "N", label: "買わない", price: 0 };
-
-    document.querySelectorAll(".optionButton").forEach(b => {
-      b.classList.remove("selectedOption");
-    });
-    noBuyBtn.classList.add("selectedOption");
-
+  // ★ 二巡目：解禁時間を過ぎたら回答可能にする（自動で進まない）
+  if (elapsed >= unlock) {
     confirmBtn.style.display = "block";
-  };
-
-  optionsEl.appendChild(noBuyBtn);
+  }
 }
+
 
 // ============================
 // 決定ボタン
