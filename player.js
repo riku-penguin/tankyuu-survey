@@ -167,12 +167,14 @@ function showPreSituation(index) {
 
   preQuestionNumber.textContent = `質問 ${index + 1} / ${playerQuestions.length}`;
 
+  // ★ 二巡目は「◯秒後から回答できます」と表示
   if (round === 2) {
     preSituationText.textContent = `${q.situation}（${q.time2}秒後から回答できます）`;
   } else {
     preSituationText.textContent = q.situation;
   }
 
+  // ★ 5秒後に質問画面へ移行（1巡目も2巡目も共通）
   let remain = 5;
   preCountdown.textContent = `あと ${remain} 秒で質問画面に移行します`;
 
@@ -183,15 +185,17 @@ function showPreSituation(index) {
 
     if (remain <= 0) {
       clearInterval(preTimer);
-      startQuestion(index);
+      startQuestion(index);  // ← 二巡目もここで質問画面へ
     }
   }, 1000);
 
+  // ★ OKボタンでも即質問画面へ
   preOkBtn.onclick = () => {
     clearInterval(preTimer);
     startQuestion(index);
   };
 }
+
 
 // ============================
 // 質問開始
