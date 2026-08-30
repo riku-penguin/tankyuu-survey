@@ -1,5 +1,6 @@
 // スプレッドシート連携URL
-There was an error committing your changes: riku-penguin has committed since you started editing
+const SHEET_URL = "https://withered-dawn-9880.riku20090730.workers.dev";
+
 
 // 共有用リンク（ベースURL）
 const SHARE_URL = "https://riku-penguin.github.io/tankyuu-survey/";
