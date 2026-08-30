@@ -374,6 +374,27 @@ function nextPlayerQuestion() {
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
+    document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
+
+// ここで myAnimal を決める
+let myAnimal = "";
+
+if (type === "せっかちタイプ（すぐ決めちゃう）") {
+  myAnimal = "usagi";
+} else if (type === "心配性タイプ（慎重に考える）") {
+  myAnimal = "fuku";
+} else if (type === "節約家タイプ（買わないことが多い）") {
+  myAnimal = "ham";
+} else if (type === "お得ハンタータイプ（コスパ重視）") {
+  myAnimal = "kitsune";
+} else if (type === "気分屋タイプ（状況次第で変わる）") {
+  myAnimal = "neko";
+}
+
+// 画像をセット
+mainAnimalImg.src = animalMap[myAnimal];
+
+    
     const myAnimal = convertToAnimalType(type);
     const friendAnimal = getFriendTypeFromURL();
 
