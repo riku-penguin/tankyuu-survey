@@ -1,3 +1,21 @@
+let remainingTime = 30;
+let timerId = null;
+
+function startReverseTimer() {
+  clearInterval(timerId);
+
+  timerId = setInterval(() => {
+    remainingTime--;
+
+    document.getElementById("timerText").textContent = remainingTime;
+
+    if (remainingTime <= 0) {
+      clearInterval(timerId);
+      nextPlayerQuestion();
+    }
+  }, 1000);
+}
+
 // スプレッドシート連携URL
 const SHEET_URL = "https://withered-dawn-9880.riku20090730.workers.dev";
 
@@ -383,16 +401,7 @@ function nextPlayerQuestion() {
   showPreSituation(playerIndex);
 }
 
-document.getElementById("secondRoundOkBtn").addEventListener("click", () => {
-  round = 2;
-  playerIndex = 0;
 
-  remainingTime = 30;
-  startReverseTimer();
-
-  hideAllScreens();
-  showPreSituation(playerIndex);
-});
 
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
   hideAllScreens();
