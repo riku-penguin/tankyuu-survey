@@ -374,58 +374,43 @@ function nextPlayerQuestion() {
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
+    // まず myAnimal を決める
+    const myAnimal = convertToAnimalType(type);
 
+    // 画像をセット
+    mainAnimalImg.src = animalMap[myAnimal];
 
-// まず myAnimal を決める
-const myAnimal = convertToAnimalType(type);
+    // 友達タイプを取得
+    const friendAnimal = getFriendTypeFromURL();
 
-// 画像をセット
-mainAnimalImg.src = animalMap[myAnimal];
+    if (friendAnimal) {
+      const friendTypeJP = {
+        usagi: "せっかち（ウサギ）",
+        fuku: "心配性（フクロウ）",
+        ham: "節約家（ハムスター）",
+        kitsune: "お得ハンター（キツネ）",
+        neko: "気分屋（ネコ）"
+      };
 
-// 友達タイプを取得
-const friendAnimal = getFriendTypeFromURL();
+      document.getElementById("friendTypeText").textContent =
+        `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
 
-if (friendAnimal) {
-  const friendTypeJP = {
-    usagi: "せっかち（ウサギ）",
-    fuku: "心配性（フクロウ）",
-    ham: "節約家（ハムスター）",
-    kitsune: "お得ハンター（キツネ）",
-    neko: "気分屋（ネコ）"
-  };
+      document.getElementById("friendTypeBox").style.display = "block";
+    }
 
-  document.getElementById("friendTypeText").textContent =
-    `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
+    if (friendAnimal && myAnimal) {
+      const key = `${friendAnimal}_${myAnimal}`;
+      showPairResult(key);
+    }
 
-  document.getElementById("friendTypeBox").style.display = "block";
-}
+    finalScreenEl.style.display = "block";
+    return;
+  }
 
-if (friendAnimal && myAnimal) {
-  const key = `${friendAnimal}_${myAnimal}`;
-  showPairResult(key);
-}
-
-// ============================
-// 二巡目開始ボタン
-// ============================
-
-document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
-  hideAllScreens();
-  secondRoundInfo.style.display = "block";
-});
-
-// ============================
-// 二巡目説明 → スタート
-// ============================
-
-document.getElementById("secondRoundOkBtn").addEventListener("click", () => {
-  round = 2;
-  playerIndex = 0;
-
-  hideAllScreens();
+  // ★ 二巡目の通常進行
   showPreSituation(playerIndex);
-});
+}  // ← nextPlayerQuestion の正しい閉じカッコ
+
 
 // ============================
 // 結果表を埋める
