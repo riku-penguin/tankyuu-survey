@@ -101,7 +101,6 @@ async function sendToSheet(data) {
   try {
     await fetch(SHEET_URL, {
       method: "POST",
-      mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
@@ -109,6 +108,7 @@ async function sendToSheet(data) {
     console.error("送信エラー:", err);
   }
 }
+
 
 // ============================
 // 開始ボタン
