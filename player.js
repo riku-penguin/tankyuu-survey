@@ -311,11 +311,45 @@ function loadPlayerQuestion(index) {
 confirmBtn.onclick = () => {
   if (!selectedOption) return;
 
+  const q = playerQuestions[currentQuestion];
+  const now = Date.now();
+  const elapsed = (now - startTime) / 1000;
+
+  // ★ 送信する回答データを作成
+  const data = {
+    userId,
+    questionId: q.id,
+    selected: selectedOption.key,
+    optionLabel: selectedOption.label,
+    price: selectedOption.price,
+    category: q.category,
+    time1: q.time1,
+    time2: q.time2,
+    gender: genderEl.value,
+    age: ageEl.value,
+    round,
+    answerTime1: round === 1 ? elapsed : null,
+    answerTime2: round === 2 ? elapsed : null,
+    timeout: selectedOption.key === "N",
+    buyRate: q.buyRate || null,
+    noBuyRate: q.noBuyRate || null,
+    priceSensitivity: q.priceSensitivity || null,
+    impulsiveRate: q.impulsiveRate || null,
+    carefulRate: q.carefulRate || null,
+    type: q.type || null
+  };
+
+  // ★ ここが最重要：回答データを送信
+  sendToSheet(data);
+
+  // ★ ローカルにも保存（あなたの元コード）
   playerQuestions[currentQuestion].selected = selectedOption.key;
   playerQuestions[currentQuestion].round = round;
 
+  // 次の質問へ
   nextPlayerQuestion();
 };
+
 // ============================
 // 次の質問へ
 // ============================
