@@ -140,6 +140,7 @@ document.getElementById("startBtn").addEventListener("click", async () => {
 
   showPreSituation(playerIndex);
 });
+
 // ============================
 // 時間文字列 → 数値変換
 // ============================
@@ -247,7 +248,9 @@ function loadPlayerQuestion(index) {
       if (remaining <= 0) {
         clearInterval(timer);
         timer = null;
-        confirmBtn.style.display = "block";
+
+        // ★ 修正点：時間切れで自動で次へ進む
+        nextPlayerQuestion();
         return;
       }
 
@@ -315,7 +318,6 @@ confirmBtn.onclick = () => {
   const now = Date.now();
   const elapsed = (now - startTime) / 1000;
 
-  // ★ 回答データを作成（undefined を出さないように全部補完）
   const data = {
     userId,
     questionId: q.id || currentQuestion + 1,
@@ -331,8 +333,6 @@ confirmBtn.onclick = () => {
     answerTime1: round === 1 ? elapsed : null,
     answerTime2: round === 2 ? elapsed : null,
     timeout: selectedOption.key === "N",
-
-    // ★ ここは質問データに存在しない可能性が高いので null 補完
     buyRate: null,
     noBuyRate: null,
     priceSensitivity: null,
@@ -341,31 +341,11 @@ confirmBtn.onclick = () => {
     type: null
   };
 
-  // ★ スプレッドシートへ送信
   sendToSheet(data);
 
-  // ★ ローカル保存（あなたの元コード）
   playerQuestions[currentQuestion].selected = selectedOption.key;
   playerQuestions[currentQuestion].round = round;
 
-let remainingTime = 30;
-let timerId = null;
-
-function startReverseTimer() {
-  clearInterval(timerId);
-
-  timerId = setInterval(() => {
-    remainingTime--;
-
-    document.getElementById("timerText").textContent = remainingTime;
-
-    if (remainingTime <= 0) {
-      clearInterval(timerId);
-      nextPlayerQuestion();
-    }
-  }, 1000);
-}
-  // 次の質問へ
   nextPlayerQuestion();
 };
 
@@ -377,13 +357,11 @@ function nextPlayerQuestion() {
   hideAllScreens();
   playerIndex++;
 
-  // 一巡目終了
   if (round === 1 && playerIndex >= playerQuestions.length) {
     infoScreenEl.style.display = "block";
     return;
   }
 
-  // 二巡目終了 → 結果画面
   if (round === 2 && playerIndex >= playerQuestions.length) {
     const summary = calculateSummary();
     fillResultTable(summary);
@@ -391,7 +369,6 @@ function nextPlayerQuestion() {
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    // 固定の相性表を表示
     const box = document.getElementById("typeDetailBox");
     box.innerHTML = document.getElementById("pairTableBox").innerHTML;
 
@@ -399,32 +376,25 @@ function nextPlayerQuestion() {
     return;
   }
 
-  // 通常進行
   showPreSituation(playerIndex);
 }
+
 document.getElementById("secondRoundOkBtn").addEventListener("click", () => {
   round = 2;
   playerIndex = 0;
 
-  // 逆時間制限リセット
-  remainingTime = 30;   // ← ここはあなたの制限時間に合わせて変更
-  startReverseTimer();  // ← タイマー開始関数（あなたのコードに合わせて）
+  remainingTime = 30;
+  startReverseTimer();
 
   hideAllScreens();
   showPreSituation(playerIndex);
 });
 
-// ============================
-// 二巡目開始ボタン
-// ============================
 document.getElementById("startSecondRoundBtn").addEventListener("click", () => {
   hideAllScreens();
   secondRoundInfo.style.display = "block";
 });
 
-// ============================
-// 二巡目説明 → スタート
-// ============================
 document.getElementById("secondRoundOkBtn").addEventListener("click", () => {
   round = 2;
   playerIndex = 0;
