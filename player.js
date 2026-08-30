@@ -377,8 +377,6 @@ function nextPlayerQuestion() {
     // まず myAnimal を決める
     const myAnimal = convertToAnimalType(type);
 
-    // 画像をセット
-    mainAnimalImg.src = animalMap[myAnimal];
 
     // 友達タイプを取得
     const friendAnimal = getFriendTypeFromURL();
