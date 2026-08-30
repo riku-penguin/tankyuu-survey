@@ -348,6 +348,23 @@ confirmBtn.onclick = () => {
   playerQuestions[currentQuestion].selected = selectedOption.key;
   playerQuestions[currentQuestion].round = round;
 
+let remainingTime = 30;
+let timerId = null;
+
+function startReverseTimer() {
+  clearInterval(timerId);
+
+  timerId = setInterval(() => {
+    remainingTime--;
+
+    document.getElementById("timerText").textContent = remainingTime;
+
+    if (remainingTime <= 0) {
+      clearInterval(timerId);
+      nextPlayerQuestion();
+    }
+  }, 1000);
+}
   // 次の質問へ
   nextPlayerQuestion();
 };
@@ -374,40 +391,28 @@ function nextPlayerQuestion() {
     const type = determineType(summary);
     document.getElementById("resultType").textContent = `あなたのタイプ：${type}`;
 
-    // まず myAnimal を決める
-    const myAnimal = convertToAnimalType(type);
-
-
-    // 友達タイプを取得
-    const friendAnimal = getFriendTypeFromURL();
-
-    if (friendAnimal) {
-      const friendTypeJP = {
-        usagi: "せっかち（ウサギ）",
-        fuku: "心配性（フクロウ）",
-        ham: "節約家（ハムスター）",
-        kitsune: "お得ハンター（キツネ）",
-        neko: "気分屋（ネコ）"
-      };
-
-      document.getElementById("friendTypeText").textContent =
-        `あなたの友達は「${friendTypeJP[friendAnimal]}」タイプでした！`;
-
-      document.getElementById("friendTypeBox").style.display = "block";
-    }
-
-    if (friendAnimal && myAnimal) {
-      const key = `${friendAnimal}_${myAnimal}`;
-      showPairResult(key);
-    }
+    // 固定の相性表を表示
+    const box = document.getElementById("typeDetailBox");
+    box.innerHTML = document.getElementById("pairTableBox").innerHTML;
 
     finalScreenEl.style.display = "block";
     return;
   }
 
-  // ★ 二巡目の通常進行
+  // 通常進行
   showPreSituation(playerIndex);
-}  // ← nextPlayerQuestion の正しい閉じカッコ
+}
+document.getElementById("secondRoundOkBtn").addEventListener("click", () => {
+  round = 2;
+  playerIndex = 0;
+
+  // 逆時間制限リセット
+  remainingTime = 30;   // ← ここはあなたの制限時間に合わせて変更
+  startReverseTimer();  // ← タイマー開始関数（あなたのコードに合わせて）
+
+  hideAllScreens();
+  showPreSituation(playerIndex);
+});
 
 // ============================
 // 二巡目開始ボタン
