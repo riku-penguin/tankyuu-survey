@@ -339,6 +339,41 @@ optionsEl.appendChild(noBuyBtn);
 } 
 
 
+// ============================
+// 決定ボタン2
+// ============================
+
+confirmBtn.onclick = () => {
+  if (!selectedOption) return;
+
+  const q = playerQuestions[currentQuestion];
+  const now = Date.now();
+  const elapsed = (now - startTime) / 1000;
+
+  const data = {
+    userId,
+    questionId: q.id || currentQuestion + 1,
+    selected: selectedOption.key,
+    optionLabel: selectedOption.label,
+    price: selectedOption.price,
+    category: q.category || null,
+    time1: q.time1 || null,
+    time2: q.time2 || null,
+    gender: genderEl.value,
+    age: ageEl.value,
+    round,
+    answerTime1: round === 1 ? elapsed : null,
+    answerTime2: round === 2 ? elapsed : null,
+    timeout: selectedOption.key === "N",
+  };
+
+  sendToSheet(data);
+
+  playerQuestions[currentQuestion].selected = selectedOption.key;
+  playerQuestions[currentQuestion].round = round;
+
+  nextPlayerQuestion();
+};
 
 // ============================
 // 決定ボタン
