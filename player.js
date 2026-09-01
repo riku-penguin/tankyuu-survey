@@ -271,6 +271,7 @@ function loadPlayerQuestion(index) {
         clearInterval(timer);
         timer = null;
         confirmBtn.style.display = "block";
+          nextPlayerQuestion();
         return;
       }
 
