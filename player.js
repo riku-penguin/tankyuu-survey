@@ -322,19 +322,27 @@ optionsEl.appendChild(btn);
   noBuyBtn.textContent = "買わない";
   noBuyBtn.setAttribute("data-key", "N");
 
-  noBuyBtn.onclick = () => {
-    selectedOption = { key: "N", label: "買わない", price: 0 };
+ const noBuyBtn = document.createElement("button");
+noBuyBtn.className = "optionButton noBuyButton";
+noBuyBtn.textContent = "買わない";
+noBuyBtn.setAttribute("data-key", "N");
 
-    document.querySelectorAll(".optionButton").forEach(b => {
-      b.classList.remove("selectedOption");
-    });
-    noBuyBtn.classList.add("selectedOption");
-if (round === 1) {
+noBuyBtn.onclick = () => {
+  selectedOption = { key: "N", label: "買わない", price: 0 };
+
+  document.querySelectorAll(".optionButton").forEach(b => {
+    b.classList.remove("selectedOption");
+  });
+  noBuyBtn.classList.add("selectedOption");
+
+  // ★ 一巡目だけ confirmBtn を出す
+  if (round === 1) {
     confirmBtn.style.display = "block";
-  };
+  }
+};  // ← ★ これが抜けていた！
 
-  optionsEl.appendChild(noBuyBtn);
-}
+optionsEl.appendChild(noBuyBtn);
+
 
 // ============================
 // 決定ボタン
