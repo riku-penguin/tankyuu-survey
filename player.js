@@ -294,27 +294,28 @@ function loadPlayerQuestion(index) {
     }
   }, 50);
 
-  q.options.forEach((opt) => {
-    const btn = document.createElement("button");
-    btn.className = "optionButton";
-    btn.textContent = `${opt.label}（¥${opt.price}）`;
-    btn.setAttribute("data-key", opt.key);
+q.options.forEach((opt) => {
+  const btn = document.createElement("button");
+  btn.className = "optionButton";
+  btn.textContent = `${opt.label}（¥${opt.price}）`;
+  btn.setAttribute("data-key", opt.key);
 
-   btn.onclick = () => {
+  btn.onclick = () => {
     selectedOption = { key: opt.key, label: opt.label, price: opt.price };
 
     document.querySelectorAll(".optionButton").forEach(b => {
-        b.classList.remove("selectedOption");
+      b.classList.remove("selectedOption");
     });
     btn.classList.add("selectedOption");
 
-    // ★ 一巡目だけ confirmBtn を出す
     if (round === 1) {
-        confirmBtn.style.display = "block";
+      confirmBtn.style.display = "block";
     }
-};
+  };
 
-optionsEl.appendChild(btn);
+  optionsEl.appendChild(btn);
+});   // ← ★ これが絶対必要！！
+
 
 const noBuyBtn = document.createElement("button");
 noBuyBtn.className = "optionButton noBuyButton";
@@ -329,13 +330,13 @@ noBuyBtn.onclick = () => {
   });
   noBuyBtn.classList.add("selectedOption");
 
-  // ★ 一巡目だけ confirmBtn を出す
   if (round === 1) {
     confirmBtn.style.display = "block";
   }
-};  // ← これが絶対必要！
+};
 
 optionsEl.appendChild(noBuyBtn);
+
 
 
 
