@@ -336,7 +336,7 @@ noBuyBtn.onclick = () => {
 };
 
 optionsEl.appendChild(noBuyBtn);
-
+} 
 
 
 
