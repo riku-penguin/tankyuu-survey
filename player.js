@@ -225,7 +225,7 @@ function startQuestion(index) {
   currentQuestion = index;
   selectedOption = null;
   confirmBtn.style.display = "none";
-
+playerContainerEl.style.display = "flex";
   loadPlayerQuestion(index);
 }
 
@@ -284,7 +284,7 @@ function loadPlayerQuestion(index) {
       if (width > 100) width = 100;
 
       timerBar.style.width = `${width}%`;
-
+      
       if (elapsed >= unlock) {
         confirmBtn.style.display = "block";
       }
