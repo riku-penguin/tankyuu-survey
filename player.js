@@ -221,7 +221,6 @@ function showPreSituation(index) {
 
 function startQuestion(index) {
   hideAllScreens();
-  playerContainerEl.style.display = "block";
 
   currentQuestion = index;
   selectedOption = null;
