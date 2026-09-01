@@ -316,12 +316,6 @@ function loadPlayerQuestion(index) {
 
 optionsEl.appendChild(btn);
 
-
-  const noBuyBtn = document.createElement("button");
-  noBuyBtn.className = "optionButton noBuyButton";
-  noBuyBtn.textContent = "買わない";
-  noBuyBtn.setAttribute("data-key", "N");
-
  const noBuyBtn = document.createElement("button");
 noBuyBtn.className = "optionButton noBuyButton";
 noBuyBtn.textContent = "買わない";
