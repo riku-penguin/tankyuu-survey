@@ -316,7 +316,7 @@ function loadPlayerQuestion(index) {
 
 optionsEl.appendChild(btn);
 
- const noBuyBtn = document.createElement("button");
+const noBuyBtn = document.createElement("button");
 noBuyBtn.className = "optionButton noBuyButton";
 noBuyBtn.textContent = "買わない";
 noBuyBtn.setAttribute("data-key", "N");
@@ -333,9 +333,10 @@ noBuyBtn.onclick = () => {
   if (round === 1) {
     confirmBtn.style.display = "block";
   }
-};  // ← ★ これが抜けていた！
+};  // ← これが絶対必要！
 
 optionsEl.appendChild(noBuyBtn);
+
 
 
 // ============================
