@@ -269,8 +269,7 @@ function loadPlayerQuestion(index) {
       if (remaining <= 0) {
         clearInterval(timer);
         timer = null;
-      
-          nextPlayerQuestion();
+        nextPlayerQuestion();
         return;
       }
 
@@ -278,7 +277,6 @@ function loadPlayerQuestion(index) {
       timerBar.style.width = `${(remaining / limit) * 100}%`;
 
     } else {
-      // ★ 二巡目：経過時間表示
       timerText.textContent = `経過時間: ${Math.floor(elapsed)} 秒`;
 
       const unlock = q.time2;
@@ -287,56 +285,56 @@ function loadPlayerQuestion(index) {
 
       timerBar.style.width = `${width}%`;
 
-      // ★ 二巡目：解禁時間を過ぎたら回答可能にする
       if (elapsed >= unlock) {
         confirmBtn.style.display = "block";
       }
     }
   }, 50);
 
-q.options.forEach((opt) => {
-  const btn = document.createElement("button");
-  btn.className = "optionButton";
-  btn.textContent = `${opt.label}（¥${opt.price}）`;
-  btn.setAttribute("data-key", opt.key);
+  // ★ 選択肢ボタン
+  q.options.forEach((opt) => {
+    const btn = document.createElement("button");
+    btn.className = "optionButton";
+    btn.textContent = `${opt.label}（¥${opt.price}）`;
+    btn.setAttribute("data-key", opt.key);
 
-  btn.onclick = () => {
-    selectedOption = { key: opt.key, label: opt.label, price: opt.price };
+    btn.onclick = () => {
+      selectedOption = { key: opt.key, label: opt.label, price: opt.price };
+
+      document.querySelectorAll(".optionButton").forEach(b => {
+        b.classList.remove("selectedOption");
+      });
+      btn.classList.add("selectedOption");
+
+      if (round === 1) {
+        confirmBtn.style.display = "block";
+      }
+    };
+
+    optionsEl.appendChild(btn);
+  });
+
+  // ★ 買わないボタン
+  const noBuyBtn = document.createElement("button");
+  noBuyBtn.className = "optionButton noBuyButton";
+  noBuyBtn.textContent = "買わない";
+  noBuyBtn.setAttribute("data-key", "N");
+
+  noBuyBtn.onclick = () => {
+    selectedOption = { key: "N", label: "買わない", price: 0 };
 
     document.querySelectorAll(".optionButton").forEach(b => {
       b.classList.remove("selectedOption");
     });
-    btn.classList.add("selectedOption");
+    noBuyBtn.classList.add("selectedOption");
 
     if (round === 1) {
       confirmBtn.style.display = "block";
     }
   };
 
-  optionsEl.appendChild(btn);
-});   // ← ★ これが絶対必要！！
-
-
-const noBuyBtn = document.createElement("button");
-noBuyBtn.className = "optionButton noBuyButton";
-noBuyBtn.textContent = "買わない";
-noBuyBtn.setAttribute("data-key", "N");
-
-noBuyBtn.onclick = () => {
-  selectedOption = { key: "N", label: "買わない", price: 0 };
-
-  document.querySelectorAll(".optionButton").forEach(b => {
-    b.classList.remove("selectedOption");
-  });
-  noBuyBtn.classList.add("selectedOption");
-
-  if (round === 1) {
-    confirmBtn.style.display = "block";
-  }
-};
-
-optionsEl.appendChild(noBuyBtn);
-} 
+  optionsEl.appendChild(noBuyBtn);
+}  // ← ★★★ loadPlayerQuestion の閉じ括弧！！！
 
 
 // ============================
