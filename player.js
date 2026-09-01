@@ -307,7 +307,7 @@ function loadPlayerQuestion(index) {
         b.classList.remove("selectedOption");
       });
       btn.classList.add("selectedOption");
-
+if (round === 1) {
       confirmBtn.style.display = "block";
     };
 
@@ -326,7 +326,7 @@ function loadPlayerQuestion(index) {
       b.classList.remove("selectedOption");
     });
     noBuyBtn.classList.add("selectedOption");
-
+if (round === 1) {
     confirmBtn.style.display = "block";
   };
 
