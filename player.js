@@ -270,7 +270,7 @@ function loadPlayerQuestion(index) {
       if (remaining <= 0) {
         clearInterval(timer);
         timer = null;
-        confirmBtn.style.display = "block";
+      
           nextPlayerQuestion();
         return;
       }
