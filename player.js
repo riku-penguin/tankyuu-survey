@@ -300,19 +300,22 @@ function loadPlayerQuestion(index) {
     btn.textContent = `${opt.label}（¥${opt.price}）`;
     btn.setAttribute("data-key", opt.key);
 
-    btn.onclick = () => {
-      selectedOption = { key: opt.key, label: opt.label, price: opt.price };
+   btn.onclick = () => {
+    selectedOption = { key: opt.key, label: opt.label, price: opt.price };
 
-      document.querySelectorAll(".optionButton").forEach(b => {
+    document.querySelectorAll(".optionButton").forEach(b => {
         b.classList.remove("selectedOption");
-      });
-      btn.classList.add("selectedOption");
-if (round === 1) {
-      confirmBtn.style.display = "block";
-    };
+    });
+    btn.classList.add("selectedOption");
 
-    optionsEl.appendChild(btn);
-  });
+    // ★ 一巡目だけ confirmBtn を出す
+    if (round === 1) {
+        confirmBtn.style.display = "block";
+    }
+};
+
+optionsEl.appendChild(btn);
+
 
   const noBuyBtn = document.createElement("button");
   noBuyBtn.className = "optionButton noBuyButton";
